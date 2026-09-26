@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Инструкция по сборке фикстуры Lean Pipe Ø28 мм | Рабочая станция</title>
+  <!-- Tailwind CSS CDN for GitHub Pages -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js + OrbitControls for GitHub Pages -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    body { margin: 0; overflow-x: hidden; }
+    #canvas-container { width: 100%; height: 100%; position: relative; }
+    canvas { outline: none; display: block; }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Top Navbar -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30">
+        F
+      </div>
+      <div>
+        <h1 class="text-sm font-bold text-white flex items-center gap-2">
+          Инструкция по сборке фикстуры наклейки этикеток
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">
+            Ø28 мм | Lean Pipe
+          </span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Для серверной полки 685 × 565 мм • 14 зажимов HJ-1 • Угол 30°</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2 text-xs">
+      <span class="text-slate-400 hidden sm:inline">Готово для GitHub Pages</span>
+      <a href="https://github.com" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content: Left 3D Viewport + Right Guide Panel -->
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden relative">
+
+    <!-- 3D Interactive Viewport (8 cols on lg) -->
+    <div class="lg:col-span-8 bg-slate-950 relative min-h-[460px] lg:min-h-full flex items-center justify-center">
+      <div id="canvas-container"></div>
+
+      <!-- 3D Viewport Overlay HUD -->
+      <div class="absolute top-4 left-4 glass-panel px-3 py-2 rounded-xl text-xs space-y-1 pointer-events-none shadow-xl">
+        <div class="font-bold text-white flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Интерактивная 3D Модель
+        </div>
+        <div class="text-[11px] text-slate-300">
+          • Вращение: Зажмите ЛКМ<br>
+          • Панорамирование: ПКМ / две кнопки<br>
+          • Масштаб: Колесо мыши
+        </div>
+      </div>
+
+      <!-- View Preset Buttons -->
+      <div class="absolute bottom-4 left-4 flex flex-wrap gap-2">
+        <button id="viewIso" class="px-3 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition">
+          Изометрия
+        </button>
+        <button id="viewStickers" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition flex items-center gap-1">
+          🔍 Зона наклеек
+        </button>
+        <button id="viewStoppers" class="px-3 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition">
+          Упорные стопоры
+        </button>
+      </div>
+
+      <!-- Layer Visibility Toggles -->
+      <div class="absolute top-4 right-4 glass-panel p-2.5 rounded-xl text-xs space-y-2 shadow-xl">
+        <div class="font-semibold text-slate-200 text-[11px] uppercase tracking-wider">Слои 3D</div>
+        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="chkShelf" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <span>Полка-шасси</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="chkBed" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <span>ДСП + резина</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="chkFrame" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <span>Трубы Ø28 мм</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="chkClamps" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <span>Зажимы HJ-1</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Interactive Step-by-Step Assembly Manual (4 cols) -->
+    <div class="lg:col-span-4 bg-slate-900/95 border-l border-slate-800 flex flex-col h-full max-h-[calc(100vh-60px)] overflow-y-auto">
+      
+      <!-- Stepper Controls -->
+      <div class="p-4 border-b border-slate-800 bg-slate-900 sticky top-0 z-10">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Пошаговая инструкция</span>
+          <span id="stepCounter" class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">
+            Шаг 1 из 5
+          </span>
+        </div>
+        
+        <div class="flex gap-1.5 mb-3">
+          <div id="bar1" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
+          <div id="bar2" class="h-1.5 flex-1 rounded-full bg-slate-700 transition-all duration-300"></div>
+          <div id="bar3" class="h-1.5 flex-1 rounded-full bg-slate-700 transition-all duration-300"></div>
+          <div id="bar4" class="h-1.5 flex-1 rounded-full bg-slate-700 transition-all duration-300"></div>
+          <div id="bar5" class="h-1.5 flex-1 rounded-full bg-slate-700 transition-all duration-300"></div>
+        </div>
+
+        <div class="flex gap-2">
+          <button id="btnPrev" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition disabled:opacity-40 disabled:cursor-not-allowed">
+            ← Назад
+          </button>
+          <button id="btnNext" class="flex-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-md shadow-blue-600/30 transition">
+            Следующий шаг →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step Content Container -->
+      <div id="stepCard" class="p-4 space-y-4 flex-1">
+        <!-- Dynamic content injected by JS -->
+      </div>
+
+      <!-- BOM & Cutting Table Accordion -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/60 mt-auto">
+        <details class="group">
+          <summary class="flex justify-between items-center text-xs font-bold text-slate-200 cursor-pointer select-none">
+            <span>📋 Спецификация распила (Lean Pipe Ø28)</span>
+            <span class="text-blue-400 group-open:rotate-180 transition">▼</span>
+          </summary>
+          <div class="mt-3 text-[11px] font-mono space-y-1.5 text-slate-300">
+            <div class="flex justify-between border-b border-slate-800 pb-1">
+              <span>Поперечины (верх/низ):</span>
+              <strong class="text-white">3 шт. × 750 мм</strong>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-1">
+              <span>Центральные наклонные (30°):</span>
+              <strong class="text-white">2 шт. × 580 мм</strong>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-1">
+              <span>Продольные на столе:</span>
+              <strong class="text-white">2 шт. × 500 мм</strong>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-1">
+              <span>Задние вертикальные:</span>
+              <strong class="text-white">2 шт. × 290 мм</strong>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-1">
+              <span>Стопоры упорные:</span>
+              <strong class="text-white">2 шт. × 100 мм</strong>
+            </div>
+            <div class="flex justify-between text-emerald-400 font-bold pt-1">
+              <span>Всего метраж:</span>
+              <span>5.19 м (2 хлыста по 3м)</span>
+            </div>
+            <div class="flex justify-between text-amber-400 font-bold">
+              <span>Зажимы HJ-1:</span>
+              <span>14 шт.</span>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Three.js Interactive 3D Engine Script -->
+  <script>
+    // -------------------------------------------------------------
+    // THREE.JS SCENE SETUP
+    // -------------------------------------------------------------
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d16);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 3000);
+    camera.position.set(380, 280, 480);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go under floor
+    controls.target.set(0, 80, 0);
+
+    // -------------------------------------------------------------
+    // LIGHTING
+    // -------------------------------------------------------------
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.85);
+    dirLight1.position.set(250, 400, 300);
+    dirLight1.castShadow = true;
+    dirLight1.shadow.mapSize.width = 2048;
+    dirLight1.shadow.mapSize.height = 2048;
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x93c5fd, 0.4);
+    dirLight2.position.set(-300, 200, -200);
+    scene.add(dirLight2);
+
+    // Floor Grid / Ground
+    const grid = new THREE.GridHelper(1000, 40, 0x1e293b, 0x0f172a);
+    grid.position.y = -0.5;
+    scene.add(grid);
+
+    // Floor shadow receiver
+    const planeGeo = new THREE.PlaneGeometry(1200, 1200);
+    const planeMat = new THREE.ShadowMaterial({ opacity: 0.35 });
+    const floor = new THREE.Mesh(planeGeo, planeMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // -------------------------------------------------------------
+    // PBR MATERIALS
+    // -------------------------------------------------------------
+    // Chrome Pipe Material
+    const pipeMat = new THREE.MeshStandardMaterial({
+      color: 0xd4d4d8,
+      metalness: 0.88,
+      roughness: 0.18
+    });
+
+    // Central Highlighted Pipes
+    const centralPipeMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      metalness: 0.82,
+      roughness: 0.22
+    });
+
+    // HJ-1 Stamped Steel Clamps
+    const clampMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      metalness: 0.75,
+      roughness: 0.35
+    });
+
+    // Red Rubber Stopper Caps
+    const rubberCapMat = new THREE.MeshStandardMaterial({
+      color: 0xdc2626,
+      roughness: 0.85,
+      metalness: 0.05
+    });
+
+    // Chipboard Core
+    const woodMat = new THREE.MeshStandardMaterial({
+      color: 0x92400e,
+      roughness: 0.75,
+      metalness: 0.1
+    });
+
+    // Black Rubber Surface Pad
+    const rubberPadMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      roughness: 0.95,
+      metalness: 0.02
+    });
+
+    // CAD Sheet Metal Shelf (Zinc / Anodized Steel)
+    const shelfMetalMat = new THREE.MeshStandardMaterial({
+      color: 0x94a3b8,
+      metalness: 0.72,
+      roughness: 0.32
+    });
+
+    const shelfMetalDark = new THREE.MeshStandardMaterial({
+      color: 0x64748b,
+      metalness: 0.65,
+      roughness: 0.4
+    });
+
+    const stickerMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.3,
+      metalness: 0.0
+    });
+
+    // -------------------------------------------------------------
+    // 3D GEOMETRY CONSTRUCTION (LEAN PIPE FRAME)
+    // -------------------------------------------------------------
+    const frameGroup = new THREE.Group();
+    const bedGroup = new THREE.Group();
+    const shelfGroup = new THREE.Group();
+    const clampsGroup = new THREE.Group();
+
+    scene.add(frameGroup);
+    scene.add(bedGroup);
+    scene.add(shelfGroup);
+    scene.add(clampsGroup);
+
+    // Dimensions in mm
+    const W_frame = 750 / 3;  // Scaled ~ 250 units
+    const D_base = 500 / 3;   // ~ 166 units
+    const H_back = 290 / 3;   // ~ 96 units
+    const R_pipe = 28 / 6;    // ~ 4.6 units radius
+    const angleRad = 30 * Math.PI / 180;
+
+    function createPipe(p1, p2, mat = pipeMat) {
+      const v = new THREE.Vector3().subVectors(p2, p1);
+      const len = v.length();
+      const geo = new THREE.CylinderGeometry(R_pipe, R_pipe, len, 24);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      // Position at midpoint
+      mesh.position.copy(p1).addScaledVector(v, 0.5);
+
+      // Rotate cylinder along direction vector
+      const axis = new THREE.Vector3(0, 1, 0);
+      mesh.quaternion.setFromUnitVectors(axis, v.clone().normalize());
+      return mesh;
+    }
+
+    function createClamp(pos) {
+      const geo = new THREE.SphereGeometry(R_pipe * 1.5, 16, 16);
+      const mesh = new THREE.Mesh(geo, clampMat);
+      mesh.position.copy(pos);
+      mesh.castShadow = true;
+      clampsGroup.add(mesh);
+    }
+
+    // 1. Frame Base Nodes
+    const FL = new THREE.Vector3(-W_frame/2, R_pipe, D_base/2);
+    const FR = new THREE.Vector3(W_frame/2, R_pipe, D_base/2);
+    const BL = new THREE.Vector3(-W_frame/2, R_pipe, -D_base/2);
+    const BR = new THREE.Vector3(W_frame/2, R_pipe, -D_base/2);
+    const TL = new THREE.Vector3(-W_frame/2, H_back + R_pipe, -D_base/2);
+    const TR = new THREE.Vector3(W_frame/2, H_back + R_pipe, -D_base/2);
+
+    // Pipes
+    frameGroup.add(createPipe(FL, FR)); // Front crossbar
+    frameGroup.add(createPipe(BL, BR)); // Back base crossbar
+    frameGroup.add(createPipe(FL, BL)); // Left base
+    frameGroup.add(createPipe(FR, BR)); // Right base
+
+    frameGroup.add(createPipe(BL, TL)); // Left vertical
+    frameGroup.add(createPipe(BR, TR)); // Right vertical
+    frameGroup.add(createPipe(TL, TR)); // Top back crossbar
+
+    // Clamps at frame nodes
+    [FL, FR, BL, BR, TL, TR].forEach(createClamp);
+
+    // 2. Central Inclined Pipes (spaced by 90 units ~ 270mm)
+    const distCenter = 85;
+    const c1_btm = new THREE.Vector3(-distCenter/2, R_pipe, D_base/2);
+    const c1_top = new THREE.Vector3(-distCenter/2, H_back + R_pipe, -D_base/2);
+    const c2_btm = new THREE.Vector3(distCenter/2, R_pipe, D_base/2);
+    const c2_top = new THREE.Vector3(distCenter/2, H_back + R_pipe, -D_base/2);
+
+    frameGroup.add(createPipe(c1_btm, c1_top, centralPipeMat));
+    frameGroup.add(createPipe(c2_btm, c2_top, centralPipeMat));
+
+    createClamp(c1_btm);
+    createClamp(c2_btm);
+    createClamp(c1_top);
+    createClamp(c2_top);
+
+    // 3. Stoppers at ends (pointing perpendicularly UP, H=100mm -> 33 units)
+    const stopperH = 33;
+    const stopL_b = new THREE.Vector3(-W_frame/2 + 12, R_pipe, D_base/2);
+    const stopL_t = new THREE.Vector3(-W_frame/2 + 12, stopperH, D_base/2);
+    const stopR_b = new THREE.Vector3(W_frame/2 - 12, R_pipe, D_base/2);
+    const stopR_t = new THREE.Vector3(W_frame/2 - 12, stopperH, D_base/2);
+
+    frameGroup.add(createPipe(stopL_b, stopL_t, pipeMat));
+    frameGroup.add(createPipe(stopR_b, stopR_t, pipeMat));
+    createClamp(stopL_b);
+    createClamp(stopR_b);
+
+    // Red caps on stoppers
+    const capGeo = new THREE.CylinderGeometry(R_pipe * 1.15, R_pipe * 1.15, 6, 16);
+    const capL = new THREE.Mesh(capGeo, rubberCapMat);
+    capL.position.copy(stopL_t);
+    const capR = new THREE.Mesh(capGeo, rubberCapMat);
+    capR.position.copy(stopR_t);
+    frameGroup.add(capL, capR);
+
+    // 4. Chipboard Bed + Rubber Mat (720 x 580 mm)
+    const bedLength = Math.sqrt(D_base * D_base + H_back * H_back);
+    const bedWidth = W_frame * 0.94;
+    const bedThick = 5;
+
+    const bedMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, bedThick, bedLength), woodMat);
+    bedMesh.castShadow = true;
+    bedMesh.receiveShadow = true;
+
+    const rubMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, 1.2, bedLength), rubberPadMat);
+    rubMesh.position.y = bedThick/2 + 0.6;
+    rubMesh.receiveShadow = true;
+    bedMesh.add(rubMesh);
+
+    // Position and incline the bed
+    bedMesh.position.set(0, H_back/2 + R_pipe + 4, 0);
+    bedMesh.rotation.x = -angleRad;
+    bedGroup.add(bedMesh);
+
+    // 5. DETAILED CAD SHELF (Mesh Down, Front Duct Facing Operator)
+    const shelfL = bedLength * 0.96; // 565 mm
+    const shelfW = 228;              // 685 mm
+    const wallH = 42;                // 125 mm
+    const ductW = 60;                // Left enclosure width
+
+    const shelfContainer = new THREE.Group();
+    // Position shelf on bed
+    shelfContainer.position.copy(bedMesh.position);
+    shelfContainer.position.y += bedThick/2 + 1.2;
+    shelfContainer.rotation.x = -angleRad;
+
+    // Bottom Plate
+    const btmGeo = new THREE.BoxGeometry(shelfW, 1.5, shelfL);
+    const btmMesh = new THREE.Mesh(btmGeo, shelfMetalMat);
+    btmMesh.castShadow = true;
+    btmMesh.receiveShadow = true;
+    shelfContainer.add(btmMesh);
+
+    // Right Wall (Z is from -shelfL/2 to +shelfL/2)
+    const rWallGeo = new THREE.BoxGeometry(1.5, wallH, shelfL);
+    const rWall = new THREE.Mesh(rWallGeo, shelfMetalDark);
+    rWall.position.set(shelfW/2 - 0.75, wallH/2, 0);
+    rWall.castShadow = true;
+    shelfContainer.add(rWall);
+
+    // Rear Honeycomb Mesh Panel (at Z = +shelfL/2, resting against stoppers!)
+    const rearMeshGeo = new THREE.BoxGeometry(shelfW - ductW, wallH, 1.5);
+    const rearMesh = new THREE.Mesh(rearMeshGeo, shelfMetalDark);
+    rearMesh.position.set(ductW/2, wallH/2, shelfL/2);
+    rearMesh.castShadow = true;
+    shelfContainer.add(rearMesh);
+
+    // Left Duct Box (Outer Left Wall)
+    const lWallGeo = new THREE.BoxGeometry(1.5, wallH, shelfL);
+    const lWall = new THREE.Mesh(lWallGeo, shelfMetalDark);
+    lWall.position.set(-shelfW/2 + 0.75, wallH/2, 0);
+    lWall.castShadow = true;
+    shelfContainer.add(lWall);
+
+    // Left Duct Box (Inner Wall)
+    const lInWall = new THREE.Mesh(lWallGeo, shelfMetalDark);
+    lInWall.position.set(-shelfW/2 + ductW, wallH/2, 0);
+    lInWall.castShadow = true;
+    shelfContainer.add(lInWall);
+
+    // Left Duct Box (Top Surface)
+    const lTopGeo = new THREE.BoxGeometry(ductW, 1.5, shelfL);
+    const lTop = new THREE.Mesh(lTopGeo, shelfMetalMat);
+    lTop.position.set(-shelfW/2 + ductW/2, wallH, 0);
+    lTop.castShadow = true;
+    shelfContainer.add(lTop);
+
+    // Front Face of the Beam (facing operator at Z = -shelfL/2)
+    const frontBeamGeo = new THREE.BoxGeometry(ductW, wallH, 1.5);
+    const frontBeam = new THREE.Mesh(frontBeamGeo, shelfMetalMat);
+    frontBeam.position.set(-shelfW/2 + ductW/2, wallH/2, -shelfL/2);
+    frontBeam.castShadow = true;
+    shelfContainer.add(frontBeam);
+
+    // Oval Hole cutout representation (dark oval on front beam)
+    const ovalGeo = new THREE.CylinderGeometry(7, 7, 2, 16);
+    const ovalMesh = new THREE.Mesh(ovalGeo, new THREE.MeshBasicMaterial({ color: 0x090d16 }));
+    ovalMesh.rotation.x = Math.PI / 2;
+    ovalMesh.scale.set(0.8, 1, 1.5);
+    ovalMesh.position.set(-shelfW/2 + ductW * 0.4, wallH/2, -shelfL/2 - 0.2);
+    shelfContainer.add(ovalMesh);
+
+    // 3 THIN BARCODE STICKERS ON THE BEAM
+    function createSticker(xOffset, textLabel) {
+      const stGeo = new THREE.PlaneGeometry(6, 28);
+      const st = new THREE.Mesh(stGeo, stickerMat);
+      st.rotation.y = Math.PI; // Face forward
+      st.position.set(-shelfW/2 + xOffset, wallH/2, -shelfL/2 - 1.1);
+      
+      // Barcode black lines inside sticker
+      const barGeo = new THREE.PlaneGeometry(4.5, 14);
+      const bar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0x111827 }));
+      bar.position.set(0, 2, 0.05);
+      st.add(bar);
+      return st;
+    }
+
+    const st1 = createSticker(10, 'DC Use');
+    const st2 = createSticker(ductW * 0.68, 'GPN');
+    const st3 = createSticker(ductW * 0.88, 'SN');
+    shelfContainer.add(st1, st2, st3);
+
+    shelfGroup.add(shelfContainer);
+
+    // -------------------------------------------------------------
+    // INTERACTIVE STEPPER LOGIC
+    // -------------------------------------------------------------
+    const steps = [
+      {
+        num: 1,
+        title: "Сборка основания на столе",
+        desc: "Возьмите 2 поперечные трубы 750 мм (передняя и задняя нижняя) и 2 продольные трубы 500 мм. Соедините их в прямоугольник на столе с помощью 4 зажимов HJ-1. Затяните болты М6 шестигранником 5 мм.",
+        parts: ["2 шт. трубы 750 мм", "2 шт. трубы 500 мм", "4 шт. зажима HJ-1"],
+        cam: { x: 0, y: 320, z: 420, tx: 0, ty: 20, tz: 0 },
+        show: { frame: true, clamps: true, bed: false, shelf: false }
+      },
+      {
+        num: 2,
+        title: "Установка задней П-образной стенки",
+        desc: "Вставьте 2 вертикальные стойки 290 мм в заднюю нижнюю балку через хомуты HJ-1. Сверху наденьте верхнюю перекладину 750 мм и зафиксируйте ещё 2 зажимами HJ-1.",
+        parts: ["2 шт. стойки 290 мм", "1 шт. балка 750 мм", "4 шт. зажима HJ-1"],
+        cam: { x: 300, y: 220, z: -350, tx: 0, ty: 70, tz: -50 },
+        show: { frame: true, clamps: true, bed: false, shelf: false }
+      },
+      {
+        num: 3,
+        title: "Монтаж 2-х центральных наклонных труб",
+        desc: "Наденьте по 2 хомута HJ-1 на переднюю и верхнюю поперечины на расстоянии 280 мм друг от друга. Вставьте 2 трубы 580 мм. За счет проворачивания хомутов на круглых трубах угол 30° встанет идеально!",
+        parts: ["2 шт. трубы 580 мм", "4 шт. зажима HJ-1"],
+        cam: { x: -280, y: 240, z: 280, tx: 0, ty: 60, tz: 0 },
+        show: { frame: true, clamps: true, bed: false, shelf: false }
+      },
+      {
+        num: 4,
+        title: "Установка стопоров на концах",
+        desc: "На концах передней балки закрепите хомуты HJ-1, повернув патрубки строго вертикально вверх под 90°. Зажмите в них отрезки труб 100 мм и наденьте защитные резиновые заглушки.",
+        parts: ["2 шт. трубы 100 мм", "2 шт. зажима HJ-1", "2 шт. заглушки Ø28 мм"],
+        cam: { x: 220, y: 140, z: 320, tx: 70, ty: 20, tz: 50 },
+        show: { frame: true, clamps: true, bed: false, shelf: false }
+      },
+      {
+        num: 5,
+        title: "Укладка ложа и установка полки",
+        desc: "Наклейте резину на ДСП 720×580 мм, закрепите снизу клипсы и защелкните на центральные трубы. Установите полку СЕТКОЙ ВНИЗ к стопорам. Балка с овальным окном направлена прямо на оператора для удобной наклейки 3 стикеров!",
+        parts: ["Плита ДСП 720×580 мм", "Резиновый коврик", "4 клипсы Ø28 мм"],
+        cam: { x: 120, y: 220, z: 360, tx: -40, ty: 70, tz: 0 },
+        show: { frame: true, clamps: true, bed: true, shelf: true }
+      }
+    ];
+
+    let currentStep = 1;
+
+    function renderStep() {
+      const s = steps[currentStep - 1];
+      document.getElementById('stepCounter').textContent = `Шаг ${s.num} из ${steps.length}`;
+      
+      // Progress bars
+      for (let i = 1; i <= 5; i++) {
+        const bar = document.getElementById(`bar${i}`);
+        bar.className = `h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= currentStep ? 'bg-blue-500' : 'bg-slate-700'}`;
+      }
+
+      document.getElementById('btnPrev').disabled = (currentStep === 1);
+      document.getElementById('btnNext').textContent = (currentStep === steps.length) ? '✓ Готово (Заново)' : 'Следующий шаг →';
+
+      let partsHtml = s.parts.map(p => `<span class="inline-block bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px] border border-slate-700">${p}</span>`).join(' ');
+
+      document.getElementById('stepCard').innerHTML = `
+        <div class="space-y-3 animate-fadeIn">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">${s.num}</span>
+            <h3 class="font-bold text-white text-sm">${s.title}</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">${s.desc}</p>
+          <div class="pt-2 border-t border-slate-800">
+            <div class="text-[11px] font-semibold text-slate-400 mb-1.5">Необходимые детали:</div>
+            <div class="flex flex-wrap gap-1.5">${partsHtml}</div>
+          </div>
+        </div>
+      `;
+
+      // Smooth camera transition
+      gsapCamera(s.cam);
+
+      // Layer visibilities
+      bedGroup.visible = s.show.bed && document.getElementById('chkBed').checked;
+      shelfGroup.visible = s.show.shelf && document.getElementById('chkShelf').checked;
+    }
+
+    function gsapCamera(target) {
+      const startPos = camera.position.clone();
+      const endPos = new THREE.Vector3(target.x, target.y, target.z);
+      const startTarget = controls.target.clone();
+      const endTarget = new THREE.Vector3(target.tx, target.ty, target.tz);
+
+      let t = 0;
+      const animateCam = () => {
+        t += 0.04;
+        if (t <= 1) {
+          camera.position.lerpVectors(startPos, endPos, t);
+          controls.target.lerpVectors(startTarget, endTarget, t);
+          requestAnimationFrame(animateCam);
+        } else {
+          camera.position.copy(endPos);
+          controls.target.copy(endTarget);
+        }
+      };
+      animateCam();
+    }
+
+    document.getElementById('btnNext').addEventListener('click', () => {
+      if (currentStep < steps.length) currentStep++;
+      else currentStep = 1;
+      renderStep();
+    });
+
+    document.getElementById('btnPrev').addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        renderStep();
+      }
+    });
+
+    // View Presets
+    document.getElementById('viewIso').addEventListener('click', () => {
+      gsapCamera({ x: 340, y: 260, z: 420, tx: 0, ty: 70, tz: 0 });
+    });
+
+    document.getElementById('viewStickers').addEventListener('click', () => {
+      gsapCamera({ x: -40, y: 150, z: 90, tx: -70, ty: 125, tz: -30 });
+    });
+
+    document.getElementById('viewStoppers').addEventListener('click', () => {
+      gsapCamera({ x: 180, y: 90, z: 260, tx: 80, ty: 30, tz: 70 });
+    });
+
+    // Layer checkboxes
+    document.getElementById('chkShelf').addEventListener('change', (e) => shelfGroup.visible = e.target.checked);
+    document.getElementById('chkBed').addEventListener('change', (e) => bedGroup.visible = e.target.checked);
+    document.getElementById('chkFrame').addEventListener('change', (e) => frameGroup.visible = e.target.checked);
+    document.getElementById('chkClamps').addEventListener('change', (e) => clampsGroup.visible = e.target.checked);
+
+    // Initial step render
+    renderStep();
+
+    // -------------------------------------------------------------
+    // RENDER LOOP & RESIZE
+    // -------------------------------------------------------------
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  </script>
+</body>
+</html>
