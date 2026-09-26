@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Инструкция по сборке фикстуры Lean Pipe Ø28 мм | Bybit Edition</title>
+  <title>Инструкция по сборке фикстуры Compute Shelf</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Three.js + OrbitControls -->
@@ -112,12 +112,12 @@
       </div>
       <div>
         <h1 class="text-sm font-bold text-white flex items-center gap-2">
-          Инструкция по сборке фиктуры Lean Pipe
+          Инструкция по сборке фикстуры Compute Shelf
           <span class="text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold">
             Ø28 мм • 14 зажимов HJ-1
           </span>
         </h1>
-        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Плавные переходы • Размеры на 3D-модели</p>
+        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Сетка у стопоров • Размеры на 3D-модели</p>
       </div>
     </div>
     
@@ -140,7 +140,7 @@
       <div class="absolute top-4 left-4 bybit-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm pointer-events-none">
         <div class="font-bold text-white flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold"></span>
-          <span id="hudStatus">Стопоры: Наклон 90° к плоскости полки</span>
+          <span id="hudStatus">Compute Shelf: Сетка у стопоров (наклон 90°)</span>
         </div>
         <div class="text-[11px] text-bybit-gray leading-relaxed">
           • Плавное скольжение камеры между шагами сборки<br>
@@ -170,18 +170,10 @@
           </button>
         </div>
 
-        <!-- Right: Orientation Controls -->
-        <div class="flex items-center gap-1.5 bybit-panel p-1.5 rounded-xl pointer-events-auto shadow-xl">
-          <span class="text-[11px] text-bybit-gray font-semibold px-2">Полка:</span>
-          <button id="btnOrientBeam" class="px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm">
-            Балка у стопоров
-          </button>
-          <button id="btnOrientMesh" class="px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition">
-            Сетка у стопоров
-          </button>
-          <button id="btnFlipUpside" class="px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition" title="Перевернуть вверх дном">
-            ↕️ Дном вверх
-          </button>
+        <!-- Right: Shelf Status Badge -->
+        <div class="flex items-center gap-2 bybit-panel px-3 py-1.5 rounded-xl pointer-events-auto shadow-xl text-xs text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
+          <span class="font-medium">Compute Shelf: Сетка у стопоров (90°)</span>
         </div>
 
       </div>
@@ -887,8 +879,6 @@
     const wallH  = 120 / 3.2; // ~37.5
     const ductW  = 180 / 3.2; // ~56.2
 
-    let currentOrientation = 'beam_down';
-    let isUpsideDown = false;
     let shelfRoot = null;
 
     function buildPhotorealisticShelf() {
@@ -902,17 +892,8 @@
       const zCenter = zStopperContact - (shelfL / 2);
       
       shelfRoot.position.set(0, ySurface, zCenter);
-
-      if (currentOrientation === 'mesh_down') {
-        shelfRoot.rotation.y = Math.PI;
-      } else {
-        shelfRoot.rotation.y = 0;
-      }
-
-      if (isUpsideDown) {
-        shelfRoot.rotation.z = Math.PI;
-        shelfRoot.position.y = ySurface + wallH;
-      }
+      // Фиксированное положение: сетка у стопоров под углом 90° к ложу
+      shelfRoot.rotation.y = Math.PI;
 
       // 1. Bottom Perforated Floor Plate
       const btmGeo = new THREE.BoxGeometry(shelfW, 1.2, shelfL);
@@ -1034,39 +1015,10 @@
     });
 
     // -------------------------------------------------------------
-    // 7. ORIENTATION & DIMENSION TOGGLES
+    // 7. DIMENSION LABELS TOGGLE
     // -------------------------------------------------------------
-    const btnBeam = document.getElementById('btnOrientBeam');
-    const btnMesh = document.getElementById('btnOrientMesh');
-    const btnFlip = document.getElementById('btnFlipUpside');
-    const hudStatus = document.getElementById('hudStatus');
     const chkDims = document.getElementById('chkDimensions');
     const btnToggleDims = document.getElementById('btnToggleDims');
-
-    function updateOrientationUI() {
-      if (currentOrientation === 'beam_down') {
-        btnBeam.className = "px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm";
-        btnMesh.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
-        hudStatus.textContent = "Стопоры: Наклон 90° | Балка у стопоров";
-      } else {
-        btnMesh.className = "px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm";
-        btnBeam.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
-        hudStatus.textContent = "Стопоры: Наклон 90° | Сетка у стопоров";
-      }
-
-      if (isUpsideDown) {
-        btnFlip.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white text-xs font-bold transition shadow-sm";
-        hudStatus.textContent += " [Дном вверх]";
-      } else {
-        btnFlip.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
-      }
-
-      buildPhotorealisticShelf();
-    }
-
-    btnBeam.addEventListener('click', () => { currentOrientation = 'beam_down'; updateOrientationUI(); });
-    btnMesh.addEventListener('click', () => { currentOrientation = 'mesh_down'; updateOrientationUI(); });
-    btnFlip.addEventListener('click', () => { isUpsideDown = !isUpsideDown; updateOrientationUI(); });
 
     function toggleDimensions(visible) {
       dimensionsGroup.visible = visible;
@@ -1113,9 +1065,9 @@
       },
       {
         num: 4,
-        title: "Монтаж подложки ДСП и установка полки",
-        desc: "Закрепите плиту ДСП 720×580 мм с наклеенным резиновым ковриком клипсами на центральные трубы. Установите полку — она ложится днищем на резину и упирается в стопоры СТРОГО ПОД УГЛОМ 90°. Рабочая зона полностью готова для наклеивания 3 стикеров!",
-        parts: ["Плита ДСП 720×580 мм", "Резина 2-3 мм", "4 клипсы Ø28 мм", "Полка шасси 685×565 мм"],
+        title: "Монтаж подложки ДСП и установка Compute Shelf",
+        desc: "Закрепите плиту ДСП 720×580 мм с наклеенным резиновым ковриком клипсами на центральные трубы. Установите Compute Shelf — она ложится днищем на резину и упирается тыльной сеткой в стопоры СТРОГО ПОД УГЛОМ 90°. Верхняя панель со стикерами находится в зоне прямого доступа оператора!",
+        parts: ["Плита ДСП 720×580 мм", "Резина 2-3 мм", "4 клипсы Ø28 мм", "Compute Shelf 685×565 мм"],
         cam: { x: 160, y: 180, z: 270, tx: -15, ty: 45, tz: 15 },
         show: { s1: true, s2: true, s3: true, s4: true }
       }
@@ -1278,11 +1230,7 @@
     });
 
     document.getElementById('viewStickers').addEventListener('click', () => {
-      if (currentOrientation === 'beam_down') {
-        animateCameraSmooth({ x: -45, y: 65, z: 155, tx: -60, ty: 35, tz: 75 });
-      } else {
-        animateCameraSmooth({ x: 45, y: 140, z: -150, tx: 60, ty: 80, tz: -70 });
-      }
+      animateCameraSmooth({ x: 79, y: 140, z: -150, tx: 79, ty: 117, tz: -67 });
     });
 
     document.getElementById('viewSide').addEventListener('click', () => {
