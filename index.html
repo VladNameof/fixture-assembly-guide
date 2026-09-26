@@ -3,49 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Инструкция по сборке фикстуры Lean Pipe Ø28 мм | Рабочая станция</title>
+  <title>Инструкция по сборке фикстуры Lean Pipe Ø28 мм | Bybit Edition</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Three.js + OrbitControls -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bybit: {
+              black: '#0B0E14',
+              surface: '#12161F',
+              card: '#181C26',
+              border: '#262C3A',
+              gold: '#F7A600',
+              goldHover: '#FFB82E',
+              goldDark: '#B87A00',
+              gray: '#848E9C',
+              lightGray: '#ADB5BD',
+              green: '#0ECB81',
+              red: '#F6465D'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { margin: 0; overflow-x: hidden; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background-color: #0B0E14;
+      color: #E5E7EB;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
     #canvas-container { width: 100%; height: 100%; position: relative; }
     canvas { outline: none; display: block; }
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+    
+    /* Bybit Glass Panels */
+    .bybit-panel {
+      background: rgba(18, 22, 31, 0.90);
+      backdrop-filter: blur(14px);
+      border: 1px solid #262C3A;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     }
-    .custom-scroll::-webkit-scrollbar { width: 6px; }
-    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 3px; }
-    .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.7); }
+    .bybit-card {
+      background: #181C26;
+      border: 1px solid #262C3A;
+    }
+    .bybit-btn-gold {
+      background: #F7A600;
+      color: #0B0E14;
+      font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bybit-btn-gold:hover {
+      background: #FFB82E;
+      box-shadow: 0 4px 14px rgba(247, 166, 0, 0.35);
+      transform: translateY(-1px);
+    }
+    .bybit-btn-secondary {
+      background: #181C26;
+      border: 1px solid #262C3A;
+      color: #ADB5BD;
+      transition: all 0.2s ease;
+    }
+    .bybit-btn-secondary:hover {
+      background: #202634;
+      border-color: #384256;
+      color: #FFFFFF;
+    }
+
+    /* Smooth Step Transitions */
+    @keyframes bybitSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .animate-step-transition {
+      animation: bybitSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #0B0E14; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #262C3A; border-radius: 3px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F7A600; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col select-none">
+<body class="min-h-screen flex flex-col select-none antialiased">
 
-  <!-- Top Navbar -->
-  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shadow-md">
+  <!-- Top Navbar (Bybit Styling) -->
+  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30">
-        F
+      <!-- Bybit Gold Symbol -->
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-sm shadow-md shadow-bybit-gold/25 tracking-tighter">
+        F·B
       </div>
       <div>
         <h1 class="text-sm font-bold text-white flex items-center gap-2">
-          Инструкция по сборке фикстуры наклейки этикеток
-          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">
-            Ø28 мм | Lean Pipe
+          Инструкция по сборке фиктуры Lean Pipe
+          <span class="text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold">
+            Ø28 мм • 14 зажимов HJ-1
           </span>
         </h1>
-        <p class="text-[11px] text-slate-400">Стопоры под 90° • Размеры труб на 3D-модели • Список компонентов для заготовки</p>
+        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Плавные переходы • Размеры на 3D-модели</p>
       </div>
     </div>
     
     <div class="flex items-center gap-2 text-xs">
-      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 shadow-sm">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-3 py-1.5 rounded-lg bybit-btn-secondary transition flex items-center gap-1.5 shadow-sm text-xs">
+        <svg class="w-4 h-4 fill-current text-bybit-gold" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
         GitHub Репозиторий
       </a>
     </div>
@@ -55,17 +133,17 @@
   <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden relative">
 
     <!-- 3D Viewport (8 cols) -->
-    <div class="lg:col-span-8 bg-slate-950 relative min-h-[480px] lg:min-h-full flex items-center justify-center">
+    <div class="lg:col-span-8 bg-bybit-black relative min-h-[480px] lg:min-h-full flex items-center justify-center">
       <div id="canvas-container"></div>
 
-      <!-- 3D HUD Mode Indicator -->
-      <div class="absolute top-4 left-4 glass-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm pointer-events-none">
-        <div class="font-bold text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="hudStatus">Размеры труб и угол 90° включены</span>
+      <!-- 3D HUD Mode Indicator (Bybit Design) -->
+      <div class="absolute top-4 left-4 bybit-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm pointer-events-none">
+        <div class="font-bold text-white flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold"></span>
+          <span id="hudStatus">Стопоры: Наклон 90° к плоскости полки</span>
         </div>
-        <div class="text-[11px] text-slate-300">
-          • Размеры труб отображаются прямо на каркасе<br>
+        <div class="text-[11px] text-bybit-gray leading-relaxed">
+          • Плавное скольжение камеры между шагами сборки<br>
           • Вращение: <strong>ЛКМ</strong> | Зум: <strong>Колесико</strong> | Панорама: <strong>ПКМ</strong>
         </div>
       </div>
@@ -75,33 +153,33 @@
         
         <!-- Left: Quick Cameras & Dimensions Toggle -->
         <div class="flex flex-wrap gap-1.5 pointer-events-auto">
-          <button id="viewIso" class="px-2.5 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition shadow">
+          <button id="viewIso" class="px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow">
             Изометрия
           </button>
-          <button id="viewStoppers" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/30 transition flex items-center gap-1">
+          <button id="viewStoppers" class="px-3 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/25 transition flex items-center gap-1">
             🛑 Упор в стопоры (90°)
           </button>
-          <button id="viewStickers" class="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition flex items-center gap-1">
+          <button id="viewStickers" class="px-2.5 py-1.5 rounded-lg bg-bybit-surface border border-bybit-gold/40 text-bybit-gold hover:bg-bybit-gold hover:text-bybit-black text-xs font-bold transition flex items-center gap-1">
             🔍 Зона 3 наклеек
           </button>
-          <button id="viewSide" class="px-2.5 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition shadow">
+          <button id="viewSide" class="px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow">
             📐 Профиль (30°/90°)
           </button>
-          <button id="btnToggleDims" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white shadow-lg shadow-cyan-600/30 transition flex items-center gap-1.5">
+          <button id="btnToggleDims" class="px-3 py-1.5 rounded-lg bg-bybit-gold text-bybit-black hover:bg-bybit-goldHover text-xs font-bold shadow-lg shadow-bybit-gold/20 transition flex items-center gap-1.5">
             📏 Размеры труб: ВКЛ
           </button>
         </div>
 
         <!-- Right: Orientation Controls -->
-        <div class="flex items-center gap-2 glass-panel p-1.5 rounded-xl pointer-events-auto shadow-xl">
-          <span class="text-[11px] text-slate-400 font-semibold px-2">Полка:</span>
-          <button id="btnOrientBeam" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm">
+        <div class="flex items-center gap-1.5 bybit-panel p-1.5 rounded-xl pointer-events-auto shadow-xl">
+          <span class="text-[11px] text-bybit-gray font-semibold px-2">Полка:</span>
+          <button id="btnOrientBeam" class="px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm">
             Балка у стопоров
           </button>
-          <button id="btnOrientMesh" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+          <button id="btnOrientMesh" class="px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition">
             Сетка у стопоров
           </button>
-          <button id="btnFlipUpside" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition" title="Перевернуть вверх дном">
+          <button id="btnFlipUpside" class="px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition" title="Перевернуть вверх дном">
             ↕️ Дном вверх
           </button>
         </div>
@@ -109,162 +187,162 @@
       </div>
 
       <!-- Layer Visibility Toggles -->
-      <div class="absolute top-4 right-4 glass-panel p-2.5 rounded-xl text-xs space-y-2 shadow-xl">
-        <div class="font-semibold text-slate-200 text-[11px] uppercase tracking-wider">Слои 3D</div>
+      <div class="absolute top-4 right-4 bybit-panel p-2.5 rounded-xl text-xs space-y-2 shadow-xl">
+        <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider">Слои 3D</div>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkDimensions" checked class="rounded border-slate-700 bg-slate-900 text-cyan-500">
-          <span class="text-cyan-400 font-semibold">📏 Размеры труб</span>
+          <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+          <span class="text-bybit-gold font-semibold">📏 Размеры труб</span>
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkShelf" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
           <span>Полка CAD</span>
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkBed" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
           <span>ДСП + резина</span>
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkFrame" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
           <span>Трубы Ø28 мм</span>
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkClamps" checked class="rounded border-slate-700 bg-slate-900 text-blue-500">
+          <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
           <span>Зажимы HJ-1</span>
         </label>
       </div>
     </div>
 
     <!-- Right Sidebar: Stepper & Complete BOM Preparation List (4 cols) -->
-    <div class="lg:col-span-4 bg-slate-900/95 border-l border-slate-800 flex flex-col h-full max-h-[calc(100vh-60px)] overflow-hidden">
+    <div class="lg:col-span-4 bg-bybit-surface border-l border-bybit-border flex flex-col h-full max-h-[calc(100vh-60px)] overflow-hidden">
       
       <!-- Top Tabs: Инструкция / Комплектация -->
-      <div class="p-2 border-b border-slate-800 bg-slate-900 flex gap-2">
-        <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white font-bold text-xs transition shadow">
+      <div class="p-2 border-b border-bybit-border bg-bybit-surface flex gap-2">
+        <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition">
           Этапы сборки (1–4)
         </button>
-        <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition">
+        <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition">
           📋 Список компонентов
         </button>
       </div>
 
-      <!-- Tab 1: Stepper Manual -->
+      <!-- Tab 1: Stepper Manual with Smooth Transitions -->
       <div id="panelStepper" class="flex-1 flex flex-col overflow-y-auto custom-scroll">
         <!-- Stepper Header -->
-        <div class="p-4 border-b border-slate-800 bg-slate-900/60 sticky top-0 z-10 backdrop-blur">
+        <div class="p-4 border-b border-bybit-border bg-bybit-surface/80 sticky top-0 z-10 backdrop-blur">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Пошаговая инструкция</span>
-            <span id="stepCounter" class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">
+            <span class="text-xs font-bold uppercase tracking-wider text-bybit-gold">Пошаговая инструкция</span>
+            <span id="stepCounter" class="text-xs font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-bold border border-bybit-gold/30">
               Шаг 4 из 4
             </span>
           </div>
           
-          <!-- 4 Step Progress Bars -->
+          <!-- 4 Step Progress Bars with Bybit Gold Accent -->
           <div class="flex gap-1.5 mb-3">
-            <div id="bar1" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
-            <div id="bar2" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
-            <div id="bar3" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
-            <div id="bar4" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
+            <div id="bar1" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
+            <div id="bar2" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
+            <div id="bar3" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
+            <div id="bar4" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
           </div>
 
           <div class="flex gap-2">
-            <button id="btnPrev" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition disabled:opacity-40 disabled:cursor-not-allowed">
+            <button id="btnPrev" class="px-3 py-1.5 rounded-lg bybit-btn-secondary text-xs font-medium transition disabled:opacity-30 disabled:cursor-not-allowed">
               ← Назад
             </button>
-            <button id="btnNext" class="flex-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-md shadow-blue-600/30 transition">
+            <button id="btnNext" class="flex-1 px-3 py-1.5 rounded-lg bybit-btn-gold text-xs transition">
               ✓ Завершено (К шагу 1)
             </button>
           </div>
         </div>
 
-        <!-- Step Content Container -->
+        <!-- Step Content Container with Animated Transition -->
         <div id="stepCard" class="p-4 space-y-4 flex-1"></div>
       </div>
 
       <!-- Tab 2: Complete Preparation BOM Checklist -->
-      <div id="panelBOM" class="hidden flex-1 overflow-y-auto custom-scroll p-4 space-y-5">
+      <div id="panelBOM" class="hidden flex-1 overflow-y-auto custom-scroll p-4 space-y-5 animate-step-transition">
         
         <div>
           <h2 class="text-sm font-bold text-white flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold"></span>
             Ведомость заготовки материалов
           </h2>
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-xs text-bybit-gray mt-1">
             Точный перечень всех комплектующих и резка труб до начала сборки фикстуры.
           </p>
         </div>
 
         <!-- Section 1: Pipe Cutting -->
-        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">1. Трубы Lean Pipe Ø28 мм (нарезка)</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">5 позиций • 11 деталей</span>
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">1. Трубы Lean Pipe Ø28 мм (нарезка)</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">11 заготовок</span>
           </div>
 
           <table class="w-full text-left text-[11px]">
             <thead>
-              <tr class="text-slate-400 border-b border-slate-800">
+              <tr class="text-bybit-gray border-b border-bybit-border">
                 <th class="pb-1.5 font-semibold">Назначение</th>
                 <th class="pb-1.5 font-semibold text-center">Длина</th>
                 <th class="pb-1.5 font-semibold text-right">Кол-во</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-850 font-mono text-slate-200">
+            <tbody class="divide-y divide-bybit-border/60 font-mono text-slate-200">
               <tr>
                 <td class="py-1.5 text-slate-300 font-sans">Поперечные балки (перед/зад)</td>
-                <td class="py-1.5 text-center text-cyan-300 font-bold">750 мм</td>
+                <td class="py-1.5 text-center text-bybit-gold font-bold">750 мм</td>
                 <td class="py-1.5 text-right font-bold text-white">3 шт.</td>
               </tr>
               <tr>
                 <td class="py-1.5 text-slate-300 font-sans">Наклонный хребет (угол 30°)</td>
-                <td class="py-1.5 text-center text-cyan-300 font-bold">580 мм</td>
+                <td class="py-1.5 text-center text-bybit-gold font-bold">580 мм</td>
                 <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
               </tr>
               <tr>
                 <td class="py-1.5 text-slate-300 font-sans">Продольные опоры (на столе)</td>
-                <td class="py-1.5 text-center text-cyan-300 font-bold">500 мм</td>
+                <td class="py-1.5 text-center text-bybit-gold font-bold">500 мм</td>
                 <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
               </tr>
               <tr>
                 <td class="py-1.5 text-slate-300 font-sans">Задние стойки-опоры</td>
-                <td class="py-1.5 text-center text-cyan-300 font-bold">290 мм</td>
+                <td class="py-1.5 text-center text-bybit-gold font-bold">290 мм</td>
                 <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
               </tr>
               <tr>
                 <td class="py-1.5 text-slate-300 font-sans">Стопоры (под углом 90° к ложу)</td>
-                <td class="py-1.5 text-center text-cyan-300 font-bold">100 мм</td>
+                <td class="py-1.5 text-center text-bybit-gold font-bold">100 мм</td>
                 <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
               </tr>
             </tbody>
           </table>
 
-          <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
-            <span class="text-slate-400">Общий чистый метраж:</span>
-            <span class="font-bold text-emerald-400 font-mono">5.19 м</span>
+          <div class="pt-2 border-t border-bybit-border flex justify-between items-center text-xs">
+            <span class="text-bybit-gray">Общий чистый метраж:</span>
+            <span class="font-bold text-bybit-green font-mono">5.19 м</span>
           </div>
-          <div class="text-[11px] text-slate-400 bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-            💡 <strong>Заказ трубы:</strong> ровно <strong>2 стандартных хлыста по 3.0 м</strong> (6.0 м). Остаток 810 мм на пропил и запас.
+          <div class="text-[11px] text-bybit-gray bg-bybit-surface p-2 rounded-lg border border-bybit-border">
+            💡 <strong>Заказ трубы:</strong> ровно <strong>2 стандартных хлыста по 3.0 м</strong> (6.0 м). Остаток 810 мм на пропилы и запас.
           </div>
         </div>
 
         <!-- Section 2: Clamps & Hardware -->
-        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">2. Зажимы и крепеж</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">1 тип соединения</span>
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">2. Зажимы и крепеж</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">14 комплектов</span>
           </div>
 
           <ul class="text-xs space-y-2 text-slate-300">
             <li class="flex items-start justify-between">
               <div>
                 <strong class="text-white">Зажим HJ-1 (Т-образный для Ø28 мм):</strong>
-                <p class="text-[11px] text-slate-400">Штампованная оцинкованная сталь, 90° соединение</p>
+                <p class="text-[11px] text-bybit-gray">Штампованная оцинкованная сталь, 90° Т-соединение</p>
               </div>
-              <span class="font-bold text-amber-400 font-mono text-sm ml-2">14 шт.</span>
+              <span class="font-bold text-bybit-gold font-mono text-sm ml-2">14 шт.</span>
             </li>
-            <li class="flex items-start justify-between border-t border-slate-800/80 pt-2">
+            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
               <div>
                 <strong class="text-white">Болты М6×25 + гайки М6:</strong>
-                <p class="text-[11px] text-slate-400">Входят в заводской комплект к каждому зажиму HJ-1</p>
+                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект к каждому зажиму HJ-1</p>
               </div>
               <span class="font-bold text-white font-mono text-sm ml-2">14 компл.</span>
             </li>
@@ -272,10 +350,10 @@
         </div>
 
         <!-- Section 3: Bed, Rubber & Protection -->
-        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider">3. Ложе, резина и защита</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">Защита от царапин</span>
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">3. Ложе, резина и защита</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-green/15 text-bybit-green font-semibold">Антицарапины</span>
           </div>
 
           <ul class="text-xs space-y-2 text-slate-300">
@@ -283,23 +361,23 @@
               <span>Плита ДСП/МДФ (16 мм):</span>
               <strong class="text-white font-mono">720 × 580 мм (1 шт.)</strong>
             </li>
-            <li class="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Резиновый коврик ТМКЩ (2–3 мм):</span>
               <strong class="text-white font-mono">720 × 580 мм (1 шт.)</strong>
             </li>
-            <li class="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Резиновые заглушки Ø28 мм (красные):</span>
-              <strong class="text-red-400 font-mono">2 шт.</strong>
+              <strong class="text-bybit-red font-mono">2 шт.</strong>
             </li>
-            <li class="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Клипсы крепления к трубам Ø28 мм:</span>
               <strong class="text-white font-mono">4 шт.</strong>
             </li>
-            <li class="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Саморезы 3.5×16 мм для клипс:</span>
               <strong class="text-white font-mono">8 шт.</strong>
             </li>
-            <li class="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Клей контактный (88-СА или Момент-1):</span>
               <strong class="text-white font-mono">1 банка</strong>
             </li>
@@ -307,20 +385,20 @@
         </div>
 
         <!-- Section 4: Required Tools -->
-        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5">
-          <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider border-b border-slate-800 pb-2">4. Необходимый инструмент</h3>
+        <div class="bybit-card rounded-xl p-3.5 space-y-2.5">
+          <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider border-b border-bybit-border pb-2">4. Необходимый инструмент</h3>
           <ul class="text-xs space-y-1.5 text-slate-300">
             <li class="flex items-center gap-2">
-              <span class="text-blue-400">✓</span> <strong>Шестигранный ключ 5 мм</strong> — затяжка всех 14 зажимов HJ-1
+              <span class="text-bybit-gold">✓</span> <strong>Шестигранный ключ 5 мм</strong> — затяжка всех 14 зажимов HJ-1
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-blue-400">✓</span> <strong>Труборез для тонкостенных труб Ø28 мм</strong> (или монтажная ножовка)
+              <span class="text-bybit-gold">✓</span> <strong>Труборез для тонкостенных труб Ø28 мм</strong> (или монтажная ножовка)
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-blue-400">✓</span> <strong>Рулетка</strong> (от 3 м) и <strong>маркер по металлу</strong>
+              <span class="text-bybit-gold">✓</span> <strong>Рулетка</strong> (от 3 м) и <strong>маркер по металлу</strong>
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-blue-400">✓</span> <strong>Круглый напильник / гратосниматель</strong> — удаление заусенцев на срезах
+              <span class="text-bybit-gold">✓</span> <strong>Круглый напильник / гратосниматель</strong> — снятие фаски после резки
             </li>
           </ul>
         </div>
@@ -332,11 +410,11 @@
 
   <script>
     // -------------------------------------------------------------
-    // 1. THREE.JS INITIALIZATION
+    // 1. THREE.JS INITIALIZATION (BYBIT PALETTE)
     // -------------------------------------------------------------
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16);
+    scene.background = new THREE.Color(0x0B0E14); // Bybit deep black
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 3000);
     camera.position.set(240, 200, 320);
@@ -355,7 +433,7 @@
     controls.target.set(0, 45, 0);
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
     scene.add(ambientLight);
 
     const mainLight = new THREE.DirectionalLight(0xffffff, 0.95);
@@ -371,22 +449,22 @@
     mainLight.shadow.camera.bottom = -250;
     scene.add(mainLight);
 
-    const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.5);
+    const fillLight = new THREE.DirectionalLight(0xF7A600, 0.22); // Subtle Bybit Gold rim light
     fillLight.position.set(-250, 200, -200);
     scene.add(fillLight);
 
-    const floorLight = new THREE.DirectionalLight(0xffedd5, 0.25);
+    const floorLight = new THREE.DirectionalLight(0x181C26, 0.4);
     floorLight.position.set(0, -200, 0);
     scene.add(floorLight);
 
-    // Floor Grid & Shadow receiver
-    const grid = new THREE.GridHelper(1000, 40, 0x1e293b, 0x0f172a);
+    // Bybit Floor Grid & Shadow receiver
+    const grid = new THREE.GridHelper(1000, 40, 0x262C3A, 0x12161F);
     grid.position.y = -0.5;
     scene.add(grid);
 
     const floorPlane = new THREE.Mesh(
       new THREE.PlaneGeometry(1200, 1200),
-      new THREE.ShadowMaterial({ opacity: 0.35 })
+      new THREE.ShadowMaterial({ opacity: 0.45 })
     );
     floorPlane.rotation.x = -Math.PI / 2;
     floorPlane.receiveShadow = true;
@@ -397,15 +475,13 @@
     // -------------------------------------------------------------
     function createHoneycombTexture() {
       const cvs = document.createElement('canvas');
-      cvs.width = 128;
-      cvs.height = 128;
+      cvs.width = 128; cvs.height = 128;
       const ctx = cvs.getContext('2d');
       ctx.fillStyle = '#475569';
       ctx.fillRect(0, 0, 128, 128);
 
-      ctx.fillStyle = '#0f172a';
-      const r = 9;
-      const h = r * Math.sqrt(3);
+      ctx.fillStyle = '#0B0E14';
+      const r = 9, h = r * Math.sqrt(3);
       for (let y = 0; y < 140; y += h) {
         for (let x = 0; x < 140; x += r * 3) {
           drawHex(ctx, x, y, r * 0.78);
@@ -432,12 +508,11 @@
 
     function createPerforatedTexture() {
       const cvs = document.createElement('canvas');
-      cvs.width = 128;
-      cvs.height = 128;
+      cvs.width = 128; cvs.height = 128;
       const ctx = cvs.getContext('2d');
       ctx.fillStyle = '#94a3b8';
       ctx.fillRect(0, 0, 128, 128);
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#181C26';
       for (let y = 8; y < 128; y += 16) {
         for (let x = 8; x < 128; x += 16) {
           ctx.beginPath();
@@ -454,8 +529,7 @@
 
     function createStickerTexture(text, code, rev = "") {
       const cvs = document.createElement('canvas');
-      cvs.width = 128;
-      cvs.height = 512;
+      cvs.width = 128; cvs.height = 512;
       const ctx = cvs.getContext('2d');
 
       ctx.fillStyle = '#ffffff';
@@ -464,7 +538,7 @@
       ctx.lineWidth = 4;
       ctx.strokeRect(2, 2, 124, 508);
 
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#0B0E14';
       let y = 50;
       while (y < 340) {
         const barH = (Math.random() > 0.45 ? 4 : 2);
@@ -492,18 +566,16 @@
       return new THREE.CanvasTexture(cvs);
     }
 
-    // High-Resolution Billboard Text Sprites for Pipe Dimensions
+    // High-Resolution Billboard Text Sprites (Bybit Gold Palette)
     function createDimensionSprite(text, sub = "") {
       const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 96;
+      canvas.width = 256; canvas.height = 96;
       const ctx = canvas.getContext('2d');
 
-      // Rounded pill badge with glowing cyan border
-      const r = 18;
+      const r = 16;
       const w = canvas.width, h = canvas.height;
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-      ctx.strokeStyle = '#38bdf8';
+      ctx.fillStyle = 'rgba(11, 14, 20, 0.92)';
+      ctx.strokeStyle = '#F7A600'; // Bybit Gold
       ctx.lineWidth = 4;
 
       ctx.beginPath();
@@ -520,16 +592,16 @@
       ctx.fill();
       ctx.stroke();
 
-      // Main Text (Length in mm)
-      ctx.fillStyle = '#ffffff';
+      // Main Length in mm
+      ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 36px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(text, w / 2, sub ? h / 2 - 12 : h / 2);
 
-      // Subtitle if any
+      // Subtitle
       if (sub) {
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#F7A600';
         ctx.font = 'bold 20px sans-serif';
         ctx.fillText(sub, w / 2, h / 2 + 22);
       }
@@ -551,31 +623,31 @@
     });
 
     const centralPipeMat = new THREE.MeshStandardMaterial({
-      color: 0x0ea5e9,
+      color: 0xF7A600, // Bybit Gold Accent for central spine
       metalness: 0.85,
       roughness: 0.22
     });
 
     const clampMat = new THREE.MeshStandardMaterial({
-      color: 0xd97706,
+      color: 0xd97706, // Golden Zinc Finish
       metalness: 0.82,
       roughness: 0.28
     });
 
     const woodMat = new THREE.MeshStandardMaterial({
-      color: 0xa16207,
+      color: 0x92400e,
       roughness: 0.75,
       metalness: 0.05
     });
 
     const rubberPadMat = new THREE.MeshStandardMaterial({
-      color: 0x18181b,
-      roughness: 0.92,
+      color: 0x12161F, // Bybit Dark Matte
+      roughness: 0.94,
       metalness: 0.02
     });
 
     const rubberCapMat = new THREE.MeshStandardMaterial({
-      color: 0xef4444,
+      color: 0xF6465D, // Bybit Vibrant Red
       roughness: 0.35,
       metalness: 0.1
     });
@@ -650,22 +722,20 @@
       return mesh;
     }
 
-    // Helper: Draw 3D dimension line with leader ticks
     function createDimLine(p1, p2, offset) {
       const g = new THREE.Group();
       const a = p1.clone().add(offset);
       const b = p2.clone().add(offset);
 
-      const lineMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, depthTest: false, transparent: true, opacity: 0.8 });
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xF7A600, depthTest: false, transparent: true, opacity: 0.85 });
       const pts = [a, b];
       const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
       const line = new THREE.Line(lineGeo, lineMat);
       g.add(line);
 
-      // Leader witness lines from pipes to dimension line
       const w1Geo = new THREE.BufferGeometry().setFromPoints([p1, a]);
       const w2Geo = new THREE.BufferGeometry().setFromPoints([p2, b]);
-      const wMat = new THREE.LineDashedMaterial({ color: 0x0284c7, dashSize: 4, gapSize: 3, depthTest: false, transparent: true, opacity: 0.6 });
+      const wMat = new THREE.LineDashedMaterial({ color: 0xB87A00, dashSize: 4, gapSize: 3, depthTest: false, transparent: true, opacity: 0.65 });
       const w1 = new THREE.Line(w1Geo, wMat); w1.computeLineDistances();
       const w2 = new THREE.Line(w2Geo, wMat); w2.computeLineDistances();
       g.add(w1, w2);
@@ -698,7 +768,6 @@
 
     // =============================================================
     // STEP 2 GEOMETRY: Верхняя рамка из 3 трубок
-    // 1 верхняя перекладина 750 мм + 2 центральные наклонные 580 мм (30°)
     // =============================================================
     step2Group.add(createPipe(TL, TR)); // Верхняя перекладина 750 мм
     createClamp(TL, step2Group);
@@ -761,39 +830,33 @@
     step3Group.add(capL, capR);
 
     // =============================================================
-    // 5. 3D PIPE DIMENSION LABELS ON MODEL (USER REQUEST)
+    // 5. 3D PIPE DIMENSION LABELS ON MODEL (BYBIT GOLD)
     // =============================================================
-    // 1. Front Crossbar: 750 mm
     const sFront = createDimensionSprite("750 мм", "Поперечина");
     sFront.position.set(0, R_pipe + 16, D_base/2 + 18);
     dimensionsGroup.add(sFront);
     dimensionsGroup.add(createDimLine(FL, FR, new THREE.Vector3(0, 10, 16)));
 
-    // 2. Top Crossbar: 750 mm
     const sTop = createDimensionSprite("750 мм", "Верхняя балка");
     sTop.position.set(0, H_back + R_pipe + 18, -D_base/2);
     dimensionsGroup.add(sTop);
     dimensionsGroup.add(createDimLine(TL, TR, new THREE.Vector3(0, 14, 0)));
 
-    // 3. Central Spine Tubes: 580 мм (30°)
-    const sSpine = createDimensionSprite("580 мм", "Наклон 30°");
+    const sSpine = createDimensionSprite("580 мм", "Хребет 30°");
     sSpine.position.set(distCenter/2 + 24, (R_pipe + H_back + R_pipe)/2 + 16, 0);
     dimensionsGroup.add(sSpine);
     dimensionsGroup.add(createDimLine(c2_btm, c2_top, new THREE.Vector3(18, 12, 0)));
 
-    // 4. Base Side Tubes on Desk: 500 мм
     const sBase = createDimensionSprite("500 мм", "Опора стола");
     sBase.position.set(-W_frame/2 - 24, R_pipe + 12, 0);
     dimensionsGroup.add(sBase);
     dimensionsGroup.add(createDimLine(FL, BL, new THREE.Vector3(-16, 8, 0)));
 
-    // 5. Rear Vertical Posts: 290 мм
     const sPost = createDimensionSprite("290 мм", "Стойка-опора");
     sPost.position.set(W_frame/2 + 24, (R_pipe + H_back + R_pipe)/2, -D_base/2 - 12);
     dimensionsGroup.add(sPost);
     dimensionsGroup.add(createDimLine(BR, TR, new THREE.Vector3(16, 0, -10)));
 
-    // 6. Angled Stopper: 100 мм (под 90°)
     const sStop = createDimensionSprite("100 мм", "Стопор 90°");
     sStop.position.set(-stopX - 24, R_pipe + 24, D_base/2 + 16);
     dimensionsGroup.add(sStop);
@@ -920,7 +983,7 @@
       shelfRoot.add(frontBeam);
 
       const ovalGeo = new THREE.CylinderGeometry(7, 7, 3, 24);
-      const ovalMesh = new THREE.Mesh(ovalGeo, new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.9 }));
+      const ovalMesh = new THREE.Mesh(ovalGeo, new THREE.MeshStandardMaterial({ color: 0x0B0E14, roughness: 0.9 }));
       ovalMesh.rotation.x = Math.PI / 2;
       ovalMesh.scale.set(0.68, 1, 1.45);
       ovalMesh.position.set(-shelfW/2 + ductW * 0.44, wallH/2, beamZ);
@@ -957,15 +1020,15 @@
     const panelBOM = document.getElementById('panelBOM');
 
     tabStepper.addEventListener('click', () => {
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white font-bold text-xs transition shadow";
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition";
+      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition";
+      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition";
       panelStepper.classList.remove('hidden');
       panelBOM.classList.add('hidden');
     });
 
     tabBOM.addEventListener('click', () => {
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white font-bold text-xs transition shadow";
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition";
+      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition";
+      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition";
       panelBOM.classList.remove('hidden');
       panelStepper.classList.add('hidden');
     });
@@ -982,12 +1045,12 @@
 
     function updateOrientationUI() {
       if (currentOrientation === 'beam_down') {
-        btnBeam.className = "px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm";
-        btnMesh.className = "px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition";
+        btnBeam.className = "px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm";
+        btnMesh.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
         hudStatus.textContent = "Стопоры: Наклон 90° | Балка у стопоров";
       } else {
-        btnMesh.className = "px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm";
-        btnBeam.className = "px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition";
+        btnMesh.className = "px-2.5 py-1 rounded-lg bg-bybit-gold text-bybit-black text-xs font-bold transition shadow-sm";
+        btnBeam.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
         hudStatus.textContent = "Стопоры: Наклон 90° | Сетка у стопоров";
       }
 
@@ -995,7 +1058,7 @@
         btnFlip.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white text-xs font-bold transition shadow-sm";
         hudStatus.textContent += " [Дном вверх]";
       } else {
-        btnFlip.className = "px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition";
+        btnFlip.className = "px-2.5 py-1 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-lightGray text-xs font-medium transition";
       }
 
       buildPhotorealisticShelf();
@@ -1010,10 +1073,10 @@
       chkDims.checked = visible;
       if (visible) {
         btnToggleDims.textContent = "📏 Размеры труб: ВКЛ";
-        btnToggleDims.className = "px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white shadow-lg shadow-cyan-600/30 transition flex items-center gap-1.5";
+        btnToggleDims.className = "px-3 py-1.5 rounded-lg bg-bybit-gold text-bybit-black hover:bg-bybit-goldHover text-xs font-bold shadow-lg shadow-bybit-gold/20 transition flex items-center gap-1.5";
       } else {
         btnToggleDims.textContent = "📏 Размеры труб: ВЫКЛ";
-        btnToggleDims.className = "px-3 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-300 transition flex items-center gap-1.5";
+        btnToggleDims.className = "px-3 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-bybit-gray transition flex items-center gap-1.5";
       }
     }
 
@@ -1021,7 +1084,7 @@
     btnToggleDims.addEventListener('click', () => toggleDimensions(!dimensionsGroup.visible));
 
     // -------------------------------------------------------------
-    // 8. EXACT 4 ASSEMBLY STAGES (USER SPECIFICATION)
+    // 8. EXACT 4 ASSEMBLY STAGES WITH SMOOTH ANIMATIONS
     // -------------------------------------------------------------
     const steps = [
       {
@@ -1059,68 +1122,132 @@
     ];
 
     let currentStep = 4;
+    let cameraAnimId = null;
+
+    // Cubic Easing Function for Smooth Camera & Parts Motion
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    // Smooth Part Reveal Animation (Glide up softly from below)
+    function animateGroupReveal(group) {
+      group.visible = true;
+      let frame = 0;
+      const totalFrames = 35;
+      const startOffset = -6;
+      group.position.y = startOffset;
+
+      function glide() {
+        frame++;
+        const p = easeInOutCubic(frame / totalFrames);
+        group.position.y = startOffset * (1 - p);
+        if (frame < totalFrames) {
+          requestAnimationFrame(glide);
+        } else {
+          group.position.y = 0;
+        }
+      }
+      glide();
+    }
 
     function renderStep() {
       const s = steps[currentStep - 1];
       document.getElementById('stepCounter').textContent = `Шаг ${s.num} из ${steps.length}`;
       
+      // Update Bybit Gold Progress Bars
       for (let i = 1; i <= 4; i++) {
         const bar = document.getElementById(`bar${i}`);
-        bar.className = `h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= currentStep ? 'bg-blue-500' : 'bg-slate-700'}`;
+        if (i <= currentStep) {
+          bar.className = `h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/40`;
+        } else {
+          bar.className = `h-1.5 flex-1 rounded-full bg-bybit-border transition-all duration-500`;
+        }
       }
 
       document.getElementById('btnPrev').disabled = (currentStep === 1);
       document.getElementById('btnNext').textContent = (currentStep === steps.length) ? '✓ Завершено (К шагу 1)' : 'Следующий шаг →';
 
-      let partsHtml = s.parts.map(p => `<span class="inline-block bg-slate-800 text-cyan-300 px-2 py-0.5 rounded text-[10px] border border-slate-700 font-mono">${p}</span>`).join(' ');
+      let partsHtml = s.parts.map(p => `<span class="inline-block bg-bybit-black text-bybit-gold px-2.5 py-1 rounded text-[11px] border border-bybit-border font-mono">${p}</span>`).join(' ');
 
-      document.getElementById('stepCard').innerHTML = `
+      const stepCard = document.getElementById('stepCard');
+      // Apply bybit smooth transition animation
+      stepCard.className = "p-4 space-y-4 flex-1 animate-step-transition";
+      stepCard.innerHTML = `
         <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-600/30">${s.num}</span>
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-full bg-bybit-gold text-bybit-black flex items-center justify-center font-bold text-xs shadow-md shadow-bybit-gold/30">${s.num}</span>
             <h3 class="font-bold text-white text-sm">${s.title}</h3>
           </div>
-          <p class="text-xs text-slate-300 leading-relaxed">${s.desc}</p>
-          <div class="pt-2 border-t border-slate-800">
-            <div class="text-[11px] font-semibold text-slate-400 mb-1.5">Необходимые компоненты:</div>
+          <p class="text-xs text-bybit-gray leading-relaxed">${s.desc}</p>
+          <div class="pt-3 border-t border-bybit-border">
+            <div class="text-[11px] font-semibold text-bybit-lightGray mb-2 uppercase tracking-wider">Необходимые компоненты:</div>
             <div class="flex flex-wrap gap-1.5">${partsHtml}</div>
           </div>
         </div>
       `;
 
+      // Animate Groups Visibility with gentle glide
+      const prevS2 = step2Group.visible;
+      const prevS3 = step3Group.visible;
+      const prevS4 = bedGroup.visible;
+
       step1Group.visible = s.show.s1;
-      step2Group.visible = s.show.s2;
-      step3Group.visible = s.show.s3;
-      bedGroup.visible   = s.show.s4;
-      shelfGroup.visible = s.show.s4;
+
+      if (s.show.s2 && !prevS2) {
+        animateGroupReveal(step2Group);
+      } else {
+        step2Group.visible = s.show.s2;
+      }
+
+      if (s.show.s3 && !prevS3) {
+        animateGroupReveal(step3Group);
+      } else {
+        step3Group.visible = s.show.s3;
+      }
+
+      if (s.show.s4 && !prevS4) {
+        animateGroupReveal(bedGroup);
+        animateGroupReveal(shelfGroup);
+      } else {
+        bedGroup.visible   = s.show.s4;
+        shelfGroup.visible = s.show.s4;
+      }
 
       document.getElementById('chkFrame').checked = s.show.s1 || s.show.s2 || s.show.s3;
       document.getElementById('chkClamps').checked = s.show.s1 || s.show.s2 || s.show.s3;
       document.getElementById('chkBed').checked = s.show.s4;
       document.getElementById('chkShelf').checked = s.show.s4;
 
-      animateCamera(s.cam);
+      // Smooth Camera Flight (easeInOutCubic)
+      animateCameraSmooth(s.cam, 48);
     }
 
-    function animateCamera(target) {
+    function animateCameraSmooth(target, duration = 45) {
+      if (cameraAnimId) {
+        cancelAnimationFrame(cameraAnimId);
+      }
+
       const startPos = camera.position.clone();
       const endPos = new THREE.Vector3(target.x, target.y, target.z);
       const startTarget = controls.target.clone();
       const endTarget = new THREE.Vector3(target.tx, target.ty, target.tz);
 
-      let progress = 0;
+      let frame = 0;
       function step() {
-        progress += 0.05;
-        if (progress <= 1) {
-          camera.position.lerpVectors(startPos, endPos, progress);
-          controls.target.lerpVectors(startTarget, endTarget, progress);
-          requestAnimationFrame(step);
+        frame++;
+        const p = easeInOutCubic(frame / duration);
+        camera.position.lerpVectors(startPos, endPos, p);
+        controls.target.lerpVectors(startTarget, endTarget, p);
+
+        if (frame < duration) {
+          cameraAnimId = requestAnimationFrame(step);
         } else {
           camera.position.copy(endPos);
           controls.target.copy(endTarget);
+          cameraAnimId = null;
         }
       }
-      step();
+      cameraAnimId = requestAnimationFrame(step);
     }
 
     document.getElementById('btnNext').addEventListener('click', () => {
@@ -1143,23 +1270,23 @@
     // 9. VIEW PRESETS
     // -------------------------------------------------------------
     document.getElementById('viewIso').addEventListener('click', () => {
-      animateCamera({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
+      animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
     });
 
     document.getElementById('viewStoppers').addEventListener('click', () => {
-      animateCamera({ x: 170, y: 90, z: 205, tx: 65, ty: 25, tz: 65 });
+      animateCameraSmooth({ x: 170, y: 90, z: 205, tx: 65, ty: 25, tz: 65 });
     });
 
     document.getElementById('viewStickers').addEventListener('click', () => {
       if (currentOrientation === 'beam_down') {
-        animateCamera({ x: -45, y: 65, z: 155, tx: -60, ty: 35, tz: 75 });
+        animateCameraSmooth({ x: -45, y: 65, z: 155, tx: -60, ty: 35, tz: 75 });
       } else {
-        animateCamera({ x: 45, y: 140, z: -150, tx: 60, ty: 80, tz: -70 });
+        animateCameraSmooth({ x: 45, y: 140, z: -150, tx: 60, ty: 80, tz: -70 });
       }
     });
 
     document.getElementById('viewSide').addEventListener('click', () => {
-      animateCamera({ x: 380, y: 60, z: 0, tx: 0, ty: 50, tz: 0 });
+      animateCameraSmooth({ x: 380, y: 60, z: 0, tx: 0, ty: 50, tz: 0 });
     });
 
     // Layer Checkboxes
