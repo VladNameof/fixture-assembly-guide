@@ -39,7 +39,7 @@
             Ø28 мм | Lean Pipe
           </span>
         </h1>
-        <p class="text-[11px] text-slate-400">Шасси 685 × 565 мм • Наклон 30° • 14 зажимов HJ-1 • Позиционирование полки</p>
+        <p class="text-[11px] text-slate-400">Стопоры под 90° к ложу • 4 этапа сборки • 14 зажимов HJ-1 • Полка 685 × 565 мм</p>
       </div>
     </div>
     
@@ -62,10 +62,10 @@
       <div class="absolute top-4 left-4 glass-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm">
         <div class="font-bold text-white flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="hudStatus">Положение: Балка у стопоров (Перед оператором)</span>
+          <span id="hudStatus">Стопоры: Наклон 90° к плоскости полки</span>
         </div>
         <div class="text-[11px] text-slate-300">
-          • Полка лежит на резиновом ложе и упирается в красные колпачки стопоров<br>
+          • Полка упирается в красные колпачки строго под 90°<br>
           • Вращение: <strong>ЛКМ</strong> | Зум: <strong>Колесико</strong> | Панорама: <strong>ПКМ</strong>
         </div>
       </div>
@@ -78,20 +78,20 @@
           <button id="viewIso" class="px-2.5 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition shadow">
             Изометрия
           </button>
-          <button id="viewStickers" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition flex items-center gap-1">
+          <button id="viewStoppers" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/30 transition flex items-center gap-1">
+            🛑 Упор в стопоры (90°)
+          </button>
+          <button id="viewStickers" class="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-lg shadow-blue-600/30 transition flex items-center gap-1">
             🔍 Зона 3 наклеек
           </button>
-          <button id="viewStoppers" class="px-2.5 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition shadow">
-            🛑 Упор в стопоры
-          </button>
           <button id="viewSide" class="px-2.5 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-medium text-slate-200 transition shadow">
-            📐 Профиль (30°)
+            📐 Профиль (30°/90°)
           </button>
         </div>
 
         <!-- Right: Orientation Controls -->
         <div class="flex items-center gap-2 glass-panel p-1.5 rounded-xl pointer-events-auto shadow-xl">
-          <span class="text-[11px] text-slate-400 font-semibold px-2">Положение полки:</span>
+          <span class="text-[11px] text-slate-400 font-semibold px-2">Полка:</span>
           <button id="btnOrientBeam" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm">
             Балка у стопоров
           </button>
@@ -135,16 +135,16 @@
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Пошаговая инструкция</span>
           <span id="stepCounter" class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">
-            Шаг 5 из 5
+            Шаг 4 из 4
           </span>
         </div>
         
+        <!-- 4 Step Progress Bars -->
         <div class="flex gap-1.5 mb-3">
           <div id="bar1" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
           <div id="bar2" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
           <div id="bar3" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
           <div id="bar4" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
-          <div id="bar5" class="h-1.5 flex-1 rounded-full bg-blue-500 transition-all duration-300"></div>
         </div>
 
         <div class="flex gap-2">
@@ -173,19 +173,19 @@
               <strong class="text-white">3 шт. × 750 мм</strong>
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-1">
-              <span>Центральные наклонные (хребет 30°):</span>
+              <span>Верхняя рамка (наклонные 30°):</span>
               <strong class="text-white">2 шт. × 580 мм</strong>
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-1">
-              <span>Продольные опоры на столе:</span>
+              <span>Продольные основания (на столе):</span>
               <strong class="text-white">2 шт. × 500 мм</strong>
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-1">
-              <span>Задние вертикальные стойки:</span>
+              <span>Задние вертикальные стойки (опоры):</span>
               <strong class="text-white">2 шт. × 290 мм</strong>
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-1">
-              <span>Стопоры концевые (вертикально):</span>
+              <span>Стопоры (под углом 90° к ложу):</span>
               <strong class="text-white">2 шт. × 100 мм</strong>
             </div>
             <div class="flex justify-between text-emerald-400 font-bold pt-1">
@@ -193,11 +193,11 @@
               <span>5.19 м (2 хлыста по 3 м)</span>
             </div>
             <div class="flex justify-between text-amber-400 font-bold">
-              <span>Зажимы HJ-1 (все под 90°):</span>
+              <span>Зажимы HJ-1 (все стандартизированы):</span>
               <span>14 шт.</span>
             </div>
             <div class="flex justify-between text-sky-400 font-bold">
-              <span>Ложе ДСП + Резина:</span>
+              <span>Подложка ДСП + Резина:</span>
               <span>720 × 580 мм</span>
             </div>
           </div>
@@ -273,7 +273,7 @@
     // 2. TEXTURES & PROCEDURAL ASSETS
     // -------------------------------------------------------------
 
-    // A. Honeycomb Ventilation Mesh Canvas Texture
+    // Honeycomb Ventilation Mesh Canvas Texture
     function createHoneycombTexture() {
       const cvs = document.createElement('canvas');
       cvs.width = 128;
@@ -309,7 +309,7 @@
       return tex;
     }
 
-    // B. Perforated Sheet Metal Texture for Shelf Floor
+    // Perforated Sheet Metal Texture for Shelf Floor
     function createPerforatedTexture() {
       const cvs = document.createElement('canvas');
       cvs.width = 128;
@@ -332,21 +332,19 @@
       return tex;
     }
 
-    // C. Photo-accurate Barcode Sticker Texture
+    // Photo-accurate Barcode Sticker Texture
     function createStickerTexture(text, code, rev = "") {
       const cvs = document.createElement('canvas');
       cvs.width = 128;
       cvs.height = 512;
       const ctx = cvs.getContext('2d');
 
-      // White label background with thin grey border
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, 128, 512);
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 4;
       ctx.strokeRect(2, 2, 124, 508);
 
-      // Barcode bars (horizontal lines because sticker is vertical)
       ctx.fillStyle = '#0f172a';
       let y = 50;
       while (y < 340) {
@@ -355,7 +353,6 @@
         y += barH + (Math.random() > 0.5 ? 4 : 2);
       }
 
-      // Readable Text
       ctx.save();
       ctx.translate(64, 420);
       ctx.fillStyle = '#000000';
@@ -440,25 +437,31 @@
     });
 
     // -------------------------------------------------------------
-    // 4. FIXTURE GEOMETRY (LEAN PIPE Ø28 мм)
+    // 4. ASSEMBLY STEP GROUPS (4 EXACT USER STAGES)
     // -------------------------------------------------------------
-    const frameGroup = new THREE.Group();
-    const clampsGroup = new THREE.Group();
+    // Step 1: Lower square on desk + 2 vertical upright supports
+    const step1Group = new THREE.Group();
+    // Step 2: Upper frame of 3 tubes (top crossbar + 2 central inclined spine tubes)
+    const step2Group = new THREE.Group();
+    // Step 3: Angled stoppers (under 90° to the inclined bed) with red caps
+    const step3Group = new THREE.Group();
+    // Step 4: Chipboard bed + rubber pad + detailed shelf
     const bedGroup = new THREE.Group();
     const shelfGroup = new THREE.Group();
 
-    scene.add(frameGroup);
-    scene.add(clampsGroup);
+    scene.add(step1Group);
+    scene.add(step2Group);
+    scene.add(step3Group);
     scene.add(bedGroup);
     scene.add(shelfGroup);
 
     // Scale factors: 1 unit ≈ 3.2 mm
-    const W_frame = 750 / 3.2;   // ~234.4
-    const D_base = 500 / 3.2;    // ~156.25
-    const H_back = 290 / 3.2;    // ~90.6
-    const R_pipe = 28 / 6.4;     // ~4.375 (radius)
-    const angleRad = Math.atan2(H_back, D_base); // ~30.1°
-    const bedLength = Math.sqrt(D_base * D_base + H_back * H_back); // ~180.7
+    const W_frame = 750 / 3.2;   // ~234.4 units
+    const D_base = 500 / 3.2;    // ~156.25 units
+    const H_back = 290 / 3.2;    // ~90.6 units
+    const R_pipe = 28 / 6.4;     // ~4.375 units (radius)
+    const angleRad = Math.atan2(H_back, D_base); // ~30.11°
+    const bedLength = Math.sqrt(D_base * D_base + H_back * H_back); // ~180.7 units
 
     function createPipe(p1, p2, mat = chromePipeMat) {
       const v = new THREE.Vector3().subVectors(p2, p1);
@@ -473,15 +476,18 @@
       return mesh;
     }
 
-    function createClamp(pos) {
+    function createClamp(pos, targetGroup = step1Group) {
       const geo = new THREE.SphereGeometry(R_pipe * 1.42, 16, 16);
       const mesh = new THREE.Mesh(geo, clampMat);
       mesh.position.copy(pos);
       mesh.castShadow = true;
-      clampsGroup.add(mesh);
+      targetGroup.add(mesh);
+      return mesh;
     }
 
-    // A. Base Frame Nodes
+    // =============================================================
+    // STEP 1 GEOMETRY: Нижний квадрат на столе + 2 опоры-стойки сзади
+    // =============================================================
     const FL = new THREE.Vector3(-W_frame/2, R_pipe, D_base/2);
     const FR = new THREE.Vector3(W_frame/2, R_pipe, D_base/2);
     const BL = new THREE.Vector3(-W_frame/2, R_pipe, -D_base/2);
@@ -489,57 +495,95 @@
     const TL = new THREE.Vector3(-W_frame/2, H_back + R_pipe, -D_base/2);
     const TR = new THREE.Vector3(W_frame/2, H_back + R_pipe, -D_base/2);
 
-    // Frame Crossbars & Uprights
-    frameGroup.add(createPipe(FL, FR)); // Front crossbar on table
-    frameGroup.add(createPipe(BL, BR)); // Back base crossbar
-    frameGroup.add(createPipe(FL, BL)); // Left base side
-    frameGroup.add(createPipe(FR, BR)); // Right base side
+    // 4 base tubes forming the square on desk
+    step1Group.add(createPipe(FL, FR)); // Передняя балка 750 мм
+    step1Group.add(createPipe(BL, BR)); // Задняя нижняя балка 750 мм
+    step1Group.add(createPipe(FL, BL)); // Левая опора 500 мм
+    step1Group.add(createPipe(FR, BR)); // Правая опора 500 мм
 
-    frameGroup.add(createPipe(BL, TL)); // Left vertical upright
-    frameGroup.add(createPipe(BR, TR)); // Right vertical upright
-    frameGroup.add(createPipe(TL, TR)); // Top back crossbar
+    // 2 upright rear supports (опоры 290 мм)
+    step1Group.add(createPipe(BL, TL)); // Левая стойка 290 мм
+    step1Group.add(createPipe(BR, TR)); // Правая стойка 290 мм
 
-    [FL, FR, BL, BR, TL, TR].forEach(createClamp);
+    // 6 Clamps in Step 1 (4 for desk square, 2 for attaching upright posts to rear bar)
+    createClamp(FL, step1Group);
+    createClamp(FR, step1Group);
+    createClamp(BL, step1Group);
+    createClamp(BR, step1Group);
 
-    // B. Central Parallel Inclined Spine Pipes (spaced by 280 mm = 87.5 units)
+    // =============================================================
+    // STEP 2 GEOMETRY: Верхняя рамка из 3 трубок
+    // 1 верхняя перекладина 750 мм + 2 центральные наклонные 580 мм (30°)
+    // =============================================================
+    step2Group.add(createPipe(TL, TR)); // Верхняя перекладина 750 мм
+    createClamp(TL, step2Group);
+    createClamp(TR, step2Group);
+
+    // 2 Central parallel inclined tubes (spaced by 280 mm = 87.5 units)
     const distCenter = 87.5;
     const c1_btm = new THREE.Vector3(-distCenter/2, R_pipe, D_base/2);
     const c1_top = new THREE.Vector3(-distCenter/2, H_back + R_pipe, -D_base/2);
     const c2_btm = new THREE.Vector3(distCenter/2, R_pipe, D_base/2);
     const c2_top = new THREE.Vector3(distCenter/2, H_back + R_pipe, -D_base/2);
 
-    frameGroup.add(createPipe(c1_btm, c1_top, centralPipeMat));
-    frameGroup.add(createPipe(c2_btm, c2_top, centralPipeMat));
+    step2Group.add(createPipe(c1_btm, c1_top, centralPipeMat));
+    step2Group.add(createPipe(c2_btm, c2_top, centralPipeMat));
 
-    createClamp(c1_btm);
-    createClamp(c2_btm);
-    createClamp(c1_top);
-    createClamp(c2_top);
+    createClamp(c1_btm, step2Group);
+    createClamp(c2_btm, step2Group);
+    createClamp(c1_top, step2Group);
+    createClamp(c2_top, step2Group);
 
-    // C. Stoppers at Ends of Front Bar (100 mm tall = 31.25 units, pointing UP under 90°)
-    const stopperH = 31.25;
-    const stopX = W_frame/2 - 12;
+    // =============================================================
+    // STEP 3 GEOMETRY: Стопоры ПОД УГЛОМ 90° К ЛОЖУ
+    // =============================================================
+    // Normal vector perpendicular to the 30.11° inclined bed:
+    // nY = cos(angleRad), nZ = sin(angleRad)
+    const nY = Math.cos(angleRad);
+    const nZ = Math.sin(angleRad);
+    const stopperH = 31.25; // 100 mm pipe
+    const stopX = W_frame/2 - 14;
+
+    // Base of stoppers on the front crossbar
     const stopL_b = new THREE.Vector3(-stopX, R_pipe, D_base/2);
-    const stopL_t = new THREE.Vector3(-stopX, R_pipe + stopperH, D_base/2);
     const stopR_b = new THREE.Vector3(stopX, R_pipe, D_base/2);
-    const stopR_t = new THREE.Vector3(stopX, R_pipe + stopperH, D_base/2);
 
-    frameGroup.add(createPipe(stopL_b, stopL_t));
-    frameGroup.add(createPipe(stopR_b, stopR_t));
-    createClamp(stopL_b);
-    createClamp(stopR_b);
+    // Top of stoppers tilted forward/upward perpendicular to the bed under 90°
+    const stopL_t = new THREE.Vector3(
+      -stopX,
+      R_pipe + stopperH * nY,
+      D_base/2 + stopperH * nZ
+    );
+    const stopR_t = new THREE.Vector3(
+      stopX,
+      R_pipe + stopperH * nY,
+      D_base/2 + stopperH * nZ
+    );
 
-    // Red Protective Rubber Caps on Stopper Tops
+    step3Group.add(createPipe(stopL_b, stopL_t));
+    step3Group.add(createPipe(stopR_b, stopR_t));
+
+    createClamp(stopL_b, step3Group);
+    createClamp(stopR_b, step3Group);
+
+    // Protective Red Rubber Caps (tilted identically to the stopper pipe)
     const capGeo = new THREE.CylinderGeometry(R_pipe * 1.18, R_pipe * 1.18, 7, 24);
+    const vStop = new THREE.Vector3(0, nY, nZ).normalize();
+    const capQuat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), vStop);
+
     const capL = new THREE.Mesh(capGeo, rubberCapMat);
     capL.position.copy(stopL_t);
+    capL.quaternion.copy(capQuat);
+
     const capR = new THREE.Mesh(capGeo, rubberCapMat);
     capR.position.copy(stopR_t);
-    frameGroup.add(capL, capR);
+    capR.quaternion.copy(capQuat);
 
-    // -------------------------------------------------------------
-    // 5. CHIPBOARD BED & RUBBER PAD (Sloped 30.1°)
-    // -------------------------------------------------------------
+    step3Group.add(capL, capR);
+
+    // =============================================================
+    // STEP 4 GEOMETRY: Подложка ДСП + Резина + Полка CAD
+    // =============================================================
     const bedWidth = W_frame * 0.94; // ~220 units (700 mm)
     const bedThick = 5.0;            // 16 mm chipboard
     const rubThick = 1.2;            // 3 mm rubber pad
@@ -553,24 +597,17 @@
     rubMesh.receiveShadow = true;
     bedMesh.add(rubMesh);
 
-    // In Three.js: rotation.x = +angleRad lowers front (+Z) and raises back (-Z)!
+    // Slope angle: rotation.x = +angleRad lowers front (+Z) and raises back (-Z)
     bedMesh.position.set(0, H_back/2 + R_pipe + 2.5, 0);
     bedMesh.rotation.x = angleRad;
     bedGroup.add(bedMesh);
 
-    // -------------------------------------------------------------
-    // 6. DETAILED PHOTOREALISTIC CAD CHASSIS / SHELF
-    // -------------------------------------------------------------
-    // Actual dimensions: 685 mm length × 565 mm width × 120 mm depth
+    // Detailed CAD Chassis (Shelf)
     const shelfW = 685 / 3.2; // ~214.0 units
     const shelfL = 565 / 3.2; // ~176.6 units
     const wallH  = 120 / 3.2; // ~37.5 units
     const ductW  = 180 / 3.2; // ~56.2 units (left boxed enclosure)
 
-    // Shelf Orientation State:
-    // 'beam_down': Front beam with 3 stickers at bottom stoppers (facing operator)
-    // 'mesh_down': Rear honeycomb mesh at bottom stoppers
-    // isUpsideDown: flipped upside down
     let currentOrientation = 'beam_down';
     let isUpsideDown = false;
     let shelfRoot = null;
@@ -581,17 +618,19 @@
       }
       shelfRoot = new THREE.Group();
 
-      // Position flush on the rubber pad:
-      // Local Y = bed surface
+      // Flush on rubber pad:
       const ySurface = bedThick/2 + rubThick;
-      // Front edge of shelf rests against the stopper line at +bedLength/2 - 7.5:
-      const zCenter = (bedLength/2 - 7.5) - (shelfL / 2);
+      
+      // In bed local space, stoppers are at Z = 91.57.
+      // Rubber cap inner contact plane is at Z = 91.57 - R_pipe * 1.18 = 86.41.
+      // Front edge of shelf rests flush against this 90° contact plane:
+      const zStopperContact = 86.4;
+      const zCenter = zStopperContact - (shelfL / 2);
       
       shelfRoot.position.set(0, ySurface, zCenter);
 
-      // Handle Orientation Rotation around local normal (Y) & flip (Z)
       if (currentOrientation === 'mesh_down') {
-        shelfRoot.rotation.y = Math.PI; // Rotates 180° on bed
+        shelfRoot.rotation.y = Math.PI; // Rotates 180° flat on the rubber pad
       } else {
         shelfRoot.rotation.y = 0;
       }
@@ -600,12 +639,6 @@
         shelfRoot.rotation.z = Math.PI;
         shelfRoot.position.y = ySurface + wallH;
       }
-
-      // --- Shelf Model Children (Local to shelfRoot) ---
-      // In shelfRoot coordinates:
-      // Z goes from -shelfL/2 (rear) to +shelfL/2 (front beam)
-      // X goes from -shelfW/2 (left duct) to +shelfW/2 (right wall)
-      // Y goes from 0 (bottom floor) to wallH (top edge)
 
       // 1. Bottom Perforated Floor Plate
       const btmGeo = new THREE.BoxGeometry(shelfW, 1.2, shelfL);
@@ -633,7 +666,7 @@
       const rearMeshGeo = new THREE.PlaneGeometry(meshW, wallH);
       const rearMesh = new THREE.Mesh(rearMeshGeo, honeycombMat);
       rearMesh.position.set(ductW/2, wallH/2, -shelfL/2 + 0.6);
-      rearMesh.rotation.y = Math.PI; // Face outwards
+      rearMesh.rotation.y = Math.PI;
       shelfRoot.add(rearMesh);
 
       // Diagonal Stiffener Brace on Honeycomb Mesh
@@ -645,27 +678,23 @@
       shelfRoot.add(diagMesh);
 
       // 4. Left Boxed Duct Enclosure (Кабельный короб / балка)
-      // Outer Left Wall
       const lWallGeo = new THREE.BoxGeometry(1.2, wallH, shelfL);
       const lOuterWall = new THREE.Mesh(lWallGeo, shelfMetalMat);
       lOuterWall.position.set(-shelfW/2 + 0.6, wallH/2, 0);
       lOuterWall.castShadow = true;
       shelfRoot.add(lOuterWall);
 
-      // Inner Wall of Left Duct
       const lInnerWall = new THREE.Mesh(lWallGeo, shelfMetalMat);
       lInnerWall.position.set(-shelfW/2 + ductW - 0.6, wallH/2, 0);
       lInnerWall.castShadow = true;
       shelfRoot.add(lInnerWall);
 
-      // Top Face of Left Duct (with rectangular access window)
-      // Front segment
+      // Top Face of Left Duct (with window)
       const topF1 = new THREE.Mesh(new THREE.BoxGeometry(ductW, 1.2, shelfL * 0.6), shelfMetalMat);
       topF1.position.set(-shelfW/2 + ductW/2, wallH - 0.6, shelfL * 0.2);
       topF1.castShadow = true;
       shelfRoot.add(topF1);
 
-      // Rear segment (window in between)
       const topF2 = new THREE.Mesh(new THREE.BoxGeometry(ductW, 1.2, shelfL * 0.15), shelfMetalMat);
       topF2.position.set(-shelfW/2 + ductW/2, wallH - 0.6, -shelfL * 0.42);
       topF2.castShadow = true;
@@ -679,11 +708,11 @@
       frontBeam.castShadow = true;
       shelfRoot.add(frontBeam);
 
-      // Oval Cable Cutout with dark interior depth
+      // Oval Cable Cutout with interior depth
       const ovalGeo = new THREE.CylinderGeometry(7, 7, 3, 24);
       const ovalMesh = new THREE.Mesh(ovalGeo, new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.9 }));
       ovalMesh.rotation.x = Math.PI / 2;
-      ovalMesh.scale.set(0.68, 1, 1.45); // Oval shape
+      ovalMesh.scale.set(0.68, 1, 1.45);
       ovalMesh.position.set(-shelfW/2 + ductW * 0.44, wallH/2, beamZ);
       shelfRoot.add(ovalMesh);
 
@@ -715,11 +744,10 @@
       bedMesh.add(shelfRoot);
     }
 
-    // Initial build of detailed shelf
     buildPhotorealisticShelf();
 
     // -------------------------------------------------------------
-    // 7. ORIENTATION SWITCH HANDLERS
+    // 5. ORIENTATION SWITCH HANDLERS
     // -------------------------------------------------------------
     const btnBeam = document.getElementById('btnOrientBeam');
     const btnMesh = document.getElementById('btnOrientMesh');
@@ -730,11 +758,11 @@
       if (currentOrientation === 'beam_down') {
         btnBeam.className = "px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm";
         btnMesh.className = "px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition";
-        hudStatus.textContent = "Положение: Балка у стопоров (Перед оператором)";
+        hudStatus.textContent = "Стопоры: Наклон 90° | Балка у стопоров";
       } else {
         btnMesh.className = "px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold transition shadow-sm";
         btnBeam.className = "px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition";
-        hudStatus.textContent = "Положение: Сетка сотовая внизу у стопоров";
+        hudStatus.textContent = "Стопоры: Наклон 90° | Сетка у стопоров";
       }
 
       if (isUpsideDown) {
@@ -763,58 +791,50 @@
     });
 
     // -------------------------------------------------------------
-    // 8. STEPPER MANUAL (STEPS 1 - 5)
+    // 6. EXACT 4 ASSEMBLY STAGES (USER SPECIFICATION)
     // -------------------------------------------------------------
     const steps = [
       {
         num: 1,
-        title: "Сборка основания на столе",
-        desc: "Соедините 2 поперечные трубы 750 мм и 2 продольные трубы 500 мм в прямоугольник на верстаке с помощью 4 зажимов HJ-1. Затяните болты М6 шестигранником 5 мм с усилием 10 Н·м.",
-        parts: ["2 шт. трубы 750 мм", "2 шт. трубы 500 мм", "4 шт. зажима HJ-1"],
-        cam: { x: 0, y: 260, z: 320, tx: 0, ty: 15, tz: 0 },
-        show: { frame: true, clamps: true, bed: false, shelf: false }
+        title: "Сборка нижнего квадрата и двух опор",
+        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм с помощью 4 зажимов HJ-1. В задние углы установите 2 вертикальные стойки-опоры 290 мм под 90° и затяните болты М6 шестигранником 5 мм.",
+        parts: ["2 шт. трубы 750 мм", "2 шт. трубы 500 мм", "2 шт. стойки-опоры 290 мм", "6 шт. зажимов HJ-1"],
+        cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 },
+        show: { s1: true, s2: false, s3: false, s4: false }
       },
       {
         num: 2,
-        title: "Установка задней П-образной стенки",
-        desc: "Закрепите 2 вертикальные стойки 290 мм на задней поперечине через зажимы HJ-1 под прямым углом 90°. Сверху наденьте верхнюю перекладину 750 мм и зафиксируйте еще 2 зажимами HJ-1.",
-        parts: ["2 шт. стойки 290 мм", "1 шт. балка 750 мм", "4 шт. зажима HJ-1"],
-        cam: { x: 220, y: 190, z: -250, tx: 0, ty: 50, tz: -40 },
-        show: { frame: true, clamps: true, bed: false, shelf: false }
+        title: "Сборка верхней рамки из трёх трубок",
+        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм. Установите 2 центральные наклонные трубы 580 мм (под углом 30°), соединив переднюю и верхнюю балки через хомуты HJ-1. За счет вращения зажимов вокруг круглых труб угол встает идеально!",
+        parts: ["1 шт. верхняя балка 750 мм", "2 шт. наклонные трубы 580 мм", "6 шт. зажимов HJ-1"],
+        cam: { x: -220, y: 190, z: 220, tx: 0, ty: 45, tz: 0 },
+        show: { s1: true, s2: true, s3: false, s4: false }
       },
       {
         num: 3,
-        title: "Монтаж 2-х центральных наклонных труб (30°)",
-        desc: "Наденьте по 2 зажима HJ-1 на переднюю и верхнюю балки на расстоянии 280 мм друг от друга. Вставьте 2 трубы 580 мм. За счет свободного вращения зажимов вокруг круглых труб угол 30° встанет идеально!",
-        parts: ["2 шт. трубы 580 мм", "4 шт. зажима HJ-1"],
-        cam: { x: -220, y: 180, z: 200, tx: 0, ty: 45, tz: 0 },
-        show: { frame: true, clamps: true, bed: false, shelf: false }
+        title: "Установка стопоров под углом 90° к ложу",
+        desc: "На концах передней балки закрепите хомуты HJ-1, повернув их на угол наклона так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО будущему ложу (под 90° к полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
+        parts: ["2 шт. трубы 100 мм", "2 шт. зажима HJ-1 (под 90° к ложу)", "2 шт. резиновые заглушки Ø28 мм"],
+        cam: { x: 190, y: 95, z: 210, tx: 60, ty: 25, tz: 55 },
+        show: { s1: true, s2: true, s3: true, s4: false }
       },
       {
         num: 4,
-        title: "Установка стопоров на концах",
-        desc: "На концах передней балки закрепите хомуты HJ-1, направив патрубки вертикально вверх под 90°. Зажмите в них отрезки труб 100 мм и наденьте защитные резиновые заглушки красного цвета.",
-        parts: ["2 шт. трубы 100 мм", "2 шт. зажима HJ-1", "2 шт. заглушки Ø28 мм"],
-        cam: { x: 180, y: 90, z: 220, tx: 60, ty: 20, tz: 40 },
-        show: { frame: true, clamps: true, bed: false, shelf: false }
-      },
-      {
-        num: 5,
-        title: "Ложе и установка полки для наклеивания",
-        desc: "Наклейте резину на ДСП 720×580 мм и защелкните клипсами на трубы. Полка надежно ложится днищем на резину и упирается в стопоры. На балку наклеиваются 3 тонкие этикетки со штрихкодами!",
-        parts: ["Плита ДСП 720×580 мм", "Резина 2-3 мм", "4 клипсы Ø28 мм"],
-        cam: { x: 140, y: 170, z: 260, tx: -20, ty: 45, tz: 10 },
-        show: { frame: true, clamps: true, bed: true, shelf: true }
+        title: "Монтаж подложки ДСП и установка полки",
+        desc: "Закрепите плиту ДСП 720×580 мм с наклеенным резиновым ковриком клипсами на центральные трубы. Установите полку — она ложится днищем на резину и упирается в стопоры СТРОГО ПОД УГЛОМ 90°. Рабочая зона полностью готова для наклеивания 3 стикеров!",
+        parts: ["Плита ДСП 720×580 мм", "Резина 2-3 мм", "4 клипсы Ø28 мм", "Полка шасси 685×565 мм"],
+        cam: { x: 160, y: 180, z: 270, tx: -15, ty: 45, tz: 15 },
+        show: { s1: true, s2: true, s3: true, s4: true }
       }
     ];
 
-    let currentStep = 5; // Start with full assembled view
+    let currentStep = 4; // Start assembled
 
     function renderStep() {
       const s = steps[currentStep - 1];
       document.getElementById('stepCounter').textContent = `Шаг ${s.num} из ${steps.length}`;
       
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 4; i++) {
         const bar = document.getElementById(`bar${i}`);
         bar.className = `h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= currentStep ? 'bg-blue-500' : 'bg-slate-700'}`;
       }
@@ -838,15 +858,16 @@
         </div>
       `;
 
-      frameGroup.visible = s.show.frame;
-      clampsGroup.visible = s.show.clamps;
-      bedGroup.visible = s.show.bed;
-      shelfGroup.visible = s.show.shelf;
+      step1Group.visible = s.show.s1;
+      step2Group.visible = s.show.s2;
+      step3Group.visible = s.show.s3;
+      bedGroup.visible   = s.show.s4;
+      shelfGroup.visible = s.show.s4;
 
-      document.getElementById('chkFrame').checked = s.show.frame;
-      document.getElementById('chkClamps').checked = s.show.clamps;
-      document.getElementById('chkBed').checked = s.show.bed;
-      document.getElementById('chkShelf').checked = s.show.shelf;
+      document.getElementById('chkFrame').checked = s.show.s1 || s.show.s2 || s.show.s3;
+      document.getElementById('chkClamps').checked = s.show.s1 || s.show.s2 || s.show.s3;
+      document.getElementById('chkBed').checked = s.show.s4;
+      document.getElementById('chkShelf').checked = s.show.s4;
 
       animateCamera(s.cam);
     }
@@ -889,23 +910,23 @@
     });
 
     // -------------------------------------------------------------
-    // 9. VIEW PRESETS
+    // 7. VIEW PRESETS
     // -------------------------------------------------------------
     document.getElementById('viewIso').addEventListener('click', () => {
       animateCamera({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
     });
 
+    document.getElementById('viewStoppers').addEventListener('click', () => {
+      // Direct close-up view along the contact plane between stopper and shelf (under 90°)
+      animateCamera({ x: 170, y: 90, z: 205, tx: 65, ty: 25, tz: 65 });
+    });
+
     document.getElementById('viewStickers').addEventListener('click', () => {
-      // Focus directly onto the front beam with the 3 barcode stickers
       if (currentOrientation === 'beam_down') {
         animateCamera({ x: -45, y: 65, z: 155, tx: -60, ty: 35, tz: 75 });
       } else {
         animateCamera({ x: 45, y: 140, z: -150, tx: 60, ty: 80, tz: -70 });
       }
-    });
-
-    document.getElementById('viewStoppers').addEventListener('click', () => {
-      animateCamera({ x: 160, y: 80, z: 210, tx: 70, ty: 25, tz: 55 });
     });
 
     document.getElementById('viewSide').addEventListener('click', () => {
@@ -915,14 +936,20 @@
     // Layer Checkboxes
     document.getElementById('chkShelf').addEventListener('change', (e) => shelfGroup.visible = e.target.checked);
     document.getElementById('chkBed').addEventListener('change', (e) => bedGroup.visible = e.target.checked);
-    document.getElementById('chkFrame').addEventListener('change', (e) => frameGroup.visible = e.target.checked);
-    document.getElementById('chkClamps').addEventListener('change', (e) => clampsGroup.visible = e.target.checked);
+    document.getElementById('chkFrame').addEventListener('change', (e) => {
+      step1Group.visible = e.target.checked;
+      step2Group.visible = e.target.checked;
+      step3Group.visible = e.target.checked;
+    });
+    document.getElementById('chkClamps').addEventListener('change', (e) => {
+      clampsGroup.visible = e.target.checked;
+    });
 
     // Initial Stepper Render
     renderStep();
 
     // -------------------------------------------------------------
-    // 10. ANIMATION LOOP & RESIZE
+    // 8. ANIMATION LOOP & RESIZE
     // -------------------------------------------------------------
     function animate() {
       requestAnimationFrame(animate);
