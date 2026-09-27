@@ -208,7 +208,11 @@
               <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
             </button>
             <button data-isolate="clamps" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы HJ-1/2 (свинец)</span></span>
+              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы HJ-1/2 (модели)</span></span>
+              <span class="text-[10px] text-bybit-gold font-mono">3D</span>
+            </button>
+            <button data-isolate="clamps-frame" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🔗</span> <span>Зажимы на каркасе</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
             </button>
           </div>
@@ -864,6 +868,7 @@
     });
 
     const allClamps = [];
+    const allPipes = [];
 
     const woodMat = new THREE.MeshStandardMaterial({
       color: 0xC47B35, // Warm laminated birch/DSP wood
@@ -907,7 +912,7 @@
     });
 
     // -------------------------------------------------------------
-    // 4. ASSEMBLY STEP GROUPS (4 STAGES) + DIMENSIONS GROUP
+    // 4. ASSEMBLY STEP GROUPS (5 STAGES) + STANDALONE CLAMPS SHOWCASE
     // -------------------------------------------------------------
     const step1Group = new THREE.Group();
     const step2Group = new THREE.Group();
@@ -915,6 +920,7 @@
     const bedGroup   = new THREE.Group();
     const shelfGroup = new THREE.Group();
     const dimensionsGroup = new THREE.Group();
+    const standaloneClampsGroup = new THREE.Group();
 
     scene.add(step1Group);
     scene.add(step2Group);
@@ -922,6 +928,9 @@
     scene.add(bedGroup);
     scene.add(shelfGroup);
     scene.add(dimensionsGroup);
+    scene.add(standaloneClampsGroup);
+
+    standaloneClampsGroup.visible = false;
 
     // Scale factors: 1 unit ≈ 3.2 mm
     const W_frame = 750 / 3.2;   // ~234.4 units
@@ -941,6 +950,7 @@
       mesh.position.copy(p1).addScaledVector(v, 0.5);
       const axis = new THREE.Vector3(0, 1, 0);
       mesh.quaternion.setFromUnitVectors(axis, v.clone().normalize());
+      allPipes.push(mesh);
       return mesh;
     }
 
@@ -1025,7 +1035,9 @@
       washerMesh.quaternion.copy(boltRod.quaternion);
       g.add(washerMesh);
 
-      allClamps.push(g);
+      if (targetGroup !== standaloneClampsGroup) {
+        allClamps.push(g);
+      }
       targetGroup.add(g);
       return g;
     }
@@ -1161,7 +1173,9 @@
       // 5. Branch 2: Longitudinal side pipe (along vz) -> bolt clamped across pipe along vx into stamped slots
       createClampingBranch(vz, vx);
 
-      allClamps.push(g);
+      if (targetGroup !== standaloneClampsGroup) {
+        allClamps.push(g);
+      }
       targetGroup.add(g);
       return g;
     }
@@ -1318,6 +1332,54 @@
     sStop.position.set(-stopX - 24, R_pipe + 24, D_base/2 + 16);
     dimensionsGroup.add(sStop);
     dimensionsGroup.add(createDimLine(stopL_b, stopL_t, new THREE.Vector3(-12, 6, 6)));
+
+    // =============================================================
+    // STANDALONE 3D CLAMPS SHOWCASE (HJ-2 & HJ-1 SEPARATE MODELS)
+    // =============================================================
+    const hj2Pos = new THREE.Vector3(-38, 30, 0);
+    createHJ2(hj2Pos, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), standaloneClampsGroup);
+
+    // Pipe stubs for HJ-2:
+    const stubXGeo = new THREE.CylinderGeometry(R_pipe, R_pipe, 44, 24);
+    const stubX = new THREE.Mesh(stubXGeo, chromePipeMat);
+    stubX.position.set(hj2Pos.x + 22, hj2Pos.y, hj2Pos.z);
+    stubX.rotation.z = Math.PI / 2;
+
+    const stubZGeo = new THREE.CylinderGeometry(R_pipe, R_pipe, 44, 24);
+    const stubZ = new THREE.Mesh(stubZGeo, chromePipeMat);
+    stubZ.position.set(hj2Pos.x, hj2Pos.y, hj2Pos.z + 22);
+    stubZ.rotation.x = Math.PI / 2;
+
+    const stubYGeo = new THREE.CylinderGeometry(R_pipe, R_pipe, 44, 24);
+    const stubY = new THREE.Mesh(stubYGeo, chromePipeMat);
+    stubY.position.set(hj2Pos.x, hj2Pos.y + 22, hj2Pos.z);
+
+    standaloneClampsGroup.add(stubX, stubZ, stubY);
+
+    const sLabelHJ2 = createDimensionSprite("HJ-2", "3D-угол (2 болта в пазы)");
+    sLabelHJ2.position.set(hj2Pos.x, hj2Pos.y + 36, hj2Pos.z);
+    standaloneClampsGroup.add(sLabelHJ2);
+
+    // Standalone HJ-1:
+    const hj1Pos = new THREE.Vector3(38, 30, 0);
+    createHJ1(hj1Pos, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 1), standaloneClampsGroup);
+
+    // Pipe stubs for HJ-1:
+    const stubThroughGeo = new THREE.CylinderGeometry(R_pipe, R_pipe, 65, 24);
+    const stubThrough = new THREE.Mesh(stubThroughGeo, chromePipeMat);
+    stubThrough.position.set(hj1Pos.x, hj1Pos.y, hj1Pos.z);
+    stubThrough.rotation.z = Math.PI / 2;
+
+    const stubButtGeo = new THREE.CylinderGeometry(R_pipe, R_pipe, 44, 24);
+    const stubButt = new THREE.Mesh(stubButtGeo, chromePipeMat);
+    stubButt.position.set(hj1Pos.x, hj1Pos.y, hj1Pos.z + 22);
+    stubButt.rotation.x = Math.PI / 2;
+
+    standaloneClampsGroup.add(stubThrough, stubButt);
+
+    const sLabelHJ1 = createDimensionSprite("HJ-1", "Т-стык (1 болт в паз)");
+    sLabelHJ1.position.set(hj1Pos.x, hj1Pos.y + 36, hj1Pos.z);
+    standaloneClampsGroup.add(sLabelHJ1);
 
     // =============================================================
     // STEP 4 GEOMETRY: Подложка ДСП + Резина + Полка CAD
@@ -1637,8 +1699,9 @@
         if (mode === 'all') viewsBtnLabel.innerHTML = '📐 Изометрия';
         else if (mode === 'bed') viewsBtnLabel.innerHTML = '🪵 Доска';
         else if (mode === 'shelf') viewsBtnLabel.innerHTML = '🖥️ Полка';
-        else if (mode === 'pipes') viewsBtnLabel.innerHTML = '⚪ Трубки';
-        else if (mode === 'clamps') viewsBtnLabel.innerHTML = '🔩 Зажимы';
+        else if (mode === 'pipes') viewsBtnLabel.innerHTML = '🍷 Трубки';
+        else if (mode === 'clamps') viewsBtnLabel.innerHTML = '🔩 Модели зажимов';
+        else if (mode === 'clamps-frame') viewsBtnLabel.innerHTML = '🔗 Зажимы на каркасе';
       }
       document.querySelectorAll('.iso-opt').forEach(btn => {
         const isMatch = btn.getAttribute('data-isolate') === mode;
@@ -1668,6 +1731,8 @@
         step3Group.visible = true;
         bedGroup.visible   = true;
         shelfGroup.visible = true;
+        standaloneClampsGroup.visible = false;
+        allPipes.forEach(p => p.visible = true);
         allClamps.forEach(c => c.visible = true);
         dimensionsGroup.visible = chkDimensions ? chkDimensions.checked : true;
 
@@ -1685,7 +1750,7 @@
         step3Group.visible = false;
         shelfGroup.visible = false;
         bedGroup.visible   = true;
-        allClamps.forEach(c => c.visible = false);
+        standaloneClampsGroup.visible = false;
         dimensionsGroup.visible = false;
 
         if (chkFrame) chkFrame.checked = false;
@@ -1702,7 +1767,7 @@
         step3Group.visible = false;
         bedGroup.visible   = false;
         shelfGroup.visible = true;
-        allClamps.forEach(c => c.visible = false);
+        standaloneClampsGroup.visible = false;
         dimensionsGroup.visible = false;
 
         if (chkFrame) chkFrame.checked = false;
@@ -1719,6 +1784,8 @@
         step3Group.visible = true;
         bedGroup.visible   = false;
         shelfGroup.visible = false;
+        standaloneClampsGroup.visible = false;
+        allPipes.forEach(p => p.visible = true);
         allClamps.forEach(c => c.visible = false);
         dimensionsGroup.visible = chkDimensions ? chkDimensions.checked : true;
 
@@ -1729,22 +1796,41 @@
 
         animateCameraSmooth({ x: 230, y: 180, z: 290, tx: 0, ty: 45, tz: 0 }, 45);
       } else if (mode === 'clamps') {
-        if (hudStatus) hudStatus.textContent = 'Детали: Зажимы 2×HJ-2 (угловые 3D) + 10×HJ-1 (Т-стыки)';
+        if (hudStatus) hudStatus.textContent = 'Детали: Зажимы HJ-1 и HJ-2 (отдельные 3D-модели)';
 
         step1Group.visible = false;
         step2Group.visible = false;
         step3Group.visible = false;
         bedGroup.visible   = false;
         shelfGroup.visible = false;
-        allClamps.forEach(c => c.visible = true);
         dimensionsGroup.visible = false;
+        standaloneClampsGroup.visible = true;
 
         if (chkFrame) chkFrame.checked = false;
         if (chkClamps) chkClamps.checked = true;
         if (chkBed) chkBed.checked = false;
         if (chkShelf) chkShelf.checked = false;
 
-        animateCameraSmooth({ x: -160, y: 55, z: -110, tx: -W_frame/2, ty: R_pipe + 5, tz: -D_base/2 }, 45);
+        animateCameraSmooth({ x: 0, y: 70, z: 125, tx: 0, ty: 30, tz: 0 }, 45);
+      } else if (mode === 'clamps-frame') {
+        if (hudStatus) hudStatus.textContent = 'Детали: Все 12 зажимов в точках сборки каркаса';
+
+        step1Group.visible = true;
+        step2Group.visible = true;
+        step3Group.visible = true;
+        bedGroup.visible   = false;
+        shelfGroup.visible = false;
+        dimensionsGroup.visible = false;
+        standaloneClampsGroup.visible = false;
+        allPipes.forEach(p => p.visible = false);
+        allClamps.forEach(c => c.visible = true);
+
+        if (chkFrame) chkFrame.checked = false;
+        if (chkClamps) chkClamps.checked = true;
+        if (chkBed) chkBed.checked = false;
+        if (chkShelf) chkShelf.checked = false;
+
+        animateCameraSmooth({ x: 230, y: 180, z: 290, tx: 0, ty: 45, tz: 0 }, 45);
       }
 
       if (typeof toggleViewsMenu === 'function') {
@@ -1860,7 +1946,9 @@
         step3Group.visible = true;
         bedGroup.visible   = true;
         shelfGroup.visible = true;
+        standaloneClampsGroup.visible = false;
         allClamps.forEach(c => c.visible = true);
+        allPipes.forEach(p => p.visible = true);
 
         document.getElementById('chkFrame').checked = true;
         document.getElementById('chkClamps').checked = true;
@@ -1948,6 +2036,10 @@
         shelfGroup.visible = s.show.shelf;
       }
 
+      standaloneClampsGroup.visible = false;
+      allPipes.forEach(p => p.visible = true);
+      allClamps.forEach(c => c.visible = true);
+
       document.getElementById('chkFrame').checked = s.show.s1 || s.show.s2 || s.show.s3;
       document.getElementById('chkClamps').checked = s.show.s1 || s.show.s2 || s.show.s3;
       document.getElementById('chkBed').checked = s.show.bed;
@@ -2033,14 +2125,16 @@
     if (btnFocusHJ2Modal && modalClamps) {
       btnFocusHJ2Modal.addEventListener('click', () => {
         modalClamps.classList.add('hidden');
-        animateCameraSmooth({ x: -160, y: 55, z: -110, tx: -W_frame/2, ty: R_pipe + 5, tz: -D_base/2 });
+        isolateComponent('clamps');
+        animateCameraSmooth({ x: -38, y: 55, z: 75, tx: -38, ty: 30, tz: 0 }, 45);
       });
     }
     const btnFocusHJ1Modal = document.getElementById('btnFocusHJ1Modal');
     if (btnFocusHJ1Modal && modalClamps) {
       btnFocusHJ1Modal.addEventListener('click', () => {
         modalClamps.classList.add('hidden');
-        animateCameraSmooth({ x: -20, y: 40, z: 130, tx: -distCenter/2, ty: R_pipe + 6, tz: D_base/2 });
+        isolateComponent('clamps');
+        animateCameraSmooth({ x: 38, y: 55, z: 75, tx: 38, ty: 30, tz: 0 }, 45);
       });
     }
 
@@ -2051,9 +2145,13 @@
       step1Group.visible = e.target.checked;
       step2Group.visible = e.target.checked;
       step3Group.visible = e.target.checked;
+      allPipes.forEach(p => p.visible = e.target.checked);
     });
     document.getElementById('chkClamps').addEventListener('change', (e) => {
       allClamps.forEach(c => c.visible = e.target.checked);
+      if (currentIsolateMode === 'clamps') {
+        standaloneClampsGroup.visible = e.target.checked;
+      }
     });
 
     renderStep();
