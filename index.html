@@ -1299,6 +1299,7 @@
     capR.quaternion.copy(capQuat);
 
     step3Group.add(capL, capR);
+    allPipes.push(capL, capR);
 
     // =============================================================
     // 5. 3D PIPE DIMENSION LABELS ON MODEL (BYBIT GOLD)
@@ -2138,21 +2139,48 @@
       });
     }
 
+    // Layer Synchronization for Frame Pipes & Clamps
+    function syncFrameVisibility() {
+      const frameOn = document.getElementById('chkFrame')?.checked ?? true;
+      const clampsOn = document.getElementById('chkClamps')?.checked ?? true;
+
+      if (currentIsolateMode === 'clamps') {
+        if (frameOn) {
+          currentIsolateMode = 'all';
+          resetIsolationUI('all');
+          standaloneClampsGroup.visible = false;
+        } else {
+          standaloneClampsGroup.visible = clampsOn;
+          step1Group.visible = false;
+          step2Group.visible = false;
+          step3Group.visible = false;
+          allPipes.forEach(p => p.visible = false);
+          allClamps.forEach(c => c.visible = clampsOn);
+          return;
+        }
+      }
+
+      const anyOn = frameOn || clampsOn;
+      allPipes.forEach(p => p.visible = frameOn);
+      allClamps.forEach(c => c.visible = clampsOn);
+
+      if (currentStep === 0) {
+        step1Group.visible = anyOn;
+        step2Group.visible = anyOn;
+        step3Group.visible = anyOn;
+      } else {
+        const s = steps[currentStep - 1];
+        step1Group.visible = anyOn && (s ? s.show.s1 : true);
+        step2Group.visible = anyOn && (s ? s.show.s2 : false);
+        step3Group.visible = anyOn && (s ? s.show.s3 : false);
+      }
+    }
+
     // Layer Checkboxes
     document.getElementById('chkShelf').addEventListener('change', (e) => shelfGroup.visible = e.target.checked);
     document.getElementById('chkBed').addEventListener('change', (e) => bedGroup.visible = e.target.checked);
-    document.getElementById('chkFrame').addEventListener('change', (e) => {
-      step1Group.visible = e.target.checked;
-      step2Group.visible = e.target.checked;
-      step3Group.visible = e.target.checked;
-      allPipes.forEach(p => p.visible = e.target.checked);
-    });
-    document.getElementById('chkClamps').addEventListener('change', (e) => {
-      allClamps.forEach(c => c.visible = e.target.checked);
-      if (currentIsolateMode === 'clamps') {
-        standaloneClampsGroup.visible = e.target.checked;
-      }
-    });
+    document.getElementById('chkFrame').addEventListener('change', syncFrameVisibility);
+    document.getElementById('chkClamps').addEventListener('change', syncFrameVisibility);
 
     renderStep();
 
