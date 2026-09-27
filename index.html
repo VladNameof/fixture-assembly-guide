@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Инструкция по сборке фикстуры Compute Shelf</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,6 +28,9 @@
               green: '#0ECB81',
               red: '#F6465D'
             }
+          },
+          screens: {
+            'xs': '420px'
           }
         }
       }
@@ -41,6 +44,7 @@
       background-color: #0B0E14;
       color: #E5E7EB;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
     #canvas-container { width: 100%; height: 100%; position: relative; }
     canvas { outline: none; display: block; }
@@ -99,120 +103,155 @@
     .custom-scroll::-webkit-scrollbar-track { background: #0B0E14; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #262C3A; border-radius: 3px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F7A600; }
+
+    /* Mobile & Touch Optimizations */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .touch-action-manipulation { touch-action: manipulation; }
+    .active-scale:active { transform: scale(0.96); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col select-none antialiased">
 
   <!-- Top Navbar (Bybit Styling) -->
-  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-3">
+  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
       <!-- Bybit Gold Symbol -->
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-sm shadow-md shadow-bybit-gold/25 tracking-tighter">
+      <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-xs sm:text-sm shadow-md shadow-bybit-gold/25 tracking-tighter flex-shrink-0">
         F·B
       </div>
-      <div>
-        <h1 class="text-sm font-bold text-white flex items-center gap-2">
-          Инструкция по сборке фикстуры Compute Shelf
-          <span class="text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold">
-            Ø28 мм • 14 зажимов HJ-1
+      <div class="min-w-0">
+        <h1 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 truncate">
+          <span class="truncate">Инструкция по сборке Compute Shelf</span>
+          <span class="hidden sm:inline-block text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold flex-shrink-0">
+            Ø28 мм • 14 HJ-1
           </span>
         </h1>
-        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели</p>
+        <p class="hidden sm:block text-[11px] text-bybit-gray truncate">Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели</p>
       </div>
     </div>
     
-    <div class="flex items-center gap-2 text-xs">
-      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-3 py-1.5 rounded-lg bybit-btn-secondary transition flex items-center gap-1.5 shadow-sm text-xs">
-        <svg class="w-4 h-4 fill-current text-bybit-gold" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-        GitHub Репозиторий
+    <div class="flex items-center gap-2 text-xs flex-shrink-0">
+      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-2.5 py-1.5 sm:px-3 rounded-lg bybit-btn-secondary transition flex items-center gap-1.5 shadow-sm text-xs" title="GitHub Репозиторий">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-bybit-gold" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden xs:inline">GitHub</span>
       </a>
     </div>
   </header>
 
+  <!-- Mobile Mode Switcher (Visible only on mobile/tablet < lg) -->
+  <div id="mobileModeBar" class="lg:hidden bg-bybit-surface border-b border-bybit-border px-2 py-1.5 flex gap-1.5 z-40 sticky top-0">
+    <button id="btnModeSplit" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation">
+      <span>📱 50/50</span>
+    </button>
+    <button id="btnMode3D" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 bg-bybit-card text-bybit-gray hover:text-white active-scale touch-action-manipulation">
+      <span>🧊 3D Модель</span>
+    </button>
+    <button id="btnModeSteps" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 bg-bybit-card text-bybit-gray hover:text-white active-scale touch-action-manipulation">
+      <span>📝 Инструкция</span>
+    </button>
+  </div>
+
   <!-- Main Viewport + Guide Grid -->
-  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden relative">
+  <main class="flex-1 flex flex-col lg:grid lg:grid-cols-12 overflow-hidden relative">
 
-    <!-- 3D Viewport (8 cols) -->
-    <div class="lg:col-span-8 bg-bybit-black relative min-h-[480px] lg:min-h-full flex items-center justify-center">
-      <div id="canvas-container"></div>
+    <!-- 3D Viewport (8 cols on desktop, responsive dynamic height on mobile) -->
+    <div id="viewport3D" class="lg:col-span-8 bg-bybit-black relative h-[42vh] lg:h-full lg:min-h-full flex items-center justify-center transition-all duration-300">
+      <div id="canvas-container" class="w-full h-full relative"></div>
 
-      <!-- 3D HUD Mode Indicator (Bybit Design) -->
-      <div class="absolute top-4 left-4 bybit-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm pointer-events-none">
+      <!-- 3D HUD Mode Indicator (Compact on mobile) -->
+      <div class="absolute top-3 left-3 bybit-panel px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs shadow-xl max-w-[190px] sm:max-w-sm pointer-events-none z-10">
         <div class="font-bold text-white flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold"></span>
-          <span id="hudStatus">Compute Shelf</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold flex-shrink-0"></span>
+          <span id="hudStatus" class="truncate font-semibold">Compute Shelf</span>
         </div>
-        <div class="text-[11px] text-bybit-gray leading-relaxed">
-          • Плавное скольжение камеры между шагами сборки<br>
-          • Вращение: <strong>ЛКМ</strong> | Зум: <strong>Колесико</strong> | Панорама: <strong>ПКМ</strong>
+        <div class="hidden sm:block text-[11px] text-bybit-gray leading-relaxed mt-0.5">
+          • Вращение: <strong>ЛКМ / 1 палец</strong> | Зум: <strong>2 пальца</strong>
         </div>
       </div>
 
-      <!-- Bottom Floating Controls: View Presets & Toggles -->
-      <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        
-        <!-- Left: Quick Cameras & Dimensions Toggle -->
-        <div class="flex flex-wrap gap-1.5 pointer-events-auto">
-          <button id="viewIso" class="px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow">
+      <!-- Top Right: Mobile Expand & Layers Toggle -->
+      <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
+        <!-- Expand to full 3D toggle (mobile only) -->
+        <button id="btnExpand3D" class="lg:hidden bybit-panel px-2.5 py-1.5 rounded-lg text-xs font-bold text-bybit-gold hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation" title="Развернуть на весь экран">
+          <span id="expand3dIcon">⛶</span>
+        </button>
+
+        <!-- Layers Toggle Button -->
+        <div class="relative">
+          <button id="btnToggleLayersMobile" class="bybit-panel px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation">
+            <span>⚙️ Слои</span>
+          </button>
+
+          <!-- Layers Dropdown Panel (Popover on mobile, always visible on desktop) -->
+          <div id="layersDropdown" class="hidden lg:block absolute right-0 top-9 w-48 lg:static lg:w-auto bybit-panel p-2.5 rounded-xl text-xs space-y-2 shadow-2xl z-30">
+            <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between">
+              <span>Слои 3D</span>
+              <button id="btnCloseLayersMobile" class="lg:hidden text-bybit-gray hover:text-white text-xs px-1">✕</button>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+              <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+              <span class="text-bybit-gold font-semibold">📏 Размеры</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+              <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+              <span>Compute Shelf</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+              <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+              <span>ДСП + резина</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+              <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+              <span>Трубы Ø28 мм</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+              <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+              <span>Зажимы HJ-1</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Floating Controls: View Presets in Single Horizontal Scroll Row -->
+      <div class="absolute bottom-3 left-2 right-2 sm:left-4 sm:right-4 flex items-center justify-between gap-2 pointer-events-none z-10">
+        <!-- Horizontal Scrollable Buttons -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto w-full sm:w-auto">
+          <button id="viewIso" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow touch-action-manipulation">
             Изометрия
           </button>
-          <button id="viewStoppers" class="px-3 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/25 transition flex items-center gap-1">
-            🛑 Упор в стопоры (90°)
+          <button id="viewStoppers" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/25 transition flex items-center gap-1 touch-action-manipulation">
+            🛑 Стопоры 90°
           </button>
-          <button id="viewStickers" class="px-2.5 py-1.5 rounded-lg bg-bybit-surface border border-bybit-gold/40 text-bybit-gold hover:bg-bybit-gold hover:text-bybit-black text-xs font-bold transition flex items-center gap-1">
-            🔍 Зона 3 наклеек
+          <button id="viewStickers" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-bybit-surface border border-bybit-gold/40 text-bybit-gold hover:bg-bybit-gold hover:text-bybit-black text-xs font-bold transition flex items-center gap-1 touch-action-manipulation">
+            🔍 3 наклейки
           </button>
-          <button id="viewSide" class="px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow">
-            📐 Профиль (30°/90°)
+          <button id="viewSide" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow touch-action-manipulation">
+            📐 Профиль
           </button>
-          <button id="btnToggleDims" class="px-3 py-1.5 rounded-lg bg-bybit-gold text-bybit-black hover:bg-bybit-goldHover text-xs font-bold shadow-lg shadow-bybit-gold/20 transition flex items-center gap-1.5">
-            📏 Размеры труб: ВКЛ
+          <button id="btnToggleDims" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-bybit-gold text-bybit-black hover:bg-bybit-goldHover text-xs font-bold shadow-lg shadow-bybit-gold/20 transition flex items-center gap-1 touch-action-manipulation">
+            📏 Размеры
           </button>
         </div>
 
-        <!-- Right: Shelf Status Badge -->
-        <div class="flex items-center gap-2 bybit-panel px-3 py-1.5 rounded-xl pointer-events-auto shadow-xl text-xs text-slate-300">
+        <!-- Desktop Only: Shelf Status Badge -->
+        <div class="hidden md:flex items-center gap-2 bybit-panel px-3 py-1.5 rounded-xl pointer-events-auto shadow-xl text-xs text-slate-300 flex-shrink-0">
           <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
           <span class="font-medium">Compute Shelf</span>
         </div>
-
       </div>
 
-      <!-- Layer Visibility Toggles -->
-      <div class="absolute top-4 right-4 bybit-panel p-2.5 rounded-xl text-xs space-y-2 shadow-xl">
-        <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider">Слои 3D</div>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span class="text-bybit-gold font-semibold">📏 Размеры труб</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span>Compute Shelf</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span>ДСП + резина</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span>Трубы Ø28 мм</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-          <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span>Зажимы HJ-1</span>
-        </label>
-      </div>
     </div>
 
-    <!-- Right Sidebar: Stepper & Complete BOM Preparation List (4 cols) -->
-    <div class="lg:col-span-4 bg-bybit-surface border-l border-bybit-border flex flex-col h-full max-h-[calc(100vh-60px)] overflow-hidden">
+    <!-- Right/Bottom Sidebar: Stepper & Complete BOM Preparation List (4 cols on desktop, flex-1 on mobile) -->
+    <div id="sidebarPanel" class="lg:col-span-4 bg-bybit-surface border-t lg:border-t-0 lg:border-l border-bybit-border flex flex-col flex-1 h-[58vh] lg:h-full lg:max-h-[calc(100vh-60px)] overflow-hidden">
       
       <!-- Top Tabs: Инструкция / Комплектация -->
       <div class="p-2 border-b border-bybit-border bg-bybit-surface flex gap-2">
-        <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition">
+        <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation">
           Этапы сборки (1–4)
         </button>
-        <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition">
+        <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation">
           📋 Список компонентов
         </button>
       </div>
@@ -220,7 +259,7 @@
       <!-- Tab 1: Stepper Manual with Smooth Transitions -->
       <div id="panelStepper" class="flex-1 flex flex-col overflow-y-auto custom-scroll">
         <!-- Stepper Header -->
-        <div class="p-4 border-b border-bybit-border bg-bybit-surface/80 sticky top-0 z-10 backdrop-blur">
+        <div class="p-3 sm:p-4 border-b border-bybit-border bg-bybit-surface/80 sticky top-0 z-10 backdrop-blur">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-bybit-gold">Пошаговая инструкция</span>
             <span id="stepCounter" class="text-xs font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-bold border border-bybit-gold/30">
@@ -237,10 +276,10 @@
           </div>
 
           <div class="flex gap-2">
-            <button id="btnPrev" class="px-3 py-1.5 rounded-lg bybit-btn-secondary text-xs font-medium transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <button id="btnPrev" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-lg bybit-btn-secondary text-xs font-semibold transition disabled:opacity-30 disabled:cursor-not-allowed active-scale touch-action-manipulation">
               ← Назад
             </button>
-            <button id="btnNext" class="flex-1 px-3 py-1.5 rounded-lg bybit-btn-gold text-xs transition">
+            <button id="btnNext" class="flex-1 px-4 py-2 sm:px-4 sm:py-2.5 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation">
               ✓ Завершено (К шагу 1)
             </button>
           </div>
@@ -1258,7 +1297,7 @@
     renderStep();
 
     // -------------------------------------------------------------
-    // 10. ANIMATION LOOP & RESIZE
+    // 10. ANIMATION LOOP & RESPONSIVE RESIZE
     // -------------------------------------------------------------
     function animate() {
       requestAnimationFrame(animate);
@@ -1267,11 +1306,115 @@
     }
     animate();
 
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
+    function updateRendererSize() {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setSize(w, h);
+
+      if (window.innerWidth >= 1024) {
+        viewport3D.style.height = '';
+        sidebarPanel.style.height = '';
+        viewport3D.classList.remove('hidden');
+        sidebarPanel.classList.remove('hidden');
+        layersDropdown.classList.remove('hidden');
+      }
+    }
+
+    window.addEventListener('resize', updateRendererSize);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateRendererSize, 80);
+      setTimeout(updateRendererSize, 250);
     });
+
+    // -------------------------------------------------------------
+    // 11. MOBILE VIEW MODE SWITCHER & LAYERS DROPDOWN
+    // -------------------------------------------------------------
+    const btnModeSplit = document.getElementById('btnModeSplit');
+    const btnMode3D = document.getElementById('btnMode3D');
+    const btnModeSteps = document.getElementById('btnModeSteps');
+    const viewport3D = document.getElementById('viewport3D');
+    const sidebarPanel = document.getElementById('sidebarPanel');
+    const btnExpand3D = document.getElementById('btnExpand3D');
+    const expand3dIcon = document.getElementById('expand3dIcon');
+    const btnToggleLayersMobile = document.getElementById('btnToggleLayersMobile');
+    const btnCloseLayersMobile = document.getElementById('btnCloseLayersMobile');
+    const layersDropdown = document.getElementById('layersDropdown');
+
+    let currentMobileMode = 'split'; // 'split' | '3d' | 'steps'
+
+    function setMobileMode(mode) {
+      currentMobileMode = mode;
+      
+      [btnModeSplit, btnMode3D, btnModeSteps].forEach(btn => {
+        if (!btn) return;
+        btn.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 bg-bybit-card text-bybit-gray hover:text-white active-scale touch-action-manipulation";
+      });
+
+      if (mode === 'split') {
+        btnModeSplit.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
+        viewport3D.classList.remove('hidden');
+        viewport3D.style.height = '42vh';
+        sidebarPanel.classList.remove('hidden');
+        sidebarPanel.style.height = 'calc(58vh - 42px)';
+        if (expand3dIcon) expand3dIcon.textContent = '⛶';
+      } else if (mode === '3d') {
+        btnMode3D.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
+        viewport3D.classList.remove('hidden');
+        viewport3D.style.height = 'calc(100vh - 95px)';
+        sidebarPanel.classList.add('hidden');
+        if (expand3dIcon) expand3dIcon.textContent = '⤢';
+      } else if (mode === 'steps') {
+        btnModeSteps.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
+        viewport3D.classList.add('hidden');
+        sidebarPanel.classList.remove('hidden');
+        sidebarPanel.style.height = 'calc(100vh - 95px)';
+      }
+
+      setTimeout(updateRendererSize, 40);
+      setTimeout(updateRendererSize, 220);
+    }
+
+    if (btnModeSplit) btnModeSplit.addEventListener('click', () => setMobileMode('split'));
+    if (btnMode3D) btnMode3D.addEventListener('click', () => setMobileMode('3d'));
+    if (btnModeSteps) btnModeSteps.addEventListener('click', () => setMobileMode('steps'));
+
+    if (btnExpand3D) {
+      btnExpand3D.addEventListener('click', () => {
+        if (currentMobileMode === '3d') {
+          setMobileMode('split');
+        } else {
+          setMobileMode('3d');
+        }
+      });
+    }
+
+    if (btnToggleLayersMobile) {
+      btnToggleLayersMobile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        layersDropdown.classList.toggle('hidden');
+      });
+    }
+
+    if (btnCloseLayersMobile) {
+      btnCloseLayersMobile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        layersDropdown.classList.add('hidden');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth < 1024 && layersDropdown && !layersDropdown.contains(e.target) && e.target !== btnToggleLayersMobile) {
+        layersDropdown.classList.add('hidden');
+      }
+    });
+
+    if (window.innerWidth < 1024) {
+      setMobileMode('split');
+    }
 
   </script>
 </body>
