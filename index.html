@@ -196,19 +196,19 @@
               <span class="text-[10px] opacity-75 font-mono">3D</span>
             </button>
             <button data-isolate="bed" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🪵</span> <span>Доска (ДСП+резина)</span></span>
+              <span class="flex items-center gap-2"><span>🪵</span> <span>Ложе (ДСП+резина)</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">16 мм</span>
             </button>
             <button data-isolate="shelf" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🖥️</span> <span>Полка (Compute Shelf)</span></span>
+              <span class="flex items-center gap-2"><span>🖥️</span> <span>Полка Compute Shelf (серебро)</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">CAD</span>
             </button>
             <button data-isolate="pipes" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>⚪</span> <span>Трубки каркаса</span></span>
+              <span class="flex items-center gap-2"><span>🍷</span> <span>Трубки каркаса (бордо)</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
             </button>
             <button data-isolate="clamps" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы (HJ-1 / HJ-2)</span></span>
+              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы HJ-1/2 (свинец)</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
             </button>
           </div>
@@ -259,7 +259,7 @@
       <!-- Top Tabs: Инструкция / Комплектация -->
       <div class="p-2 border-b border-bybit-border bg-bybit-surface flex gap-2">
         <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation">
-          Этапы сборки (1–4)
+          Этапы сборки (1–5)
         </button>
         <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation">
           📋 Список компонентов
@@ -282,12 +282,13 @@
             </div>
           </div>
           
-          <!-- 4 Step Progress Bars with Bybit Gold Accent -->
+          <!-- 5 Step Progress Bars with Bybit Gold Accent -->
           <div class="flex gap-1.5 mb-3">
             <div id="bar1" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
             <div id="bar2" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
             <div id="bar3" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
             <div id="bar4" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
+            <div id="bar5" class="h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/50"></div>
           </div>
 
           <div id="stepperNavRow" class="hidden flex gap-2">
@@ -836,30 +837,30 @@
     }
 
     // -------------------------------------------------------------
-    // 3. PBR MATERIALS (HIGH-CONTRAST & EXPRESSIVE)
+    // 3. PBR MATERIALS (BURGUNDY PIPES, LEAD CLAMPS, SILVER SHELF)
     // -------------------------------------------------------------
     const chromePipeMat = new THREE.MeshStandardMaterial({
-      color: 0xF8FAFC, // Crisp bright silver/white
-      metalness: 0.55,  // Balanced metalness so pipes reflect strong diffuse and specular sheen
-      roughness: 0.22
-    });
-
-    const centralPipeMat = new THREE.MeshStandardMaterial({
-      color: 0xFBAF17, // Vibrant Bybit Gold Accent for central spine
-      metalness: 0.45,
-      roughness: 0.20
-    });
-
-    const clampMetalMat = new THREE.MeshStandardMaterial({
-      color: 0xE2E8F0, // Bright Stamped Nickel-Chrome Steel
-      metalness: 0.48,
+      color: 0x82182B, // Deep rich burgundy (благородный бордовый цвет)
+      metalness: 0.38,
       roughness: 0.26
     });
 
+    const centralPipeMat = new THREE.MeshStandardMaterial({
+      color: 0x9B1C33, // Accent carmine-burgundy for central spine
+      metalness: 0.40,
+      roughness: 0.24
+    });
+
+    const clampMetalMat = new THREE.MeshStandardMaterial({
+      color: 0x505A67, // Lead metal (насыщенный свинцовый цвет)
+      metalness: 0.82,  // Heavy metallic lead sheen
+      roughness: 0.36
+    });
+
     const clampBoltMat = new THREE.MeshStandardMaterial({
-      color: 0xFFFFFF, // Fastener Bolt & Nut M6
-      metalness: 0.70,
-      roughness: 0.15
+      color: 0x7E8A99, // Lead-steel fastener Bolt & Nut M6
+      metalness: 0.78,
+      roughness: 0.28
     });
 
     const allClamps = [];
@@ -883,25 +884,25 @@
     });
 
     const shelfMetalMat = new THREE.MeshStandardMaterial({
-      color: 0xDCE3EA, // Crisp anodized aluminum / chassis steel
-      metalness: 0.45,
-      roughness: 0.28,
+      color: 0xEDF2F7, // Bright polished silver (чистый серебряный металлик)
+      metalness: 0.88,  // High specular reflectivity of silver
+      roughness: 0.18,
       side: THREE.DoubleSide
     });
 
     const shelfMetalPerforated = new THREE.MeshStandardMaterial({
-      color: 0xCBD5E1,
+      color: 0xDFE5ED, // Silver perforated steel bottom plate
       map: createPerforatedTexture(),
-      metalness: 0.40,
-      roughness: 0.30,
+      metalness: 0.82,
+      roughness: 0.22,
       side: THREE.DoubleSide
     });
 
     const honeycombMat = new THREE.MeshStandardMaterial({
-      color: 0x94A3B8,
+      color: 0xC8D3DF, // Silver hexagonal mesh
       map: createHoneycombTexture(),
-      metalness: 0.45,
-      roughness: 0.32,
+      metalness: 0.78,
+      roughness: 0.25,
       side: THREE.DoubleSide
     });
 
@@ -1481,40 +1482,48 @@
     }
 
     // -------------------------------------------------------------
-    // 8. EXACT 4 ASSEMBLY STAGES WITH SMOOTH ANIMATIONS
+    // 8. EXACT 5 ASSEMBLY STAGES WITH SMOOTH ANIMATIONS
     // -------------------------------------------------------------
     const steps = [
       {
         num: 1,
         title: "Сборка нижнего квадрата и двух опор",
-        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм. В передних углах (FL, FR) используйте 2 Т-зажима HJ-1. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (они одновременно жестко фиксируют основание и вертикальные стойки 290 мм). Затяните болты М6 шестигранником 5 мм.",
-        parts: ["2 шт. × 750 мм", "2 шт. × 500 мм", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (3D-угол)", "2 шт. зажима HJ-1 (Т-стык)"],
+        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм (бордовый цвет). В передних углах (FL, FR) используйте 2 Т-зажима HJ-1 свинцового цвета. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (они одновременно жестко фиксируют основание и вертикальные стойки 290 мм). Затяните болты М6 шестигранником 5 мм.",
+        parts: ["2 шт. × 750 мм (бордо)", "2 шт. × 500 мм (бордо)", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (свинец)", "2 шт. зажима HJ-1 (свинец)"],
         cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 },
-        show: { s1: true, s2: false, s3: false, s4: false }
+        show: { s1: true, s2: false, s3: false, bed: false, shelf: false }
       },
       {
         num: 2,
         title: "Сборка верхней рамки из трёх трубок",
-        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм через 2 зажима HJ-1 (TL, TR). Установите 2 центральные наклонные трубы 580 мм (хребет ложа под углом 30°), закрепив их с двух сторон 4 зажимами HJ-1 к передней и верхней балкам. За счет свободного вращения хомута HJ-1 вокруг круглых труб угол встает идеально!",
-        parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1 (Т-стык)"],
+        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм через 2 свинцовых зажима HJ-1 (TL, TR). Установите 2 центральные наклонные бордовые трубы 580 мм (хребет ложа под углом 30°), закрепив их с двух сторон 4 зажимами HJ-1 к передней и верхней балкам. За счет свободного вращения хомута HJ-1 вокруг круглых труб угол встает идеально!",
+        parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1 (свинец)"],
         cam: { x: -220, y: 190, z: 220, tx: 0, ty: 45, tz: 0 },
-        show: { s1: true, s2: true, s3: false, s4: false }
+        show: { s1: true, s2: true, s3: false, bed: false, shelf: false }
       },
       {
         num: 3,
         title: "Установка стопоров под углом 90° к ложу",
-        desc: "На концах передней балки закрепите 2 хомута HJ-1, повернув их на угол 60° вперед так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО ложу (под 90° к полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
-        parts: ["2 шт. × 100 мм (стопоры)", "2 шт. зажима HJ-1 (под 90° к ложу)", "2 шт. резиновые заглушки Ø28 мм"],
+        desc: "На концах передней балки закрепите 2 хомута HJ-1 свинцового цвета, повернув их на угол 60° вперед так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО наклонному ложу (под 90° к будущей полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
+        parts: ["2 шт. × 100 мм (стопоры)", "2 шт. зажима HJ-1 (свинец)", "2 шт. резиновые заглушки Ø28 мм"],
         cam: { x: 190, y: 95, z: 210, tx: 60, ty: 25, tz: 55 },
-        show: { s1: true, s2: true, s3: true, s4: false }
+        show: { s1: true, s2: true, s3: true, bed: false, shelf: false }
       },
       {
         num: 4,
-        title: "Монтаж подложки ДСП и установка Compute Shelf",
-        desc: "Плита ДСП (700×550 мм) укладывается СВЕРХУ на две наклонные трубы (не прорезая каркас) и в самом конце монтажа жестко прикручивается 6 саморезами по металлу напрямую к трубам Ø28 мм. На ДСП наклеен резиновый коврик 2–3 мм. Завершающий этап: Compute Shelf свободно опускается на резиновое ложе до упора в стопоры под 90°.",
-        parts: ["Плита ДСП 700×550 мм", "Резина 2-3 мм", "6 шт. саморезы по металлу", "Compute Shelf 685×565 мм"],
-        cam: { x: 160, y: 180, z: 270, tx: -15, ty: 45, tz: 15 },
-        show: { s1: true, s2: true, s3: true, s4: true }
+        title: "Прикручивание подложки ДСП к трубкам каркаса",
+        desc: "Плита ДСП (700×550×16 мм) с наклеенным резиновым ковриком 2–3 мм укладывается СВЕРХУ на две наклонные бордовые трубы (не прорезая каркас). Основание жестко прикручивается 6 саморезами по металлу с прессшайбой напрямую к трубам Ø28 мм (по 3 самореза в каждую наклонную трубу). Каркас и ложе образуют монолитную конструкцию.",
+        parts: ["Плита ДСП 700×550×16 мм", "Резина ТМКЩ 2-3 мм", "6 шт. саморезы по металлу с прессшайбой"],
+        cam: { x: 0, y: 165, z: 240, tx: 0, ty: 40, tz: 0 },
+        show: { s1: true, s2: true, s3: true, bed: true, shelf: false }
+      },
+      {
+        num: 5,
+        title: "Готовая фикстура и укладка Compute Shelf",
+        desc: "Фикстура полностью собрана и готова к работе! Серверное шасси Compute Shelf цвета серебра (685×565×120 мм) свободно укладывается на мягкое антискользящее резиновое ложе под углом 30° до упора в концевые стопоры под строгим углом 90°. Полка надежно удерживается силой тяжести для удобной работы оператора.",
+        parts: ["Серверное шасси Compute Shelf (серебро)", "Фикстура в сборе"],
+        cam: { x: 170, y: 185, z: 275, tx: -10, ty: 48, tz: 10 },
+        show: { s1: true, s2: true, s3: true, bed: true, shelf: true }
       }
     ];
 
@@ -1691,8 +1700,8 @@
         if (btnOverviewMode) btnOverviewMode.classList.add('hidden');
         if (stepperNavRow) stepperNavRow.classList.add('hidden');
 
-        // Все 4 полоски прогресса золотые (100% готовность)
-        for (let i = 1; i <= 4; i++) {
+        // Все 5 полосок прогресса золотые (100% готовность)
+        for (let i = 1; i <= 5; i++) {
           const bar = document.getElementById(`bar${i}`);
           if (bar) bar.className = `h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/40`;
         }
@@ -1742,7 +1751,7 @@
             <!-- Big Action Button: Начать сборку -->
             <button id="btnStartAssembly" class="w-full py-3.5 px-4 rounded-xl bybit-btn-gold text-sm font-bold shadow-xl shadow-bybit-gold/25 transition flex items-center justify-center gap-2 active-scale touch-action-manipulation">
               <span class="text-base">🚀</span>
-              <span>Начать сборку (Шаг 1 из 4)</span>
+              <span>Начать сборку (Шаг 1 из 5)</span>
               <span>→</span>
             </button>
 
@@ -1794,7 +1803,7 @@
       }
 
       // -------------------------------------------------------------
-      // STATE 1–4: ПОШАГОВАЯ ИНСТРУКЦИЯ
+      // STATE 1–5: ПОШАГОВАЯ ИНСТРУКЦИЯ
       // -------------------------------------------------------------
       const s = steps[currentStep - 1];
       if (stepBadge) stepBadge.textContent = 'Пошаговая инструкция';
@@ -1802,8 +1811,8 @@
       if (btnOverviewMode) btnOverviewMode.classList.remove('hidden');
       if (stepperNavRow) stepperNavRow.classList.remove('hidden');
 
-      // Update Bybit Gold Progress Bars
-      for (let i = 1; i <= 4; i++) {
+      // Update Bybit Gold Progress Bars (1 to 5)
+      for (let i = 1; i <= 5; i++) {
         const bar = document.getElementById(`bar${i}`);
         if (bar) {
           if (i <= currentStep) {
@@ -1841,7 +1850,8 @@
       // Animate Groups Visibility with gentle glide
       const prevS2 = step2Group.visible;
       const prevS3 = step3Group.visible;
-      const prevS4 = bedGroup.visible;
+      const prevBed = bedGroup.visible;
+      const prevShelf = shelfGroup.visible;
 
       step1Group.visible = s.show.s1;
 
@@ -1857,18 +1867,22 @@
         step3Group.visible = s.show.s3;
       }
 
-      if (s.show.s4 && !prevS4) {
+      if (s.show.bed && !prevBed) {
         animateGroupReveal(bedGroup);
+      } else {
+        bedGroup.visible = s.show.bed;
+      }
+
+      if (s.show.shelf && !prevShelf) {
         animateGroupReveal(shelfGroup);
       } else {
-        bedGroup.visible   = s.show.s4;
-        shelfGroup.visible = s.show.s4;
+        shelfGroup.visible = s.show.shelf;
       }
 
       document.getElementById('chkFrame').checked = s.show.s1 || s.show.s2 || s.show.s3;
       document.getElementById('chkClamps').checked = s.show.s1 || s.show.s2 || s.show.s3;
-      document.getElementById('chkBed').checked = s.show.s4;
-      document.getElementById('chkShelf').checked = s.show.s4;
+      document.getElementById('chkBed').checked = s.show.bed;
+      document.getElementById('chkShelf').checked = s.show.shelf;
 
       // Smooth Camera Flight (easeInOutCubic)
       animateCameraSmooth(s.cam, 48);
