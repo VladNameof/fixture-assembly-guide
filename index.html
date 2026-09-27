@@ -140,12 +140,26 @@
     .safe-bottom {
       padding-bottom: max(16px, env(safe-area-inset-bottom));
     }
+
+    /* Auto-hiding Header on Scroll (Mobile) */
+    #mainHeader {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  margin-top 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity 0.25s ease;
+      will-change: transform, margin-top;
+    }
+    #mainHeader.header-hidden {
+      margin-top: -52px;
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col select-none antialiased">
 
   <!-- Top Navbar (Bybit Styling) -->
-  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-2.5 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
+  <header id="mainHeader" class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-2.5 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
       <!-- Bybit Gold Symbol -->
       <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-xs sm:text-sm shadow-md shadow-bybit-gold/25 tracking-tighter flex-shrink-0">
@@ -178,7 +192,7 @@
   </header>
 
   <!-- Mobile Mode Switcher (Visible only on mobile/tablet < lg) -->
-  <div id="mobileModeBar" class="lg:hidden bg-bybit-surface border-b border-bybit-border px-2 py-1.5 flex gap-1.5 z-40 sticky top-[48px]">
+  <div id="mobileModeBar" class="lg:hidden bg-bybit-surface border-b border-bybit-border px-2 py-1.5 flex gap-1.5 z-40 sticky top-0 transition-transform duration-300">
     <button id="btnModeSplit" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation">
       <span id="lblModeSplit">📱 50/50</span>
     </button>
@@ -197,111 +211,114 @@
     <div id="viewport3D" class="lg:col-span-8 bg-bybit-black relative h-[42vh] h-[42dvh] lg:h-full lg:min-h-full flex items-center justify-center transition-all duration-300">
       <div id="canvas-container" class="w-full h-full relative"></div>
 
-      <!-- 3D HUD Mode Indicator (Compact on mobile) -->
-      <div class="absolute top-3 left-3 bybit-panel px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs shadow-xl max-w-[190px] sm:max-w-sm pointer-events-none z-10">
-        <div class="font-bold text-white flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold flex-shrink-0"></span>
-          <span id="hudStatus" class="truncate font-semibold">Compute Shelf</span>
-        </div>
-        <div id="hudRotate" class="hidden sm:block text-[11px] text-bybit-gray leading-relaxed mt-0.5">
-          • Вращение: <strong>ЛКМ / 1 палец</strong> | Зум: <strong>2 пальца</strong>
-        </div>
-      </div>
-
-      <!-- Top Right: Mobile Expand, Views/Isolation Dropdown & Layers Toggle -->
-      <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
-        <!-- Expand to full 3D toggle (mobile only) -->
-        <button id="btnExpand3D" class="lg:hidden bybit-panel px-2.5 py-1.5 rounded-lg text-xs font-bold text-bybit-gold hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation" title="Развернуть на весь экран">
-          <span id="expand3dIcon">⛶</span>
-        </button>
-
-        <!-- Views / Isolation Dropdown (Left of Layers) -->
-        <div class="relative">
-          <button id="btnToggleViews" class="bybit-panel px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 shadow-lg active-scale touch-action-manipulation" title="Выбор режима обзора и изоляция компонентов">
-            <span id="viewsBtnLabel">📐 Изометрия</span>
-            <span id="viewsChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
-          </button>
-
-          <!-- Views & Isolation Dropdown Menu -->
-          <div id="viewsDropdown" class="hidden absolute right-0 top-10 w-56 bybit-panel p-2.5 rounded-xl text-xs space-y-1 shadow-2xl z-30 border border-bybit-border animate-scale-up">
-            <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1.5 mb-1 border-b border-bybit-border/60">
-              <span id="viewsDropdownTitle" class="text-bybit-gold font-bold">Обзор и детали</span>
-              <button id="btnCloseViews" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
-            </div>
-            
-            <button data-isolate="all" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg bg-bybit-gold/15 text-bybit-gold font-semibold flex items-center justify-between transition hover:bg-bybit-gold/25">
-              <span class="flex items-center gap-2"><span>🌟</span> <span id="isoLabelAll" class="iso-label">Вся фикстура</span></span>
-              <span class="text-[10px] opacity-75 font-mono">3D</span>
-            </button>
-            <button data-isolate="bed" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🪵</span> <span id="isoLabelBed" class="iso-label">Ложе (ДСП+резина)</span></span>
-              <span class="text-[10px] text-bybit-gray font-mono">16 мм</span>
-            </button>
-            <button data-isolate="shelf" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🖥️</span> <span id="isoLabelShelf" class="iso-label">Полка Compute Shelf</span></span>
-              <span class="text-[10px] text-bybit-gray font-mono">CAD</span>
-            </button>
-            <button data-isolate="pipes" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🍷</span> <span id="isoLabelPipes" class="iso-label">Трубки каркаса</span></span>
-              <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
-            </button>
-            <button data-isolate="clamps" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔩</span> <span id="isoLabelClamps" class="iso-label">Зажимы HJ-1/2 (модели)</span></span>
-              <span class="text-[10px] text-bybit-gold font-mono">3D</span>
-            </button>
-            <button data-isolate="clamps-frame" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔗</span> <span id="isoLabelClampsFrame" class="iso-label">Зажимы на каркасе</span></span>
-              <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
-            </button>
+      <!-- 3D Top Bar: Non-overlapping responsive toolbar -->
+      <div class="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none z-20 gap-1.5">
+        <!-- Left: HUD status indicator -->
+        <div class="pointer-events-auto bybit-panel px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs shadow-xl min-w-0 max-w-[130px] xs:max-w-[175px] sm:max-w-xs flex-shrink overflow-hidden">
+          <div class="font-bold text-white flex items-center gap-1.5 truncate">
+            <span class="w-2 h-2 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold flex-shrink-0"></span>
+            <span id="hudStatus" class="truncate text-[11px] sm:text-xs font-semibold">Compute Shelf</span>
+          </div>
+          <div id="hudRotate" class="hidden md:block text-[10px] text-bybit-gray truncate mt-0.5">
+            • Вращение: <strong>ЛКМ/1 палец</strong> | Зум: <strong>2 пальца</strong>
           </div>
         </div>
 
-        <!-- Layers Toggle Button -->
-        <div class="relative">
-          <button id="btnToggleLayers" class="bybit-panel px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 shadow-lg active-scale touch-action-manipulation" title="Управление видимостью слоев 3D">
-            <span id="layersBtnLabel">⚙️ Слои 3D</span>
-            <span id="layersChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
+        <!-- Right: Action Buttons (Expand, Views, Layers) -->
+        <div class="pointer-events-auto flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+          <!-- Expand 3D button (mobile only) -->
+          <button id="btnExpand3D" class="lg:hidden bybit-panel p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold text-bybit-gold hover:text-white flex items-center justify-center shadow-lg active-scale touch-action-manipulation" title="3D">
+            <span id="expand3dIcon" class="text-xs sm:text-sm leading-none">⛶</span>
           </button>
 
-          <!-- Layers Dropdown Panel (Popover on both mobile and desktop) -->
-          <div id="layersDropdown" class="hidden absolute right-0 top-10 w-52 bybit-panel p-3 rounded-xl text-xs space-y-2.5 shadow-2xl z-30 border border-bybit-border animate-scale-up">
-            <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1.5 border-b border-bybit-border/60">
-              <span id="layersDropdownTitle" class="text-bybit-gold font-bold">Слои 3D</span>
-              <button id="btnCloseLayers" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
+          <!-- Views / Isolation Dropdown (Left of Layers) -->
+          <div class="relative">
+            <button id="btnToggleViews" class="bybit-panel px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation" title="Выбор режима обзора и изоляция компонентов">
+              <span id="viewsBtnLabel">📐 Виды</span>
+              <span id="viewsChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
+            </button>
+
+            <!-- Views & Isolation Dropdown Menu -->
+            <div id="viewsDropdown" class="hidden absolute right-0 top-9 sm:top-10 w-52 sm:w-56 bybit-panel p-2 rounded-xl text-xs space-y-1 shadow-2xl z-30 border border-bybit-border animate-scale-up">
+              <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1 mb-1 border-b border-bybit-border/60">
+                <span id="viewsDropdownTitle" class="text-bybit-gold font-bold">Обзор и детали</span>
+                <button id="btnCloseViews" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
+              </div>
+              
+              <button data-isolate="all" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg bg-bybit-gold/15 text-bybit-gold font-semibold flex items-center justify-between transition hover:bg-bybit-gold/25">
+                <span class="flex items-center gap-2"><span>🌟</span> <span id="isoLabelAll" class="iso-label">Вся фикстура</span></span>
+                <span class="text-[10px] opacity-75 font-mono">3D</span>
+              </button>
+              <button data-isolate="bed" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+                <span class="flex items-center gap-2"><span>🪵</span> <span id="isoLabelBed" class="iso-label">Ложе (ДСП+резина)</span></span>
+                <span class="text-[10px] text-bybit-gray font-mono">16 мм</span>
+              </button>
+              <button data-isolate="shelf" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+                <span class="flex items-center gap-2"><span>🖥️</span> <span id="isoLabelShelf" class="iso-label">Полка Compute Shelf</span></span>
+                <span class="text-[10px] text-bybit-gray font-mono">CAD</span>
+              </button>
+              <button data-isolate="pipes" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+                <span class="flex items-center gap-2"><span>🍷</span> <span id="isoLabelPipes" class="iso-label">Трубки каркаса</span></span>
+                <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
+              </button>
+              <button data-isolate="clamps" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+                <span class="flex items-center gap-2"><span>🔩</span> <span id="isoLabelClamps" class="iso-label">Зажимы HJ-1/2 (модели)</span></span>
+                <span class="text-[10px] text-bybit-gold font-mono">3D</span>
+              </button>
+              <button data-isolate="clamps-frame" class="iso-opt w-full text-left px-2 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+                <span class="flex items-center gap-2"><span>🔗</span> <span id="isoLabelClampsFrame" class="iso-label">Зажимы на каркасе</span></span>
+                <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
+              </button>
             </div>
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span id="lblDims" class="text-bybit-gold font-semibold">📏 Размеры</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span id="lblShelf">Compute Shelf</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span id="lblBed">ДСП + резина</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span id="lblFrame">Трубы Ø28 мм</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span id="lblClamps">Зажимы (HJ-1 / HJ-2)</span>
-            </label>
+          </div>
+
+          <!-- Layers Toggle Button -->
+          <div class="relative">
+            <button id="btnToggleLayers" class="bybit-panel px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation" title="Управление видимостью слоев 3D">
+              <span id="layersBtnLabel">⚙️ Слои</span>
+              <span id="layersChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
+            </button>
+
+            <!-- Layers Dropdown Panel (Popover on both mobile and desktop) -->
+            <div id="layersDropdown" class="hidden absolute right-0 top-9 sm:top-10 w-48 sm:w-52 bybit-panel p-2.5 rounded-xl text-xs space-y-2 shadow-2xl z-30 border border-bybit-border animate-scale-up">
+              <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1 border-b border-bybit-border/60">
+                <span id="layersDropdownTitle" class="text-bybit-gold font-bold">Слои 3D</span>
+                <button id="btnCloseLayers" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
+              </div>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+                <span id="lblDims" class="text-bybit-gold font-semibold">📏 Размеры</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+                <span id="lblShelf">Compute Shelf</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+                <span id="lblBed">ДСП + резина</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+                <span id="lblFrame">Трубы Ø28 мм</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
+                <span id="lblClamps">Зажимы (HJ-1 / HJ-2)</span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Floating 3D Navigation Controls (Mobile & Desktop quick actions) -->
-      <div class="absolute bottom-3 right-3 flex flex-col gap-1.5 z-20">
-        <button id="btnResetCam" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-base shadow-xl active-scale touch-action-manipulation" title="Сброс камеры / Reset Camera">
+      <div class="absolute bottom-2.5 right-2.5 flex flex-col gap-1 z-20">
+        <button id="btnResetCam" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-xs sm:text-sm shadow-xl active-scale touch-action-manipulation" title="Сброс камеры / Reset Camera">
           <span>⟲</span>
         </button>
-        <button id="btnZoomIn" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-lg font-bold shadow-xl active-scale touch-action-manipulation" title="Приблизить / Zoom In">
+        <button id="btnZoomIn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-sm sm:text-base font-bold shadow-xl active-scale touch-action-manipulation" title="Приблизить / Zoom In">
           <span>+</span>
         </button>
-        <button id="btnZoomOut" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-lg font-bold shadow-xl active-scale touch-action-manipulation" title="Отдалить / Zoom Out">
+        <button id="btnZoomOut" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-sm sm:text-base font-bold shadow-xl active-scale touch-action-manipulation" title="Отдалить / Zoom Out">
           <span>−</span>
         </button>
       </div>
@@ -313,11 +330,11 @@
       
       <!-- Top Tabs: Инструкция / Комплектация -->
       <div class="p-2 border-b border-bybit-border bg-bybit-surface flex gap-2">
-        <button id="tabStepper" class="flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation">
+        <button id="tabStepper" class="flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation flex items-center justify-center text-center">
           Этапы сборки (1–5)
         </button>
-        <button id="tabBOM" class="flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation">
-          📋 Список компонентов
+        <button id="tabBOM" class="flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation flex items-center justify-center text-center">
+          📋 Спецификация BOM
         </button>
       </div>
 
@@ -400,8 +417,40 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0B0E14); // Bybit deep black
 
+    function getCameraScaleMultiplier() {
+      const w = window.innerWidth;
+      if (w < 480) return 1.36;
+      if (w < 768) return 1.25;
+      if (w < 1024) return 1.15;
+      return 1.0;
+    }
+
+    function getAdjustedCamConfig(cam) {
+      if (!cam) return cam;
+      const mult = getCameraScaleMultiplier();
+      if (mult === 1.0) return cam;
+      
+      const tx = (cam.tx !== undefined) ? cam.tx : 0;
+      const ty = (cam.ty !== undefined) ? cam.ty : 45;
+      const tz = (cam.tz !== undefined) ? cam.tz : 0;
+      
+      const dx = cam.x - tx;
+      const dy = cam.y - ty;
+      const dz = cam.z - tz;
+
+      return {
+        x: tx + dx * mult,
+        y: ty + dy * mult,
+        z: tz + dz * mult,
+        tx: tx,
+        ty: ty,
+        tz: tz
+      };
+    }
+
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 3000);
-    camera.position.set(240, 200, 320);
+    const initCam = getAdjustedCamConfig({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
+    camera.position.set(initCam.x, initCam.y, initCam.z);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -414,7 +463,9 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.maxPolarAngle = Math.PI / 2 - 0.01;
-    controls.target.set(0, 45, 0);
+    controls.minDistance = 60;
+    controls.maxDistance = 1400;
+    controls.target.set(initCam.tx, initCam.ty, initCam.tz);
 
     // Multi-Point Studio Lighting for Vivid Contrast & Crisp Depth
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 0.85); // High sky fill + dark ground bounce
@@ -1371,7 +1422,7 @@
         mode3D: "🧊 3D Модель",
         modeSteps: "📝 Инструкция",
         hudRotate: "• Вращение: <strong>ЛКМ / 1 палец</strong> | Зум: <strong>2 пальца</strong>",
-        viewsBtnLabel: "📐 Изометрия",
+        viewsBtnLabel: "📐 Виды",
         viewsDropdownTitle: "Обзор и детали",
         views: {
           all: "🌟 Вся фикстура",
@@ -1383,13 +1434,13 @@
         },
         hudStatus: {
           all: "Фикстура в сборе",
-          bed: "Деталь: Ложе (ДСП 16 мм + резина + 6 саморезов)",
-          shelf: "Деталь: Серверное шасси Compute Shelf (685×565×120 мм)",
-          pipes: "Детали: 11 трубок каркаса Lean Pipe Ø28 мм",
-          clamps: "Детали: Зажимы HJ-1 и HJ-2 (отдельные 3D-модели)",
-          clampsFrame: "Детали: Все 12 зажимов в точках сборки каркаса"
+          bed: "Ложе (ДСП 16 мм + резина)",
+          shelf: "Compute Shelf",
+          pipes: "Трубки каркаса Ø28 мм",
+          clamps: "Зажимы HJ-1 / HJ-2",
+          clampsFrame: "12 зажимов на каркасе"
         },
-        layersBtnLabel: "⚙️ Слои 3D",
+        layersBtnLabel: "⚙️ Слои",
         layersDropdownTitle: "Слои 3D",
         lblDims: "📏 Размеры",
         lblShelf: "Compute Shelf",
@@ -1397,7 +1448,7 @@
         lblFrame: "Трубы Ø28 мм",
         lblClamps: "Зажимы (HJ-1 / HJ-2)",
         tabStepper: "Этапы сборки (1–5)",
-        tabBOM: "📋 Список компонентов",
+        tabBOM: "📋 Спецификация BOM",
         stepBadgeIntro: "Готовая модель",
         stepBadgeGuide: "Пошаговая инструкция",
         stepCounterAssembled: "В сборе",
@@ -1577,14 +1628,14 @@
           clampsFrame: "🔗 Clamps on Frame"
         },
         hudStatus: {
-          all: "Assembled Fixture",
-          bed: "Part: Bed (Chipboard 16 mm + rubber + 6 screws)",
-          shelf: "Part: Compute Shelf Chassis (685×565×120 mm)",
-          pipes: "Parts: 11 Lean Pipes Ø28 mm",
-          clamps: "Parts: HJ-1 & HJ-2 Clamps (Standalone 3D Models)",
-          clampsFrame: "Parts: All 12 Clamps at Frame Assembly Points"
+          all: "Complete Fixture",
+          bed: "Bed (16mm + Rubber)",
+          shelf: "Compute Shelf",
+          pipes: "Frame Pipes Ø28mm",
+          clamps: "Clamps HJ-1 / HJ-2",
+          clampsFrame: "12 Clamps on Frame"
         },
-        layersBtnLabel: "⚙️ 3D Layers",
+        layersBtnLabel: "⚙️ Layers",
         layersDropdownTitle: "3D Layers",
         lblDims: "📏 Dimensions",
         lblShelf: "Compute Shelf",
@@ -1592,7 +1643,7 @@
         lblFrame: "Pipes Ø28 mm",
         lblClamps: "Clamps (HJ-1 / HJ-2)",
         tabStepper: "Assembly Steps (1–5)",
-        tabBOM: "📋 Bill of Materials",
+        tabBOM: "📋 BOM Specification",
         stepBadgeIntro: "Completed Model",
         stepBadgeGuide: "Step-by-step Guide",
         stepCounterAssembled: "Assembled",
@@ -1773,13 +1824,13 @@
         },
         hudStatus: {
           all: "Kompletna stacja",
-          bed: "Część: Łoże (Płyta 16 mm + guma + 6 wkrętów)",
-          shelf: "Część: Obudowa Compute Shelf (685×565×120 mm)",
-          pipes: "Części: 11 rurek ramy Lean Pipe Ø28 mm",
-          clamps: "Części: Zaciski HJ-1 i HJ-2 (Modele 3D)",
-          clampsFrame: "Części: Wszystkie 12 zacisków na ramie"
+          bed: "Łoże (16 mm + guma)",
+          shelf: "Compute Shelf",
+          pipes: "Rurki ramy Ø28 mm",
+          clamps: "Zaciski HJ-1 / HJ-2",
+          clampsFrame: "12 zacisków na ramie"
         },
-        layersBtnLabel: "⚙️ Warstwy 3D",
+        layersBtnLabel: "⚙️ Warstwy",
         layersDropdownTitle: "Warstwy 3D",
         lblDims: "📏 Wymiary",
         lblShelf: "Compute Shelf",
@@ -1787,7 +1838,7 @@
         lblFrame: "Rury Ø28 mm",
         lblClamps: "Zaciski (HJ-1 / HJ-2)",
         tabStepper: "Etapy montażu (1–5)",
-        tabBOM: "📋 Zestawienie materiałów",
+        tabBOM: "📋 Specyfikacja BOM",
         stepBadgeIntro: "Gotowy model",
         stepBadgeGuide: "Instrukcja krok po kroku",
         stepCounterAssembled: "Złożony",
@@ -2008,17 +2059,19 @@
     const panelBOM = document.getElementById('panelBOM');
 
     tabStepper.addEventListener('click', () => {
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition active-scale touch-action-manipulation";
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation";
+      tabStepper.className = "flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation flex items-center justify-center text-center";
+      tabBOM.className = "flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation flex items-center justify-center text-center";
       panelStepper.classList.remove('hidden');
       panelBOM.classList.add('hidden');
+      if (typeof showHeader === 'function') showHeader();
     });
 
     tabBOM.addEventListener('click', () => {
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition active-scale touch-action-manipulation";
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation";
+      tabBOM.className = "flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bybit-btn-gold text-xs font-bold transition active-scale touch-action-manipulation flex items-center justify-center text-center";
+      tabStepper.className = "flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation flex items-center justify-center text-center";
       panelBOM.classList.remove('hidden');
       panelStepper.classList.add('hidden');
+      if (typeof showHeader === 'function') showHeader();
     });
 
     // -------------------------------------------------------------
@@ -2075,12 +2128,7 @@
       const t = I18N[currentLang] || I18N.ru;
       const viewsBtnLabel = document.getElementById('viewsBtnLabel');
       if (viewsBtnLabel) {
-        if (mode === 'all') viewsBtnLabel.innerHTML = t.viewsBtnLabel;
-        else if (mode === 'bed') viewsBtnLabel.innerHTML = t.views.bed;
-        else if (mode === 'shelf') viewsBtnLabel.innerHTML = t.views.shelf;
-        else if (mode === 'pipes') viewsBtnLabel.innerHTML = t.views.pipes;
-        else if (mode === 'clamps') viewsBtnLabel.innerHTML = t.views.clamps;
-        else if (mode === 'clamps-frame') viewsBtnLabel.innerHTML = t.views.clampsFrame;
+        viewsBtnLabel.innerHTML = t.viewsBtnLabel;
       }
       document.querySelectorAll('.iso-opt').forEach(btn => {
         const isMatch = btn.getAttribute('data-isolate') === mode;
@@ -2489,6 +2537,9 @@
     }
 
     function renderStep() {
+      if (typeof showHeader === 'function') showHeader();
+      const pStepper = document.getElementById('panelStepper');
+      if (pStepper) pStepper.scrollTop = 0;
       resetIsolationUI('all');
       const t = I18N[currentLang] || I18N.ru;
       const stepBadge = document.getElementById('stepBadge');
@@ -2713,10 +2764,11 @@
         cancelAnimationFrame(cameraAnimId);
       }
 
+      const adj = getAdjustedCamConfig(target);
       const startPos = camera.position.clone();
-      const endPos = new THREE.Vector3(target.x, target.y, target.z);
+      const endPos = new THREE.Vector3(adj.x, adj.y, adj.z);
       const startTarget = controls.target.clone();
-      const endTarget = new THREE.Vector3(target.tx, target.ty, target.tz);
+      const endTarget = new THREE.Vector3(adj.tx, adj.ty, adj.tz);
 
       let frame = 0;
       function step() {
@@ -2911,23 +2963,32 @@
       if (mode === 'split') {
         btnModeSplit.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.remove('hidden');
-        viewport3D.style.height = '42dvh';
+        viewport3D.style.height = '40dvh';
+        viewport3D.style.flex = 'none';
         sidebarPanel.classList.remove('hidden');
-        sidebarPanel.style.height = 'calc(58dvh - 42px)';
+        sidebarPanel.style.height = '';
+        sidebarPanel.style.flex = '1 1 0%';
         if (expand3dIcon) expand3dIcon.textContent = '⛶';
       } else if (mode === '3d') {
         btnMode3D.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.remove('hidden');
-        viewport3D.style.height = 'calc(100dvh - 95px)';
+        viewport3D.style.height = '100%';
+        viewport3D.style.flex = '1 1 0%';
         sidebarPanel.classList.add('hidden');
+        sidebarPanel.style.height = '0';
+        sidebarPanel.style.flex = 'none';
         if (expand3dIcon) expand3dIcon.textContent = '⤢';
       } else if (mode === 'steps') {
         btnModeSteps.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.add('hidden');
+        viewport3D.style.height = '0';
+        viewport3D.style.flex = 'none';
         sidebarPanel.classList.remove('hidden');
-        sidebarPanel.style.height = 'calc(100dvh - 95px)';
+        sidebarPanel.style.height = '100%';
+        sidebarPanel.style.flex = '1 1 0%';
       }
 
+      showHeader();
       setTimeout(updateRendererSize, 40);
       setTimeout(updateRendererSize, 220);
     }
@@ -2950,7 +3011,10 @@
     const btnResetCam = document.getElementById('btnResetCam');
     if (btnResetCam) {
       btnResetCam.addEventListener('click', () => {
-        animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 }, 40);
+        const target = currentStep === 0 
+          ? { x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 }
+          : showConfigs[currentStep - 1].cam;
+        animateCameraSmooth(target, 40);
       });
     }
     const btnZoomIn = document.getElementById('btnZoomIn');
@@ -2961,6 +3025,89 @@
     if (btnZoomOut) {
       btnZoomOut.addEventListener('click', () => zoomCamera(55));
     }
+
+    // -------------------------------------------------------------
+    // AUTO-HIDING HEADER ON SCROLL (MOBILE / TABLET)
+    // -------------------------------------------------------------
+    let isHeaderHidden = false;
+    const mainHeader = document.getElementById('mainHeader');
+
+    function hideHeader() {
+      if (isHeaderHidden || !mainHeader) return;
+      if (window.innerWidth >= 1024) return;
+      const h = mainHeader.offsetHeight || 50;
+      mainHeader.style.marginTop = `-${h}px`;
+      mainHeader.classList.add('header-hidden');
+      isHeaderHidden = true;
+      setTimeout(updateRendererSize, 320);
+    }
+
+    function showHeader() {
+      if (!isHeaderHidden || !mainHeader) return;
+      mainHeader.style.marginTop = '0px';
+      mainHeader.classList.remove('header-hidden');
+      isHeaderHidden = false;
+      setTimeout(updateRendererSize, 320);
+    }
+
+    function setupHeaderAutoHide() {
+      const pStepper = document.getElementById('panelStepper');
+      const pBOM = document.getElementById('panelBOM');
+
+      let lastStepperTop = 0;
+      if (pStepper) {
+        pStepper.addEventListener('scroll', () => {
+          if (window.innerWidth >= 1024) return;
+          const st = pStepper.scrollTop;
+          const delta = st - lastStepperTop;
+          if (Math.abs(delta) < 6) return;
+          if (st <= 15) {
+            showHeader();
+          } else if (delta > 8 && st > 35) {
+            hideHeader();
+          } else if (delta < -8) {
+            showHeader();
+          }
+          lastStepperTop = st;
+        }, { passive: true });
+      }
+
+      let lastBOMTop = 0;
+      if (pBOM) {
+        pBOM.addEventListener('scroll', () => {
+          if (window.innerWidth >= 1024) return;
+          const st = pBOM.scrollTop;
+          const delta = st - lastBOMTop;
+          if (Math.abs(delta) < 6) return;
+          if (st <= 15) {
+            showHeader();
+          } else if (delta > 8 && st > 35) {
+            hideHeader();
+          } else if (delta < -8) {
+            showHeader();
+          }
+          lastBOMTop = st;
+        }, { passive: true });
+      }
+
+      let lastWindowTop = 0;
+      window.addEventListener('scroll', () => {
+        if (window.innerWidth >= 1024) return;
+        const st = window.scrollY || document.documentElement.scrollTop;
+        const delta = st - lastWindowTop;
+        if (Math.abs(delta) < 6) return;
+        if (st <= 15) {
+          showHeader();
+        } else if (delta > 8 && st > 35) {
+          hideHeader();
+        } else if (delta < -8) {
+          showHeader();
+        }
+        lastWindowTop = st;
+      }, { passive: true });
+    }
+
+    setupHeaderAutoHide();
 
     const btnToggleViews = document.getElementById('btnToggleViews');
     const btnCloseViews = document.getElementById('btnCloseViews');
