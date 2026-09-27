@@ -2027,19 +2027,6 @@
     document.getElementById('chkClamps').addEventListener('change', (e) => {
       allClamps.forEach(c => c.visible = e.target.checked);
     });
-    const chkDimensions = document.getElementById('chkDimensions');
-    const btnToggleDims = document.getElementById('btnToggleDims');
-    if (chkDimensions) {
-      chkDimensions.addEventListener('change', (e) => {
-        dimensionsGroup.visible = e.target.checked;
-      });
-    }
-    if (btnToggleDims) {
-      btnToggleDims.addEventListener('click', () => {
-        dimensionsGroup.visible = !dimensionsGroup.visible;
-        if (chkDimensions) chkDimensions.checked = dimensionsGroup.visible;
-      });
-    }
 
     renderStep();
 
