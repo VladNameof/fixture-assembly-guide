@@ -207,7 +207,7 @@
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span>Зажимы HJ-1</span>
+              <span>Зажимы (HJ-1 / HJ-2)</span>
             </label>
           </div>
         </div>
@@ -219,6 +219,15 @@
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto w-full sm:w-auto">
           <button id="viewIso" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow touch-action-manipulation">
             Изометрия
+          </button>
+          <button id="viewHJ2" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-bybit-surface border border-bybit-gold/60 text-bybit-gold hover:bg-bybit-gold hover:text-bybit-black text-xs font-bold transition flex items-center gap-1 touch-action-manipulation" title="Фокус на 3D-угловом зажиме HJ-2">
+            🔩 Узел HJ-2 (3D-угол)
+          </button>
+          <button id="viewHJ1" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-bybit-surface border border-emerald-500/60 text-emerald-400 hover:bg-emerald-500 hover:text-white text-xs font-bold transition flex items-center gap-1 touch-action-manipulation" title="Фокус на Т-зажиме HJ-1">
+            🔧 Узел HJ-1 (Т-стык)
+          </button>
+          <button id="btnOpenClampModal" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-bold text-white transition flex items-center gap-1 touch-action-manipulation shadow">
+            📋 Инфо: HJ-1 vs HJ-2
           </button>
           <button id="viewStoppers" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-xs font-semibold text-white shadow-lg shadow-emerald-600/25 transition flex items-center gap-1 touch-action-manipulation">
             🛑 Стопоры 90°
@@ -359,23 +368,30 @@
         <div class="bybit-card rounded-xl p-3.5 space-y-3">
           <div class="flex items-center justify-between border-b border-bybit-border pb-2">
             <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">2. Зажимы и крепеж</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">14 комплектов</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">12 комплектов</span>
           </div>
 
-          <ul class="text-xs space-y-2 text-slate-300">
+          <ul class="text-xs space-y-2.5 text-slate-300">
             <li class="flex items-start justify-between">
               <div>
-                <strong class="text-white">Зажим HJ-1 (Т-образный для Ø28 мм):</strong>
-                <p class="text-[11px] text-bybit-gray">Штампованная оцинкованная сталь, 90° Т-соединение</p>
+                <strong class="text-white flex items-center gap-1"><span>🔩</span> Зажим HJ-2 (3D угловой 90°×90°×90°):</strong>
+                <p class="text-[11px] text-bybit-gray">Установка в 2 задних углах стола (BL, BR). Фиксирует 3 взаимно перпендикулярные трубы</p>
               </div>
-              <span class="font-bold text-bybit-gold font-mono text-sm ml-2">14 шт.</span>
+              <span class="font-bold text-bybit-gold font-mono text-sm ml-2">2 шт.</span>
+            </li>
+            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
+              <div>
+                <strong class="text-white flex items-center gap-1"><span>🔧</span> Зажим HJ-1 (Т-образный для Ø28 мм):</strong>
+                <p class="text-[11px] text-bybit-gray">Передние углы (2 шт.), верхняя перекладина (2 шт.), хребет 30° (4 шт.), стопоры 90° (2 шт.)</p>
+              </div>
+              <span class="font-bold text-emerald-400 font-mono text-sm ml-2">10 шт.</span>
             </li>
             <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
               <div>
                 <strong class="text-white">Болты М6×25 + гайки М6:</strong>
-                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект к каждому зажиму HJ-1</p>
+                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект к каждому зажиму HJ-1 и HJ-2</p>
               </div>
-              <span class="font-bold text-white font-mono text-sm ml-2">14 компл.</span>
+              <span class="font-bold text-white font-mono text-sm ml-2">12 компл.</span>
             </li>
           </ul>
         </div>
@@ -420,7 +436,7 @@
           <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider border-b border-bybit-border pb-2">4. Необходимый инструмент</h3>
           <ul class="text-xs space-y-1.5 text-slate-300">
             <li class="flex items-center gap-2">
-              <span class="text-bybit-gold">✓</span> <strong>Шестигранный ключ 5 мм</strong> — затяжка всех 14 зажимов HJ-1
+              <span class="text-bybit-gold">✓</span> <strong>Шестигранный ключ 5 мм</strong> — затяжка всех 12 зажимов (2× HJ-2, 10× HJ-1)
             </li>
             <li class="flex items-center gap-2">
               <span class="text-bybit-gold">✓</span> <strong>Труборез для тонкостенных труб Ø28 мм</strong> (или монтажная ножовка)
@@ -438,6 +454,156 @@
 
     </div>
   </main>
+
+  <!-- Modal: Детальная спецификация зажимов HJ-1 и HJ-2 -->
+  <div id="modalClamps" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-6 transition-all duration-300">
+    <div class="bybit-panel border border-bybit-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up">
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-bybit-border flex items-center justify-between bg-bybit-card">
+        <div class="flex items-center gap-2.5">
+          <span class="w-3 h-3 rounded-full bg-bybit-gold animate-pulse"></span>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              Крепления Lean Pipe Ø28 мм: Сравнение HJ-1 и HJ-2
+            </h3>
+            <p class="text-xs text-bybit-gray">Где и какой тип крепления используется в конструкции фикстуры</p>
+          </div>
+        </div>
+        <button id="btnCloseClampModal" class="p-2 text-bybit-gray hover:text-white rounded-lg hover:bg-slate-800 transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 sm:p-6 overflow-y-auto custom-scroll space-y-6">
+        <!-- 2 Comparison Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1: HJ-2 -->
+          <div class="bybit-card rounded-xl p-4 border border-bybit-gold/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-bybit-gold/20 text-bybit-gold text-[10px] font-bold border border-bybit-gold/30">
+              Всего 2 шт.
+            </div>
+            <div>
+              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
+                <img src="clamp_hj2_corner.png" alt="Зажим HJ-2 3D Угловой" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
+              </div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
+                <span>🔩</span> Зажим HJ-2 (3D-Угловой)
+              </h4>
+              <p class="text-xs text-bybit-gold font-semibold mb-2">3-сторонний угловой узел (90°×90°×90°)</p>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Пространственный тройной угол. Соединяет три взаимно перпендикулярные трубы в одной жесткой точке без люфтов и сварки. Состоит из одного элемента H-2 и двух элементов H-4.
+              </p>
+              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
+                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">Точки установки (2 шт.):</div>
+                <div class="text-white flex items-center gap-1.5">
+                  <span class="text-bybit-gold font-bold">1.</span> Задний левый угол стола (BL)
+                </div>
+                <div class="text-white flex items-center gap-1.5">
+                  <span class="text-bybit-gold font-bold">2.</span> Задний правый угол стола (BR)
+                </div>
+                <div class="text-[11px] text-slate-400 mt-1">
+                  Связывает заднюю балку 750 мм, боковину 500 мм и вертикальную стойку 290 мм.
+                </div>
+              </div>
+            </div>
+            <button id="btnFocusHJ2Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
+              🔍 Показать узел HJ-2 на 3D-модели
+            </button>
+          </div>
+
+          <!-- Card 2: HJ-1 -->
+          <div class="bybit-card rounded-xl p-4 border border-bybit-border flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
+              Всего 10 шт.
+            </div>
+            <div>
+              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
+                <img src="clamp_hj1_tee.png" alt="Зажим HJ-1 Т-образный" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
+              </div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
+                <span>🔧</span> Зажим HJ-1 (Т-образный)
+              </h4>
+              <p class="text-xs text-emerald-400 font-semibold mb-2">2-сторонний Т-стык с вращением на 360°</p>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Классический Т-образный хомут. Охватывает сквозную трубу и удерживает торец примыкающей. До затяжки болта М6 свободно вращается вокруг круглой трубы, позволяя задать любой угол (30°, 60°, 90°).
+              </p>
+              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
+                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">Точки установки (10 шт.):</div>
+                <div class="text-slate-200">
+                  • <strong>2 шт.</strong> — передние углы стола (FL, FR) под 90°
+                </div>
+                <div class="text-slate-200">
+                  • <strong>2 шт.</strong> — верхние углы рамы (TL, TR) под 90°
+                </div>
+                <div class="text-slate-200">
+                  • <strong>4 шт.</strong> — наклонный хребет 580 мм (угол 30°)
+                </div>
+                <div class="text-slate-200">
+                  • <strong>2 шт.</strong> — упорные стопоры 100 мм (угол 90° к ложу)
+                </div>
+              </div>
+            </div>
+            <button id="btnFocusHJ1Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-secondary text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
+              🔍 Показать узел HJ-1 на 3D-модели
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="bybit-card rounded-xl p-4 space-y-2">
+          <h4 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">Сводная таблица распределения крепежа</h4>
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-bybit-gray border-b border-bybit-border">
+                <th class="pb-1.5">Узел / Элемент</th>
+                <th class="pb-1.5">Тип зажима</th>
+                <th class="pb-1.5 text-center">Угол фиксации</th>
+                <th class="pb-1.5 text-right">Кол-во</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-bybit-border/60 text-slate-200 font-mono text-[11px]">
+              <tr>
+                <td class="py-1.5 font-sans">Задние углы основания (BL, BR)</td>
+                <td class="py-1.5 text-bybit-gold font-bold">HJ-2 (3D-угол)</td>
+                <td class="py-1.5 text-center">90°×90°×90°</td>
+                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-sans">Передние углы стола (FL, FR)</td>
+                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
+                <td class="py-1.5 text-center">90°</td>
+                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-sans">Верхняя поперечина (TL, TR)</td>
+                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
+                <td class="py-1.5 text-center">90°</td>
+                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-sans">Наклонные балки ложа (580 мм)</td>
+                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
+                <td class="py-1.5 text-center">30° наклона</td>
+                <td class="py-1.5 text-right font-bold text-white">4 шт.</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-sans">Передние стопоры полки (100 мм)</td>
+                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
+                <td class="py-1.5 text-center">90° к полке (60° вперед)</td>
+                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
+              </tr>
+              <tr class="bg-bybit-surface font-bold">
+                <td class="py-2 text-white font-sans">Итого зажимов:</td>
+                <td class="py-2 text-bybit-gold" colspan="2">2 шт. HJ-2 + 10 шт. HJ-1</td>
+                <td class="py-2 text-right text-bybit-gold font-mono text-sm">12 компл.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     // -------------------------------------------------------------
@@ -659,11 +825,20 @@
       roughness: 0.22
     });
 
-    const clampMat = new THREE.MeshStandardMaterial({
-      color: 0xd97706, // Golden Zinc Finish
-      metalness: 0.82,
-      roughness: 0.28
+    const clampMetalMat = new THREE.MeshStandardMaterial({
+      color: 0xD8DFE8, // Bright Nickel-Chrome Stamped Steel
+      metalness: 0.88,
+      roughness: 0.22,
+      envMapIntensity: 1.2
     });
+
+    const clampBoltMat = new THREE.MeshStandardMaterial({
+      color: 0xEEF2F6, // Fastener Bolt & Nut M6
+      metalness: 0.94,
+      roughness: 0.16
+    });
+
+    const allClamps = [];
 
     const woodMat = new THREE.MeshStandardMaterial({
       color: 0x92400e,
@@ -744,13 +919,157 @@
       return mesh;
     }
 
-    function createClamp(pos, targetGroup = step1Group) {
-      const geo = new THREE.SphereGeometry(R_pipe * 1.42, 16, 16);
-      const mesh = new THREE.Mesh(geo, clampMat);
-      mesh.position.copy(pos);
-      mesh.castShadow = true;
-      targetGroup.add(mesh);
-      return mesh;
+    // -------------------------------------------------------------
+    // HIGH-FIDELITY CLAMP GENERATORS (HJ-1 & HJ-2)
+    // -------------------------------------------------------------
+    function createHJ1(pos, throughDir, buttDir, targetGroup) {
+      const g = new THREE.Group();
+      g.position.copy(pos);
+
+      const vT = throughDir.clone().normalize();
+      const vB = buttDir.clone().normalize();
+      let vN = new THREE.Vector3().crossVectors(vT, vB);
+      if (vN.lengthSq() < 0.001) vN = new THREE.Vector3(0, 1, 0);
+      vN.normalize();
+
+      const rOuter = R_pipe + 1.8;
+      const collarLen = 14;
+      const sleeveLen = 16;
+
+      // 1. Through Collar
+      const collarGeo = new THREE.CylinderGeometry(rOuter, rOuter, collarLen, 24);
+      const collarMesh = new THREE.Mesh(collarGeo, clampMetalMat);
+      collarMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vT);
+      collarMesh.castShadow = true;
+      g.add(collarMesh);
+
+      const lipGeo = new THREE.CylinderGeometry(rOuter + 0.6, rOuter + 0.6, 1.2, 24);
+      const lip1 = new THREE.Mesh(lipGeo, clampMetalMat);
+      lip1.position.copy(vT.clone().multiplyScalar(collarLen / 2 - 0.6));
+      lip1.quaternion.copy(collarMesh.quaternion);
+      g.add(lip1);
+
+      const lip2 = new THREE.Mesh(lipGeo, clampMetalMat);
+      lip2.position.copy(vT.clone().multiplyScalar(-collarLen / 2 + 0.6));
+      lip2.quaternion.copy(collarMesh.quaternion);
+      g.add(lip2);
+
+      // 2. Butt Sleeve
+      const sleeveGeo = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
+      const sleeveMesh = new THREE.Mesh(sleeveGeo, clampMetalMat);
+      sleeveMesh.position.copy(vB.clone().multiplyScalar(sleeveLen / 2 + 0.5));
+      sleeveMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vB);
+      sleeveMesh.castShadow = true;
+      g.add(sleeveMesh);
+
+      // Flanged clamping seam ears
+      const earGeo = new THREE.BoxGeometry(0.9, sleeveLen * 0.75, 2.0);
+      const ear1 = new THREE.Mesh(earGeo, clampMetalMat);
+      ear1.position.copy(vB.clone().multiplyScalar(sleeveLen * 0.55)).addScaledVector(vN, rOuter * 0.95);
+      ear1.quaternion.copy(sleeveMesh.quaternion);
+      g.add(ear1);
+
+      const ear2 = new THREE.Mesh(earGeo, clampMetalMat);
+      ear2.position.copy(vB.clone().multiplyScalar(sleeveLen * 0.55)).addScaledVector(vN, -rOuter * 0.95);
+      ear2.quaternion.copy(sleeveMesh.quaternion);
+      g.add(ear2);
+
+      // 3. Central M6 Tightening Bolt, Hex Head & Hex Nut
+      const boltCenter = vB.clone().multiplyScalar(sleeveLen * 0.55);
+      const boltRodGeo = new THREE.CylinderGeometry(0.85, 0.85, rOuter * 2.8, 12);
+      const boltRod = new THREE.Mesh(boltRodGeo, clampBoltMat);
+      boltRod.position.copy(boltCenter);
+      boltRod.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vN);
+      g.add(boltRod);
+
+      const hexHeadGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.4, 6);
+      const headMesh = new THREE.Mesh(hexHeadGeo, clampBoltMat);
+      headMesh.position.copy(boltCenter).addScaledVector(vN, rOuter + 1.2);
+      headMesh.quaternion.copy(boltRod.quaternion);
+      g.add(headMesh);
+
+      const hexNutGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.8, 6);
+      const nutMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
+      nutMesh.position.copy(boltCenter).addScaledVector(vN, -rOuter - 1.3);
+      nutMesh.quaternion.copy(boltRod.quaternion);
+      g.add(nutMesh);
+
+      const washerGeo = new THREE.CylinderGeometry(2.3, 2.3, 0.4, 16);
+      const washerMesh = new THREE.Mesh(washerGeo, clampBoltMat);
+      washerMesh.position.copy(boltCenter).addScaledVector(vN, -rOuter - 0.25);
+      washerMesh.quaternion.copy(boltRod.quaternion);
+      g.add(washerMesh);
+
+      allClamps.push(g);
+      targetGroup.add(g);
+      return g;
+    }
+
+    function createHJ2(pos, xDir, yDir, zDir, targetGroup) {
+      const g = new THREE.Group();
+      g.position.copy(pos);
+
+      const vx = xDir.clone().normalize();
+      const vy = yDir.clone().normalize();
+      const vz = zDir.clone().normalize();
+
+      const rOuter = R_pipe + 1.8;
+      const sleeveLen = 15;
+
+      // 1. Vertical Sleeve along Y (upright)
+      const geoY = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
+      const meshY = new THREE.Mesh(geoY, clampMetalMat);
+      meshY.position.copy(vy.clone().multiplyScalar(sleeveLen * 0.48));
+      meshY.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vy);
+      meshY.castShadow = true;
+      g.add(meshY);
+
+      // 2. Horizontal Sleeve along X (transverse)
+      const geoX = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
+      const meshX = new THREE.Mesh(geoX, clampMetalMat);
+      meshX.position.copy(vx.clone().multiplyScalar(sleeveLen * 0.48));
+      meshX.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vx);
+      meshX.castShadow = true;
+      g.add(meshX);
+
+      // 3. Horizontal Sleeve along Z (side pipe)
+      const geoZ = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
+      const meshZ = new THREE.Mesh(geoZ, clampMetalMat);
+      meshZ.position.copy(vz.clone().multiplyScalar(sleeveLen * 0.48));
+      meshZ.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vz);
+      meshZ.castShadow = true;
+      g.add(meshZ);
+
+      // 4. Stamped Corner Apex Housing
+      const cornerGeo = new THREE.SphereGeometry(rOuter * 1.18, 18, 18);
+      const cornerMesh = new THREE.Mesh(cornerGeo, clampMetalMat);
+      cornerMesh.castShadow = true;
+      g.add(cornerMesh);
+
+      // 5. Diagonal Clamping Bolt & Nut M6
+      const vDiag = new THREE.Vector3().add(vx).add(vz).normalize();
+      const boltPos = vDiag.clone().multiplyScalar(sleeveLen * 0.52);
+
+      const boltRodGeo = new THREE.CylinderGeometry(0.85, 0.85, rOuter * 2.4, 12);
+      const boltRod = new THREE.Mesh(boltRodGeo, clampBoltMat);
+      boltRod.position.copy(boltPos);
+      boltRod.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vy);
+      g.add(boltRod);
+
+      const hexNutGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.8, 6);
+      const headMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
+      headMesh.position.copy(boltPos).addScaledVector(vy, rOuter + 0.5);
+      headMesh.quaternion.copy(boltRod.quaternion);
+      g.add(headMesh);
+
+      const nutMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
+      nutMesh.position.copy(boltPos).addScaledVector(vy, -rOuter - 0.5);
+      nutMesh.quaternion.copy(boltRod.quaternion);
+      g.add(nutMesh);
+
+      allClamps.push(g);
+      targetGroup.add(g);
+      return g;
     }
 
     function createDimLine(p1, p2, offset) {
@@ -792,17 +1111,21 @@
     step1Group.add(createPipe(BL, TL)); // Левая стойка 290 мм
     step1Group.add(createPipe(BR, TR)); // Правая стойка 290 мм
 
-    createClamp(FL, step1Group);
-    createClamp(FR, step1Group);
-    createClamp(BL, step1Group);
-    createClamp(BR, step1Group);
+    // 2 x HJ-1 for front corners (FL, FR): transverse 750mm through pipe + longitudinal 500mm butt pipe
+    createHJ1(FL, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, -1), step1Group);
+    createHJ1(FR, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, -1), step1Group);
+
+    // 2 x HJ-2 for rear bottom corners (BL, BR): 3D spatial corner (X=crossbar, Y=upright post, Z=side rail)
+    createHJ2(BL, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), step1Group);
+    createHJ2(BR, new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), step1Group);
 
     // =============================================================
     // STEP 2 GEOMETRY: Верхняя рамка из 3 трубок
     // =============================================================
     step2Group.add(createPipe(TL, TR)); // Верхняя перекладина 750 мм
-    createClamp(TL, step2Group);
-    createClamp(TR, step2Group);
+    // 2 x HJ-1 for top corners (TL, TR): transverse 750mm through pipe + vertical upright butt pipe
+    createHJ1(TL, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, -1, 0), step2Group);
+    createHJ1(TR, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, -1, 0), step2Group);
 
     const distCenter = 87.5;
     const c1_btm = new THREE.Vector3(-distCenter/2, R_pipe, D_base/2);
@@ -813,10 +1136,15 @@
     step2Group.add(createPipe(c1_btm, c1_top, centralPipeMat));
     step2Group.add(createPipe(c2_btm, c2_top, centralPipeMat));
 
-    createClamp(c1_btm, step2Group);
-    createClamp(c2_btm, step2Group);
-    createClamp(c1_top, step2Group);
-    createClamp(c2_top, step2Group);
+    // Vector along 30° inclined spine (bottom to top)
+    const vC1 = new THREE.Vector3().subVectors(c1_top, c1_btm).normalize();
+    const vC2 = new THREE.Vector3().subVectors(c2_top, c2_btm).normalize();
+
+    // 4 x HJ-1 for central 30° inclined spine (pivot around round pipe)
+    createHJ1(c1_btm, new THREE.Vector3(1, 0, 0), vC1, step2Group);
+    createHJ1(c2_btm, new THREE.Vector3(1, 0, 0), vC2, step2Group);
+    createHJ1(c1_top, new THREE.Vector3(1, 0, 0), vC1.clone().negate(), step2Group);
+    createHJ1(c2_top, new THREE.Vector3(1, 0, 0), vC2.clone().negate(), step2Group);
 
     // =============================================================
     // STEP 3 GEOMETRY: Стопоры ПОД УГЛОМ 90° К ЛОЖУ
@@ -843,8 +1171,12 @@
     step3Group.add(createPipe(stopL_b, stopL_t));
     step3Group.add(createPipe(stopR_b, stopR_t));
 
-    createClamp(stopL_b, step3Group);
-    createClamp(stopR_b, step3Group);
+    const vStopL = new THREE.Vector3().subVectors(stopL_t, stopL_b).normalize();
+    const vStopR = new THREE.Vector3().subVectors(stopR_t, stopR_b).normalize();
+
+    // 2 x HJ-1 for stoppers: angled forward 60° so shelf rests at 90° perpendicular
+    createHJ1(stopL_b, new THREE.Vector3(1, 0, 0), vStopL, step3Group);
+    createHJ1(stopR_b, new THREE.Vector3(1, 0, 0), vStopR, step3Group);
 
     const capGeo = new THREE.CylinderGeometry(R_pipe * 1.18, R_pipe * 1.18, 7, 24);
     const vStop = new THREE.Vector3(0, nY, nZ).normalize();
@@ -1087,24 +1419,24 @@
       {
         num: 1,
         title: "Сборка нижнего квадрата и двух опор",
-        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм с помощью 4 зажимов HJ-1. В задние углы установите 2 вертикальные стойки-опоры 290 мм под 90° и затяните болты М6 шестигранником 5 мм.",
-        parts: ["2 шт. × 750 мм", "2 шт. × 500 мм", "2 шт. × 290 мм (опоры)", "6 шт. зажимов HJ-1"],
+        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм. В передних углах (FL, FR) используйте 2 Т-зажима HJ-1. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (они одновременно жестко фиксируют основание и вертикальные стойки 290 мм). Затяните болты М6 шестигранником 5 мм.",
+        parts: ["2 шт. × 750 мм", "2 шт. × 500 мм", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (3D-угол)", "2 шт. зажима HJ-1 (Т-стык)"],
         cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 },
         show: { s1: true, s2: false, s3: false, s4: false }
       },
       {
         num: 2,
         title: "Сборка верхней рамки из трёх трубок",
-        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм. Установите 2 центральные наклонные трубы 580 мм (под углом 30°), соединив переднюю и верхнюю балки через хомуты HJ-1. За счет вращения зажимов вокруг круглых труб угол встает идеально!",
-        parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1"],
+        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм через 2 зажима HJ-1 (TL, TR). Установите 2 центральные наклонные трубы 580 мм (хребет ложа под углом 30°), закрепив их с двух сторон 4 зажимами HJ-1 к передней и верхней балкам. За счет свободного вращения хомута HJ-1 вокруг круглых труб угол встает идеально!",
+        parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1 (Т-стык)"],
         cam: { x: -220, y: 190, z: 220, tx: 0, ty: 45, tz: 0 },
         show: { s1: true, s2: true, s3: false, s4: false }
       },
       {
         num: 3,
         title: "Установка стопоров под углом 90° к ложу",
-        desc: "На концах передней балки закрепите хомуты HJ-1, повернув их на угол наклона так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО будущему ложу (под 90° к полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
-        parts: ["2 шт. × 100 мм", "2 шт. зажима HJ-1 (под 90° к ложу)", "2 шт. резиновые заглушки Ø28 мм"],
+        desc: "На концах передней балки закрепите 2 хомута HJ-1, повернув их на угол 60° вперед так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО ложу (под 90° к полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
+        parts: ["2 шт. × 100 мм (стопоры)", "2 шт. зажима HJ-1 (под 90° к ложу)", "2 шт. резиновые заглушки Ø28 мм"],
         cam: { x: 190, y: 95, z: 210, tx: 60, ty: 25, tz: 55 },
         show: { s1: true, s2: true, s3: true, s4: false }
       },
@@ -1270,6 +1602,34 @@
       animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
     });
 
+    document.getElementById('viewHJ2').addEventListener('click', () => {
+      animateCameraSmooth({ x: -160, y: 55, z: -110, tx: -W_frame/2, ty: R_pipe + 5, tz: -D_base/2 });
+    });
+
+    document.getElementById('viewHJ1').addEventListener('click', () => {
+      animateCameraSmooth({ x: -20, y: 40, z: 130, tx: -distCenter/2, ty: R_pipe + 6, tz: D_base/2 });
+    });
+
+    // Clamp modal event listeners
+    const modalClamps = document.getElementById('modalClamps');
+    document.getElementById('btnOpenClampModal').addEventListener('click', () => {
+      modalClamps.classList.remove('hidden');
+    });
+    document.getElementById('btnCloseClampModal').addEventListener('click', () => {
+      modalClamps.classList.add('hidden');
+    });
+    modalClamps.addEventListener('click', (e) => {
+      if (e.target === modalClamps) modalClamps.classList.add('hidden');
+    });
+    document.getElementById('btnFocusHJ2Modal').addEventListener('click', () => {
+      modalClamps.classList.add('hidden');
+      animateCameraSmooth({ x: -160, y: 55, z: -110, tx: -W_frame/2, ty: R_pipe + 5, tz: -D_base/2 });
+    });
+    document.getElementById('btnFocusHJ1Modal').addEventListener('click', () => {
+      modalClamps.classList.add('hidden');
+      animateCameraSmooth({ x: -20, y: 40, z: 130, tx: -distCenter/2, ty: R_pipe + 6, tz: D_base/2 });
+    });
+
     document.getElementById('viewStoppers').addEventListener('click', () => {
       animateCameraSmooth({ x: 170, y: 90, z: 205, tx: 65, ty: 25, tz: 65 });
     });
@@ -1291,7 +1651,7 @@
       step3Group.visible = e.target.checked;
     });
     document.getElementById('chkClamps').addEventListener('change', (e) => {
-      clampsGroup.visible = e.target.checked;
+      allClamps.forEach(c => c.visible = e.target.checked);
     });
 
     renderStep();
