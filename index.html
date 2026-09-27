@@ -405,24 +405,26 @@
 
           <ul class="text-xs space-y-2 text-slate-300">
             <li class="flex justify-between items-center">
-              <span>Плита ДСП/МДФ (16 мм):</span>
-              <strong class="text-white font-mono">720 × 580 мм (1 шт.)</strong>
+              <div>
+                <span class="text-white font-medium">Плита ДСП/МДФ (16 мм):</span>
+                <p class="text-[11px] text-bybit-gray">Укладывается сверху на наклонные трубы (не сквозь них)</p>
+              </div>
+              <strong class="text-white font-mono ml-2">700 × 550 мм (1 шт.)</strong>
             </li>
             <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Резиновый коврик ТМКЩ (2–3 мм):</span>
-              <strong class="text-white font-mono">720 × 580 мм (1 шт.)</strong>
+              <strong class="text-white font-mono">700 × 550 мм (1 шт.)</strong>
+            </li>
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
+              <div>
+                <span class="text-white font-medium">Саморезы по металлу с прессшайбой:</span>
+                <p class="text-[11px] text-bybit-gray">Со сверлом DIN 7504 (4.2×32 мм) — монтаж напрямую в трубы</p>
+              </div>
+              <strong class="text-bybit-gold font-mono ml-2">6 шт.</strong>
             </li>
             <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Резиновые заглушки Ø28 мм (красные):</span>
               <strong class="text-bybit-red font-mono">2 шт.</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <span>Клипсы крепления к трубам Ø28 мм:</span>
-              <strong class="text-white font-mono">4 шт.</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <span>Саморезы 3.5×16 мм для клипс:</span>
-              <strong class="text-white font-mono">8 шт.</strong>
             </li>
             <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
               <span>Клей контактный (88-СА или Момент-1):</span>
@@ -1228,28 +1230,79 @@
     // =============================================================
     // STEP 4 GEOMETRY: Подложка ДСП + Резина + Полка CAD
     // =============================================================
-    const bedWidth = W_frame * 0.94;
-    const bedThick = 5.0;
-    const rubThick = 1.2;
+    // STEP 4 GEOMETRY: Подложка ДСП + Резина + Саморезы + Полка CAD
+    // =============================================================
+    // Координатные группы наклонного ложа (вдоль 30° центральных труб)
+    const bedAnchor = new THREE.Group();
+    bedAnchor.position.set(0, H_back/2 + R_pipe, 0);
+    bedAnchor.rotation.x = angleRad;
+    bedGroup.add(bedAnchor);
 
-    const bedMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, bedThick, bedLength), woodMat);
-    bedMesh.castShadow = true;
-    bedMesh.receiveShadow = true;
-
-    const rubMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, rubThick, bedLength), rubberPadMat);
-    rubMesh.position.y = bedThick/2 + rubThick/2;
-    rubMesh.receiveShadow = true;
-    bedMesh.add(rubMesh);
-
-    bedMesh.position.set(0, H_back/2 + R_pipe + 2.5, 0);
-    bedMesh.rotation.x = angleRad;
-    bedGroup.add(bedMesh);
-
-    // Anchor group for shelf inside shelfGroup (independent from bedGroup)
     const shelfAnchor = new THREE.Group();
-    shelfAnchor.position.set(0, H_back/2 + R_pipe + 2.5, 0);
+    shelfAnchor.position.set(0, H_back/2 + R_pipe, 0);
     shelfAnchor.rotation.x = angleRad;
     shelfGroup.add(shelfAnchor);
+
+    const bedWidth = 220;  // ~700 мм (свободно между боковыми стойками W_frame=234.4)
+    const bedPlateLength = 170; // ~544 мм (укладывается строго между передними и задними хомутами)
+    const bedThick = 5.0;  // 16 мм ДСП
+    const rubThick = 1.2;  // ~3.8 мм резина ТМКЩ
+
+    // Плита лежит СВЕРХУ на трубах: нижняя грань на внешнем радиусе трубы (не проходит сквозь трубки!)
+    const bedBottomY = R_pipe + 0.25;
+    const bedCenterY = bedBottomY + bedThick / 2;
+
+    const bedMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, bedThick, bedPlateLength), woodMat);
+    bedMesh.position.set(0, bedCenterY, 0);
+    bedMesh.castShadow = true;
+    bedMesh.receiveShadow = true;
+    bedAnchor.add(bedMesh);
+
+    const rubMesh = new THREE.Mesh(new THREE.BoxGeometry(bedWidth, rubThick, bedPlateLength), rubberPadMat);
+    rubMesh.position.set(0, bedCenterY + bedThick/2 + rubThick/2, 0);
+    rubMesh.receiveShadow = true;
+    bedAnchor.add(rubMesh);
+
+    // 6 металлических саморезов с прессшайбой, прикручивающих ДСП к двум центральным трубам
+    const screwMat = new THREE.MeshStandardMaterial({
+      color: 0xEEF2F6,
+      metalness: 0.92,
+      roughness: 0.18
+    });
+    const screwSlotMat = new THREE.MeshBasicMaterial({ color: 0x1E293B });
+
+    const screwZPositions = [-52, 0, 52];
+    const screwXPositions = [-distCenter/2, distCenter/2];
+
+    screwXPositions.forEach(sx => {
+      screwZPositions.forEach(sz => {
+        const sGroup = new THREE.Group();
+        const topOfMat = bedCenterY + bedThick/2 + rubThick;
+        sGroup.position.set(sx, topOfMat, sz);
+
+        // Прессшайба / шляпка самореза с фаской
+        const headGeo = new THREE.CylinderGeometry(1.6, 1.8, 0.45, 16);
+        const headMesh = new THREE.Mesh(headGeo, screwMat);
+        headMesh.position.y = -0.12;
+        headMesh.castShadow = true;
+        sGroup.add(headMesh);
+
+        // Крестообразный шлиц PH2
+        const slot1 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.08, 0.45), screwSlotMat);
+        slot1.position.y = 0.12;
+        const slot2 = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.08, 2.0), screwSlotMat);
+        slot2.position.y = 0.12;
+        sGroup.add(slot1, slot2);
+
+        // Стержень самореза, проходящий сквозь ДСП внутрь стенки трубы
+        const shaftGeo = new THREE.CylinderGeometry(0.55, 0.55, bedThick + rubThick + 2.5, 12);
+        const shaftMesh = new THREE.Mesh(shaftGeo, screwMat);
+        shaftMesh.position.y = -(bedThick + rubThick + 2.5) / 2;
+        sGroup.add(shaftMesh);
+
+        bedAnchor.add(sGroup);
+      });
+    });
 
     const shelfW = 685 / 3.2; // ~214.0
     const shelfL = 565 / 3.2; // ~176.6
@@ -1264,7 +1317,7 @@
       }
       shelfRoot = new THREE.Group();
 
-      const ySurface = bedThick/2 + rubThick;
+      const ySurface = bedBottomY + bedThick + rubThick;
       const zStopperContact = 86.4;
       const zCenter = zStopperContact - (shelfL / 2);
       
@@ -1443,8 +1496,8 @@
       {
         num: 4,
         title: "Монтаж подложки ДСП и установка Compute Shelf",
-        desc: "Закрепите плиту ДСП 720×580 мм с наклеенным резиновым ковриком клипсами на центральные трубы. Установите Compute Shelf — она ложится днищем на резину и упирается тыльной сеткой в стопоры СТРОГО ПОД УГЛОМ 90°. Верхняя панель со стикерами находится в зоне прямого доступа оператора!",
-        parts: ["Плита ДСП 720×580 мм", "Резина 2-3 мм", "4 клипсы Ø28 мм", "Compute Shelf 685×565 мм"],
+        desc: "Плита ДСП (700×550 мм) укладывается СВЕРХУ на две наклонные трубы (не прорезая каркас) и в самом конце монтажа жестко прикручивается 6 саморезами по металлу напрямую к трубам Ø28 мм. На ДСП наклеен резиновый коврик 2–3 мм. Завершающий этап: Compute Shelf свободно опускается на резиновое ложе до упора в стопоры под 90°.",
+        parts: ["Плита ДСП 700×550 мм", "Резина 2-3 мм", "6 шт. саморезы по металлу", "Compute Shelf 685×565 мм"],
         cam: { x: 160, y: 180, z: 270, tx: -15, ty: 45, tz: 15 },
         show: { s1: true, s2: true, s3: true, s4: true }
       }
