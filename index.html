@@ -382,7 +382,7 @@
             <li class="flex items-start justify-between">
               <div>
                 <strong class="text-white flex items-center gap-1"><span>🔩</span> Зажим HJ-2 (3D угловой 90°×90°×90°):</strong>
-                <p class="text-[11px] text-bybit-gray">Установка в 2 задних углах стола (BL, BR). Фиксирует 3 взаимно перпендикулярные трубы</p>
+                <p class="text-[11px] text-bybit-gray">Установка в 2 задних углах стола (BL, BR). Соединяет 3 взаимно перпендикулярные трубы. Стягивается 2 болтами М6 поперёк трубок в пазы</p>
               </div>
               <span class="font-bold text-bybit-gold font-mono text-sm ml-2">2 шт.</span>
             </li>
@@ -396,9 +396,9 @@
             <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
               <div>
                 <strong class="text-white">Болты М6×25 + гайки М6:</strong>
-                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект к каждому зажиму HJ-1 и HJ-2</p>
+                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект: по 2 болта на каждый HJ-2 (4 шт.) и по 1 болту на каждый HJ-1 (10 шт.)</p>
               </div>
-              <span class="font-bold text-white font-mono text-sm ml-2">12 компл.</span>
+              <span class="font-bold text-white font-mono text-sm ml-2">14 компл.</span>
             </li>
           </ul>
         </div>
@@ -501,7 +501,7 @@
               </h4>
               <p class="text-xs text-bybit-gold font-semibold mb-2">3-сторонний угловой узел (90°×90°×90°)</p>
               <p class="text-xs text-slate-300 leading-relaxed mb-3">
-                Пространственный тройной угол. Соединяет три взаимно перпендикулярные трубы в одной жесткой точке без люфтов и сварки. Состоит из одного элемента H-2 и двух элементов H-4.
+                Пространственный тройной угол. Соединяет три взаимно перпендикулярные трубы в одной жесткой точке без люфтов и сварки. Состоит из одного элемента H-2 и двух элементов H-4. Стягивается <strong>2 болтами М6 с гайками</strong>: болты вставляются и прикручиваются <strong>поперёк трубок в специальные выштампованные пазы</strong>.
               </p>
               <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
                 <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">Точки установки (2 шт.):</div>
@@ -1039,9 +1039,9 @@
       const vz = zDir.clone().normalize();
 
       const rOuter = R_pipe + 1.8;
-      const sleeveLen = 15;
+      const sleeveLen = 16;
 
-      // 1. Vertical Sleeve along Y (upright)
+      // 1. Vertical Sleeve along Y (upright post 290 mm)
       const geoY = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
       const meshY = new THREE.Mesh(geoY, clampMetalMat);
       meshY.position.copy(vy.clone().multiplyScalar(sleeveLen * 0.48));
@@ -1049,48 +1049,117 @@
       meshY.castShadow = true;
       g.add(meshY);
 
-      // 2. Horizontal Sleeve along X (transverse)
-      const geoX = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
-      const meshX = new THREE.Mesh(geoX, clampMetalMat);
-      meshX.position.copy(vx.clone().multiplyScalar(sleeveLen * 0.48));
-      meshX.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vx);
-      meshX.castShadow = true;
-      g.add(meshX);
+      // Stamped reinforcement collar on vertical sleeve
+      const vLipGeo = new THREE.CylinderGeometry(rOuter + 0.5, rOuter + 0.5, 1.2, 24);
+      const vLip = new THREE.Mesh(vLipGeo, clampMetalMat);
+      vLip.position.copy(vy.clone().multiplyScalar(sleeveLen * 0.94));
+      vLip.quaternion.copy(meshY.quaternion);
+      g.add(vLip);
 
-      // 3. Horizontal Sleeve along Z (side pipe)
-      const geoZ = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
-      const meshZ = new THREE.Mesh(geoZ, clampMetalMat);
-      meshZ.position.copy(vz.clone().multiplyScalar(sleeveLen * 0.48));
-      meshZ.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vz);
-      meshZ.castShadow = true;
-      g.add(meshZ);
-
-      // 4. Stamped Corner Apex Housing
-      const cornerGeo = new THREE.SphereGeometry(rOuter * 1.18, 18, 18);
+      // 2. Stamped 3D Corner Apex Housing
+      const cornerGeo = new THREE.SphereGeometry(rOuter * 1.15, 18, 18);
       const cornerMesh = new THREE.Mesh(cornerGeo, clampMetalMat);
       cornerMesh.castShadow = true;
       g.add(cornerMesh);
 
-      // 5. Diagonal Clamping Bolt & Nut M6
-      const vDiag = new THREE.Vector3().add(vx).add(vz).normalize();
-      const boltPos = vDiag.clone().multiplyScalar(sleeveLen * 0.52);
+      // Material for stamped inner slots / recesses
+      const slotDepthMat = new THREE.MeshStandardMaterial({
+        color: 0x363E48,
+        metalness: 0.75,
+        roughness: 0.45
+      });
 
-      const boltRodGeo = new THREE.CylinderGeometry(0.85, 0.85, rOuter * 2.4, 12);
-      const boltRod = new THREE.Mesh(boltRodGeo, clampBoltMat);
-      boltRod.position.copy(boltPos);
-      boltRod.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vy);
-      g.add(boltRod);
+      // 3. Helper to create a clamping branch with 2 stamped slots and 1 transverse M6 bolt
+      function createClampingBranch(dir, boltNormal) {
+        const vDir = dir.clone().normalize();
+        const vNorm = boltNormal.clone().normalize();
 
-      const hexNutGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.8, 6);
-      const headMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
-      headMesh.position.copy(boltPos).addScaledVector(vy, rOuter + 0.5);
-      headMesh.quaternion.copy(boltRod.quaternion);
-      g.add(headMesh);
+        // Stamped sleeve along the pipe
+        const sGeo = new THREE.CylinderGeometry(rOuter, rOuter, sleeveLen, 24);
+        const sMesh = new THREE.Mesh(sGeo, clampMetalMat);
+        sMesh.position.copy(vDir.clone().multiplyScalar(sleeveLen * 0.50));
+        sMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vDir);
+        sMesh.castShadow = true;
+        g.add(sMesh);
 
-      const nutMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
-      nutMesh.position.copy(boltPos).addScaledVector(vy, -rOuter - 0.5);
-      nutMesh.quaternion.copy(boltRod.quaternion);
-      g.add(nutMesh);
+        // Stamped lip at sleeve end
+        const lipGeo = new THREE.CylinderGeometry(rOuter + 0.5, rOuter + 0.5, 1.2, 24);
+        const lip = new THREE.Mesh(lipGeo, clampMetalMat);
+        lip.position.copy(vDir.clone().multiplyScalar(sleeveLen - 0.6));
+        lip.quaternion.copy(sMesh.quaternion);
+        g.add(lip);
+
+        // Longitudinal clamping slit/groove along top (+vy)
+        const slitGeo = new THREE.BoxGeometry(0.8, sleeveLen * 0.8, 1.2);
+        const slit = new THREE.Mesh(slitGeo, slotDepthMat);
+        slit.position.copy(vDir.clone().multiplyScalar(sleeveLen * 0.50)).addScaledVector(vy, rOuter * 0.95);
+        slit.quaternion.copy(sMesh.quaternion);
+        g.add(slit);
+
+        // Transverse M6 tightening bolt, passing through stamped side slots
+        const boltCenter = vDir.clone().multiplyScalar(sleeveLen * 0.55);
+
+        // Stamped side recessed slots ("пазы под болт и гайку") on outer and inner sleeve faces
+        const pocketRimGeo = new THREE.CylinderGeometry(2.7, 2.7, 0.8, 16);
+        const pocketInnerGeo = new THREE.CylinderGeometry(2.1, 2.1, 0.9, 16);
+        const pocketQuat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), vNorm);
+
+        // Slot on side 1 (+vNorm)
+        const pRim1 = new THREE.Mesh(pocketRimGeo, clampMetalMat);
+        pRim1.position.copy(boltCenter).addScaledVector(vNorm, rOuter * 0.88);
+        pRim1.quaternion.copy(pocketQuat);
+        const pIn1 = new THREE.Mesh(pocketInnerGeo, slotDepthMat);
+        pIn1.position.copy(boltCenter).addScaledVector(vNorm, rOuter * 0.90);
+        pIn1.quaternion.copy(pocketQuat);
+        g.add(pRim1, pIn1);
+
+        // Slot on side 2 (-vNorm)
+        const pRim2 = new THREE.Mesh(pocketRimGeo, clampMetalMat);
+        pRim2.position.copy(boltCenter).addScaledVector(vNorm, -rOuter * 0.88);
+        pRim2.quaternion.copy(pocketQuat);
+        const pIn2 = new THREE.Mesh(pocketInnerGeo, slotDepthMat);
+        pIn2.position.copy(boltCenter).addScaledVector(vNorm, -rOuter * 0.90);
+        pIn2.quaternion.copy(pocketQuat);
+        g.add(pRim2, pIn2);
+
+        // Transverse M6 bolt rod going across the tube
+        const boltRodGeo = new THREE.CylinderGeometry(0.85, 0.85, rOuter * 2.8, 12);
+        const boltRod = new THREE.Mesh(boltRodGeo, clampBoltMat);
+        boltRod.position.copy(boltCenter);
+        boltRod.quaternion.copy(pocketQuat);
+        g.add(boltRod);
+
+        // Hex Head M6 + Washer seated in slot on side 1
+        const washerGeo = new THREE.CylinderGeometry(2.3, 2.3, 0.4, 16);
+        const washer1 = new THREE.Mesh(washerGeo, clampBoltMat);
+        washer1.position.copy(boltCenter).addScaledVector(vNorm, rOuter + 0.2);
+        washer1.quaternion.copy(pocketQuat);
+        g.add(washer1);
+
+        const hexHeadGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.4, 6);
+        const headMesh = new THREE.Mesh(hexHeadGeo, clampBoltMat);
+        headMesh.position.copy(boltCenter).addScaledVector(vNorm, rOuter + 1.1);
+        headMesh.quaternion.copy(pocketQuat);
+        g.add(headMesh);
+
+        // Hex Nut M6 + Washer seated in slot on side 2
+        const washer2 = new THREE.Mesh(washerGeo, clampBoltMat);
+        washer2.position.copy(boltCenter).addScaledVector(vNorm, -rOuter - 0.2);
+        washer2.quaternion.copy(pocketQuat);
+        g.add(washer2);
+
+        const hexNutGeo = new THREE.CylinderGeometry(1.8, 1.8, 1.8, 6);
+        const nutMesh = new THREE.Mesh(hexNutGeo, clampBoltMat);
+        nutMesh.position.copy(boltCenter).addScaledVector(vNorm, -rOuter - 1.1);
+        nutMesh.quaternion.copy(pocketQuat);
+        g.add(nutMesh);
+      }
+
+      // 4. Branch 1: Transverse rear pipe (along vx) -> bolt clamped across pipe along vz into stamped slots
+      createClampingBranch(vx, vz);
+
+      // 5. Branch 2: Longitudinal side pipe (along vz) -> bolt clamped across pipe along vx into stamped slots
+      createClampingBranch(vz, vx);
 
       allClamps.push(g);
       targetGroup.add(g);
@@ -1488,8 +1557,8 @@
       {
         num: 1,
         title: "Сборка нижнего квадрата и двух опор",
-        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм (бордовый цвет). В передних углах (FL, FR) используйте 2 Т-зажима HJ-1 свинцового цвета. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (они одновременно жестко фиксируют основание и вертикальные стойки 290 мм). Затяните болты М6 шестигранником 5 мм.",
-        parts: ["2 шт. × 750 мм (бордо)", "2 шт. × 500 мм (бордо)", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (свинец)", "2 шт. зажима HJ-1 (свинец)"],
+        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм (бордовый цвет). В передних углах (FL, FR) используйте 2 Т-зажима HJ-1 свинцового цвета. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (в каждом узле HJ-2 устанавливаются 2 болта М6, затягивающиеся поперёк трубок в выштампованные пазы). Затяните болты М6 шестигранником 5 мм.",
+        parts: ["2 шт. × 750 мм (бордо)", "2 шт. × 500 мм (бордо)", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (по 2 болта в пазы)", "2 шт. зажима HJ-1 (свинец)"],
         cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 },
         show: { s1: true, s2: false, s3: false, bed: false, shelf: false }
       },
