@@ -117,7 +117,7 @@
             Ø28 мм • 14 зажимов HJ-1
           </span>
         </h1>
-        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Сетка у стопоров • Размеры на 3D-модели</p>
+        <p class="text-[11px] text-bybit-gray">Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели</p>
       </div>
     </div>
     
@@ -140,7 +140,7 @@
       <div class="absolute top-4 left-4 bybit-panel px-3.5 py-2.5 rounded-xl text-xs space-y-1 shadow-xl max-w-sm pointer-events-none">
         <div class="font-bold text-white flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold"></span>
-          <span id="hudStatus">Compute Shelf: Сетка у стопоров (наклон 90°)</span>
+          <span id="hudStatus">Compute Shelf</span>
         </div>
         <div class="text-[11px] text-bybit-gray leading-relaxed">
           • Плавное скольжение камеры между шагами сборки<br>
@@ -173,7 +173,7 @@
         <!-- Right: Shelf Status Badge -->
         <div class="flex items-center gap-2 bybit-panel px-3 py-1.5 rounded-xl pointer-events-auto shadow-xl text-xs text-slate-300">
           <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
-          <span class="font-medium">Compute Shelf: Сетка у стопоров (90°)</span>
+          <span class="font-medium">Compute Shelf</span>
         </div>
 
       </div>
@@ -187,7 +187,7 @@
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
           <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-          <span>Полка CAD</span>
+          <span>Compute Shelf</span>
         </label>
         <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
           <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
@@ -874,6 +874,12 @@
     bedMesh.rotation.x = angleRad;
     bedGroup.add(bedMesh);
 
+    // Anchor group for shelf inside shelfGroup (independent from bedGroup)
+    const shelfAnchor = new THREE.Group();
+    shelfAnchor.position.set(0, H_back/2 + R_pipe + 2.5, 0);
+    shelfAnchor.rotation.x = angleRad;
+    shelfGroup.add(shelfAnchor);
+
     const shelfW = 685 / 3.2; // ~214.0
     const shelfL = 565 / 3.2; // ~176.6
     const wallH  = 120 / 3.2; // ~37.5
@@ -883,7 +889,7 @@
 
     function buildPhotorealisticShelf() {
       if (shelfRoot) {
-        bedMesh.remove(shelfRoot);
+        shelfAnchor.remove(shelfRoot);
       }
       shelfRoot = new THREE.Group();
 
@@ -987,7 +993,7 @@
       addSticker(ductW * 0.68, createStickerTexture("GPN: 1232550", "Rev 02"), 6.0, 26);
       addSticker(ductW * 0.88, createStickerTexture("SN:", "SPAFLG261005510"), 6.0, 26);
 
-      bedMesh.add(shelfRoot);
+      shelfAnchor.add(shelfRoot);
     }
 
     buildPhotorealisticShelf();
