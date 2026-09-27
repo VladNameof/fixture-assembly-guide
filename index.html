@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Инструкция по сборке фикстуры Compute Shelf</title>
+  <title id="htmlTitle">Инструкция по сборке фикстуры Compute Shelf</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Three.js + OrbitControls -->
@@ -38,6 +38,9 @@
   </script>
 
   <style>
+    :root {
+      --app-height: 100dvh;
+    }
     body {
       margin: 0;
       overflow-x: hidden;
@@ -45,13 +48,15 @@
       color: #E5E7EB;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      min-height: 100vh;
+      min-height: var(--app-height);
     }
     #canvas-container { width: 100%; height: 100%; position: relative; }
-    canvas { outline: none; display: block; }
+    canvas { outline: none; display: block; touch-action: none; }
     
     /* Bybit Glass Panels */
     .bybit-panel {
-      background: rgba(18, 22, 31, 0.90);
+      background: rgba(18, 22, 31, 0.92);
       backdrop-filter: blur(14px);
       border: 1px solid #262C3A;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
@@ -87,7 +92,7 @@
     @keyframes bybitSlideUp {
       0% {
         opacity: 0;
-        transform: translateY(14px) scale(0.98);
+        transform: translateY(12px) scale(0.98);
       }
       100% {
         opacity: 1;
@@ -95,11 +100,11 @@
       }
     }
     .animate-step-transition {
-      animation: bybitSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: bybitSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     /* Custom Scrollbar */
-    .custom-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scroll::-webkit-scrollbar-track { background: #0B0E14; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #262C3A; border-radius: 3px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F7A600; }
@@ -108,55 +113,88 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .touch-action-manipulation { touch-action: manipulation; }
-    .active-scale:active { transform: scale(0.96); }
+    .active-scale:active { transform: scale(0.95); }
+
+    /* Mobile Landscape Optimization */
+    @media (max-height: 520px) and (orientation: landscape) {
+      #mobileModeBar { display: none !important; }
+      #mainLayout {
+        display: grid !important;
+        grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+        height: calc(100dvh - 52px) !important;
+      }
+      #viewport3D {
+        grid-column: span 7 / span 7 !important;
+        height: 100% !important;
+        display: flex !important;
+      }
+      #sidebarPanel {
+        grid-column: span 5 / span 5 !important;
+        height: 100% !important;
+        display: flex !important;
+        border-top: none !important;
+        border-left: 1px solid #262C3A !important;
+      }
+    }
+
+    .safe-bottom {
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col select-none antialiased">
 
   <!-- Top Navbar (Bybit Styling) -->
-  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+  <header class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-2.5 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
       <!-- Bybit Gold Symbol -->
       <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-xs sm:text-sm shadow-md shadow-bybit-gold/25 tracking-tighter flex-shrink-0">
         F·B
       </div>
       <div class="min-w-0">
         <h1 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 truncate">
-          <span class="truncate">Инструкция по сборке Compute Shelf</span>
-          <span class="hidden sm:inline-block text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold flex-shrink-0">
+          <span id="headerTitle" class="truncate">Инструкция по сборке Compute Shelf</span>
+          <span id="headerBadge" class="hidden sm:inline-block text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold flex-shrink-0">
             Ø28 мм • 14 HJ-1
           </span>
         </h1>
-        <p class="hidden sm:block text-[11px] text-bybit-gray truncate">Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели</p>
+        <p id="headerSubtitle" class="hidden sm:block text-[11px] text-bybit-gray truncate">Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели</p>
       </div>
     </div>
     
-    <div class="flex items-center gap-2 text-xs flex-shrink-0">
-      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-2.5 py-1.5 sm:px-3 rounded-lg bybit-btn-secondary transition flex items-center gap-1.5 shadow-sm text-xs" title="GitHub Репозиторий">
+    <div class="flex items-center gap-1.5 sm:gap-2 text-xs flex-shrink-0">
+      <!-- Language Selector (RU | EN | PL) -->
+      <div id="langSelector" class="flex items-center bg-bybit-card rounded-lg p-0.5 border border-bybit-border text-[11px] font-bold shadow-sm">
+        <button data-lang="ru" class="lang-btn px-2 py-1 rounded transition text-bybit-gold bg-bybit-gold/20 active-scale">RU</button>
+        <button data-lang="en" class="lang-btn px-2 py-1 rounded transition text-bybit-gray hover:text-white active-scale">EN</button>
+        <button data-lang="pl" class="lang-btn px-2 py-1 rounded transition text-bybit-gray hover:text-white active-scale">PL</button>
+      </div>
+
+      <a href="https://github.com/VladNameof/fixture-assembly-guide" target="_blank" class="px-2.5 py-1.5 sm:px-3 rounded-lg bybit-btn-secondary transition flex items-center gap-1.5 shadow-sm text-xs active-scale" title="GitHub Repository">
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-bybit-gold" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-        <span class="hidden xs:inline">GitHub</span>
+        <span class="hidden md:inline">GitHub</span>
       </a>
     </div>
   </header>
 
   <!-- Mobile Mode Switcher (Visible only on mobile/tablet < lg) -->
-  <div id="mobileModeBar" class="lg:hidden bg-bybit-surface border-b border-bybit-border px-2 py-1.5 flex gap-1.5 z-40 sticky top-0">
+  <div id="mobileModeBar" class="lg:hidden bg-bybit-surface border-b border-bybit-border px-2 py-1.5 flex gap-1.5 z-40 sticky top-[48px]">
     <button id="btnModeSplit" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation">
-      <span>📱 50/50</span>
+      <span id="lblModeSplit">📱 50/50</span>
     </button>
     <button id="btnMode3D" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 bg-bybit-card text-bybit-gray hover:text-white active-scale touch-action-manipulation">
-      <span>🧊 3D Модель</span>
+      <span id="lblMode3D">🧊 3D Модель</span>
     </button>
     <button id="btnModeSteps" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 bg-bybit-card text-bybit-gray hover:text-white active-scale touch-action-manipulation">
-      <span>📝 Инструкция</span>
+      <span id="lblModeSteps">📝 Инструкция</span>
     </button>
   </div>
 
   <!-- Main Viewport + Guide Grid -->
-  <main class="flex-1 flex flex-col lg:grid lg:grid-cols-12 overflow-hidden relative">
+  <main id="mainLayout" class="flex-1 flex flex-col lg:grid lg:grid-cols-12 overflow-hidden relative">
 
     <!-- 3D Viewport (8 cols on desktop, responsive dynamic height on mobile) -->
-    <div id="viewport3D" class="lg:col-span-8 bg-bybit-black relative h-[42vh] lg:h-full lg:min-h-full flex items-center justify-center transition-all duration-300">
+    <div id="viewport3D" class="lg:col-span-8 bg-bybit-black relative h-[42vh] h-[42dvh] lg:h-full lg:min-h-full flex items-center justify-center transition-all duration-300">
       <div id="canvas-container" class="w-full h-full relative"></div>
 
       <!-- 3D HUD Mode Indicator (Compact on mobile) -->
@@ -165,7 +203,7 @@
           <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold animate-pulse shadow-sm shadow-bybit-gold flex-shrink-0"></span>
           <span id="hudStatus" class="truncate font-semibold">Compute Shelf</span>
         </div>
-        <div class="hidden sm:block text-[11px] text-bybit-gray leading-relaxed mt-0.5">
+        <div id="hudRotate" class="hidden sm:block text-[11px] text-bybit-gray leading-relaxed mt-0.5">
           • Вращение: <strong>ЛКМ / 1 палец</strong> | Зум: <strong>2 пальца</strong>
         </div>
       </div>
@@ -187,32 +225,32 @@
           <!-- Views & Isolation Dropdown Menu -->
           <div id="viewsDropdown" class="hidden absolute right-0 top-10 w-56 bybit-panel p-2.5 rounded-xl text-xs space-y-1 shadow-2xl z-30 border border-bybit-border animate-scale-up">
             <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1.5 mb-1 border-b border-bybit-border/60">
-              <span class="text-bybit-gold font-bold">Обзор и детали</span>
+              <span id="viewsDropdownTitle" class="text-bybit-gold font-bold">Обзор и детали</span>
               <button id="btnCloseViews" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
             </div>
             
             <button data-isolate="all" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg bg-bybit-gold/15 text-bybit-gold font-semibold flex items-center justify-between transition hover:bg-bybit-gold/25">
-              <span class="flex items-center gap-2"><span>🌟</span> <span>Вся фикстура</span></span>
+              <span class="flex items-center gap-2"><span>🌟</span> <span id="isoLabelAll" class="iso-label">Вся фикстура</span></span>
               <span class="text-[10px] opacity-75 font-mono">3D</span>
             </button>
             <button data-isolate="bed" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🪵</span> <span>Ложе (ДСП+резина)</span></span>
+              <span class="flex items-center gap-2"><span>🪵</span> <span id="isoLabelBed" class="iso-label">Ложе (ДСП+резина)</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">16 мм</span>
             </button>
             <button data-isolate="shelf" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🖥️</span> <span>Полка Compute Shelf (серебро)</span></span>
+              <span class="flex items-center gap-2"><span>🖥️</span> <span id="isoLabelShelf" class="iso-label">Полка Compute Shelf</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">CAD</span>
             </button>
             <button data-isolate="pipes" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🍷</span> <span>Трубки каркаса (бордо)</span></span>
+              <span class="flex items-center gap-2"><span>🍷</span> <span id="isoLabelPipes" class="iso-label">Трубки каркаса</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
             </button>
             <button data-isolate="clamps" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы HJ-1/2 (модели)</span></span>
+              <span class="flex items-center gap-2"><span>🔩</span> <span id="isoLabelClamps" class="iso-label">Зажимы HJ-1/2 (модели)</span></span>
               <span class="text-[10px] text-bybit-gold font-mono">3D</span>
             </button>
             <button data-isolate="clamps-frame" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
-              <span class="flex items-center gap-2"><span>🔗</span> <span>Зажимы на каркасе</span></span>
+              <span class="flex items-center gap-2"><span>🔗</span> <span id="isoLabelClampsFrame" class="iso-label">Зажимы на каркасе</span></span>
               <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
             </button>
           </div>
@@ -221,44 +259,57 @@
         <!-- Layers Toggle Button -->
         <div class="relative">
           <button id="btnToggleLayers" class="bybit-panel px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 shadow-lg active-scale touch-action-manipulation" title="Управление видимостью слоев 3D">
-            <span>⚙️ Слои 3D</span>
+            <span id="layersBtnLabel">⚙️ Слои 3D</span>
             <span id="layersChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
           </button>
 
           <!-- Layers Dropdown Panel (Popover on both mobile and desktop) -->
           <div id="layersDropdown" class="hidden absolute right-0 top-10 w-52 bybit-panel p-3 rounded-xl text-xs space-y-2.5 shadow-2xl z-30 border border-bybit-border animate-scale-up">
             <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1.5 border-b border-bybit-border/60">
-              <span class="text-bybit-gold font-bold">Слои 3D</span>
+              <span id="layersDropdownTitle" class="text-bybit-gold font-bold">Слои 3D</span>
               <button id="btnCloseLayers" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
             </div>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkDimensions" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span class="text-bybit-gold font-semibold">📏 Размеры</span>
+              <span id="lblDims" class="text-bybit-gold font-semibold">📏 Размеры</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkShelf" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span>Compute Shelf</span>
+              <span id="lblShelf">Compute Shelf</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkBed" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span>ДСП + резина</span>
+              <span id="lblBed">ДСП + резина</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkFrame" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span>Трубы Ø28 мм</span>
+              <span id="lblFrame">Трубы Ø28 мм</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
               <input type="checkbox" id="chkClamps" checked class="rounded border-bybit-border bg-bybit-black text-bybit-gold focus:ring-0">
-              <span>Зажимы (HJ-1 / HJ-2)</span>
+              <span id="lblClamps">Зажимы (HJ-1 / HJ-2)</span>
             </label>
           </div>
         </div>
       </div>
 
+      <!-- Floating 3D Navigation Controls (Mobile & Desktop quick actions) -->
+      <div class="absolute bottom-3 right-3 flex flex-col gap-1.5 z-20">
+        <button id="btnResetCam" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-base shadow-xl active-scale touch-action-manipulation" title="Сброс камеры / Reset Camera">
+          <span>⟲</span>
+        </button>
+        <button id="btnZoomIn" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-lg font-bold shadow-xl active-scale touch-action-manipulation" title="Приблизить / Zoom In">
+          <span>+</span>
+        </button>
+        <button id="btnZoomOut" class="w-9 h-9 rounded-xl bybit-panel text-slate-200 hover:text-white flex items-center justify-center text-lg font-bold shadow-xl active-scale touch-action-manipulation" title="Отдалить / Zoom Out">
+          <span>−</span>
+        </button>
+      </div>
+
     </div>
 
     <!-- Right/Bottom Sidebar: Stepper & Complete BOM Preparation List (4 cols on desktop, flex-1 on mobile) -->
-    <div id="sidebarPanel" class="lg:col-span-4 bg-bybit-surface border-t lg:border-t-0 lg:border-l border-bybit-border flex flex-col flex-1 h-[58vh] lg:h-full lg:max-h-[calc(100vh-60px)] overflow-hidden">
+    <div id="sidebarPanel" class="lg:col-span-4 bg-bybit-surface border-t lg:border-t-0 lg:border-l border-bybit-border flex flex-col flex-1 h-[58vh] h-[58dvh] lg:h-full lg:max-h-[calc(100vh-60px)] overflow-hidden">
       
       <!-- Top Tabs: Инструкция / Комплектация -->
       <div class="p-2 border-b border-bybit-border bg-bybit-surface flex gap-2">
@@ -310,159 +361,8 @@
       </div>
 
       <!-- Tab 2: Complete Preparation BOM Checklist -->
-      <div id="panelBOM" class="hidden flex-1 overflow-y-auto custom-scroll p-4 space-y-5 animate-step-transition">
-        
-        <div>
-          <h2 class="text-sm font-bold text-white flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold"></span>
-            Ведомость заготовки материалов
-          </h2>
-          <p class="text-xs text-bybit-gray mt-1">
-            Точный перечень всех комплектующих и резка труб до начала сборки фикстуры.
-          </p>
-        </div>
-
-        <!-- Section 1: Pipe Cutting -->
-        <div class="bybit-card rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
-            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">1. Трубы Lean Pipe Ø28 мм (нарезка)</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">11 заготовок</span>
-          </div>
-
-          <table class="w-full text-left text-[11px]">
-            <thead>
-              <tr class="text-bybit-gray border-b border-bybit-border">
-                <th class="pb-1.5 font-semibold">Назначение</th>
-                <th class="pb-1.5 font-semibold text-center">Длина</th>
-                <th class="pb-1.5 font-semibold text-right">Кол-во</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-bybit-border/60 font-mono text-slate-200">
-              <tr>
-                <td class="py-1.5 text-slate-300 font-sans">Поперечные балки (перед/зад)</td>
-                <td class="py-1.5 text-center text-bybit-gold font-bold">750 мм</td>
-                <td class="py-1.5 text-right font-bold text-white">3 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 text-slate-300 font-sans">Наклонный хребет (угол 30°)</td>
-                <td class="py-1.5 text-center text-bybit-gold font-bold">580 мм</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 text-slate-300 font-sans">Продольные опоры (на столе)</td>
-                <td class="py-1.5 text-center text-bybit-gold font-bold">500 мм</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 text-slate-300 font-sans">Задние стойки-опоры</td>
-                <td class="py-1.5 text-center text-bybit-gold font-bold">290 мм</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 text-slate-300 font-sans">Стопоры (под углом 90° к ложу)</td>
-                <td class="py-1.5 text-center text-bybit-gold font-bold">100 мм</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="pt-2 border-t border-bybit-border flex justify-between items-center text-xs">
-            <span class="text-bybit-gray">Общий чистый метраж:</span>
-            <span class="font-bold text-bybit-green font-mono">5.19 м</span>
-          </div>
-          <div class="text-[11px] text-bybit-gray bg-bybit-surface p-2 rounded-lg border border-bybit-border">
-            💡 <strong>Заказ трубы:</strong> ровно <strong>2 стандартных хлыста по 3.0 м</strong> (6.0 м). Остаток 810 мм на пропилы и запас.
-          </div>
-        </div>
-
-        <!-- Section 2: Clamps & Hardware -->
-        <div class="bybit-card rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
-            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">2. Зажимы и крепеж</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">12 комплектов</span>
-          </div>
-
-          <ul class="text-xs space-y-2.5 text-slate-300">
-            <li class="flex items-start justify-between">
-              <div>
-                <strong class="text-white flex items-center gap-1"><span>🔩</span> Зажим HJ-2 (3D угловой 90°×90°×90°):</strong>
-                <p class="text-[11px] text-bybit-gray">Установка в 2 задних углах стола (BL, BR). Соединяет 3 взаимно перпендикулярные трубы. Стягивается 2 болтами М6 поперёк трубок в пазы</p>
-              </div>
-              <span class="font-bold text-bybit-gold font-mono text-sm ml-2">2 шт.</span>
-            </li>
-            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
-              <div>
-                <strong class="text-white flex items-center gap-1"><span>🔧</span> Зажим HJ-1 (Т-образный для Ø28 мм):</strong>
-                <p class="text-[11px] text-bybit-gray">Передние углы (2 шт.), верхняя перекладина (2 шт.), хребет 30° (4 шт.), стопоры 90° (2 шт.)</p>
-              </div>
-              <span class="font-bold text-emerald-400 font-mono text-sm ml-2">10 шт.</span>
-            </li>
-            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
-              <div>
-                <strong class="text-white">Болты М6×25 + гайки М6:</strong>
-                <p class="text-[11px] text-bybit-gray">Входят в заводской комплект: по 2 болта на каждый HJ-2 (4 шт.) и по 1 болту на каждый HJ-1 (10 шт.)</p>
-              </div>
-              <span class="font-bold text-white font-mono text-sm ml-2">14 компл.</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Section 3: Bed, Rubber & Protection -->
-        <div class="bybit-card rounded-xl p-3.5 space-y-3">
-          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
-            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">3. Ложе, резина и защита</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-green/15 text-bybit-green font-semibold">Антицарапины</span>
-          </div>
-
-          <ul class="text-xs space-y-2 text-slate-300">
-            <li class="flex justify-between items-center">
-              <div>
-                <span class="text-white font-medium">Плита ДСП/МДФ (16 мм):</span>
-                <p class="text-[11px] text-bybit-gray">Укладывается сверху на наклонные трубы (не сквозь них)</p>
-              </div>
-              <strong class="text-white font-mono ml-2">700 × 550 мм (1 шт.)</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <span>Резиновый коврик ТМКЩ (2–3 мм):</span>
-              <strong class="text-white font-mono">700 × 550 мм (1 шт.)</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <div>
-                <span class="text-white font-medium">Саморезы по металлу с прессшайбой:</span>
-                <p class="text-[11px] text-bybit-gray">Со сверлом DIN 7504 (4.2×32 мм) — монтаж напрямую в трубы</p>
-              </div>
-              <strong class="text-bybit-gold font-mono ml-2">6 шт.</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <span>Резиновые заглушки Ø28 мм (красные):</span>
-              <strong class="text-bybit-red font-mono">2 шт.</strong>
-            </li>
-            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
-              <span>Клей контактный (88-СА или Момент-1):</span>
-              <strong class="text-white font-mono">1 банка</strong>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Section 4: Required Tools -->
-        <div class="bybit-card rounded-xl p-3.5 space-y-2.5">
-          <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider border-b border-bybit-border pb-2">4. Необходимый инструмент</h3>
-          <ul class="text-xs space-y-1.5 text-slate-300">
-            <li class="flex items-center gap-2">
-              <span class="text-bybit-gold">✓</span> <strong>Шестигранный ключ 5 мм</strong> — затяжка всех 12 зажимов (2× HJ-2, 10× HJ-1)
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-bybit-gold">✓</span> <strong>Труборез для тонкостенных труб Ø28 мм</strong> (или монтажная ножовка)
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-bybit-gold">✓</span> <strong>Рулетка</strong> (от 3 м) и <strong>маркер по металлу</strong>
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-bybit-gold">✓</span> <strong>Круглый напильник / гратосниматель</strong> — снятие фаски после резки
-            </li>
-          </ul>
-        </div>
-
+      <div id="panelBOM" class="hidden flex-1 overflow-y-auto custom-scroll p-4 space-y-5 animate-step-transition safe-bottom">
+        <!-- Rendered dynamically by renderBOM() in current language -->
       </div>
 
     </div>
@@ -470,16 +370,16 @@
 
   <!-- Modal: Детальная спецификация зажимов HJ-1 и HJ-2 -->
   <div id="modalClamps" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-6 transition-all duration-300">
-    <div class="bybit-panel border border-bybit-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up">
+    <div class="bybit-panel border border-bybit-border rounded-2xl max-w-3xl w-full max-h-[92vh] max-h-[92dvh] flex flex-col shadow-2xl overflow-hidden animate-scale-up">
       <!-- Modal Header -->
       <div class="p-4 sm:p-5 border-b border-bybit-border flex items-center justify-between bg-bybit-card">
         <div class="flex items-center gap-2.5">
           <span class="w-3 h-3 rounded-full bg-bybit-gold animate-pulse"></span>
           <div>
-            <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            <h3 id="modalClampsTitle" class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
               Крепления Lean Pipe Ø28 мм: Сравнение HJ-1 и HJ-2
             </h3>
-            <p class="text-xs text-bybit-gray">Где и какой тип крепления используется в конструкции фикстуры</p>
+            <p id="modalClampsSubtitle" class="text-xs text-bybit-gray">Где и какой тип крепления используется в конструкции фикстуры</p>
           </div>
         </div>
         <button id="btnCloseClampModal" class="p-2 text-bybit-gray hover:text-white rounded-lg hover:bg-slate-800 transition">
@@ -487,140 +387,14 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
-      <div class="p-4 sm:p-6 overflow-y-auto custom-scroll space-y-6">
-        <!-- 2 Comparison Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Card 1: HJ-2 -->
-          <div class="bybit-card rounded-xl p-4 border border-bybit-gold/40 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-bybit-gold/20 text-bybit-gold text-[10px] font-bold border border-bybit-gold/30">
-              Всего 2 шт.
-            </div>
-            <div>
-              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
-                <img src="clamp_hj2_corner.png" alt="Зажим HJ-2 3D Угловой" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
-              </div>
-              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
-                <span>🔩</span> Зажим HJ-2 (3D-Угловой)
-              </h4>
-              <p class="text-xs text-bybit-gold font-semibold mb-2">3-сторонний угловой узел (90°×90°×90°)</p>
-              <p class="text-xs text-slate-300 leading-relaxed mb-3">
-                Пространственный тройной угол. Соединяет три взаимно перпендикулярные трубы в одной жесткой точке без люфтов и сварки. Состоит из одного элемента H-2 и двух элементов H-4. Стягивается <strong>2 болтами М6 с гайками</strong>: болты вставляются и прикручиваются <strong>поперёк трубок в специальные выштампованные пазы</strong>.
-              </p>
-              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
-                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">Точки установки (2 шт.):</div>
-                <div class="text-white flex items-center gap-1.5">
-                  <span class="text-bybit-gold font-bold">1.</span> Задний левый угол стола (BL)
-                </div>
-                <div class="text-white flex items-center gap-1.5">
-                  <span class="text-bybit-gold font-bold">2.</span> Задний правый угол стола (BR)
-                </div>
-                <div class="text-[11px] text-slate-400 mt-1">
-                  Связывает заднюю балку 750 мм, боковину 500 мм и вертикальную стойку 290 мм.
-                </div>
-              </div>
-            </div>
-            <button id="btnFocusHJ2Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
-              🔍 Показать узел HJ-2 на 3D-модели
-            </button>
-          </div>
-
-          <!-- Card 2: HJ-1 -->
-          <div class="bybit-card rounded-xl p-4 border border-bybit-border flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
-              Всего 10 шт.
-            </div>
-            <div>
-              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
-                <img src="clamp_hj1_tee.png" alt="Зажим HJ-1 Т-образный" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
-              </div>
-              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
-                <span>🔧</span> Зажим HJ-1 (Т-образный)
-              </h4>
-              <p class="text-xs text-emerald-400 font-semibold mb-2">2-сторонний Т-стык с вращением на 360°</p>
-              <p class="text-xs text-slate-300 leading-relaxed mb-3">
-                Классический Т-образный хомут. Охватывает сквозную трубу и удерживает торец примыкающей. До затяжки болта М6 свободно вращается вокруг круглой трубы, позволяя задать любой угол (30°, 60°, 90°).
-              </p>
-              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
-                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">Точки установки (10 шт.):</div>
-                <div class="text-slate-200">
-                  • <strong>2 шт.</strong> — передние углы стола (FL, FR) под 90°
-                </div>
-                <div class="text-slate-200">
-                  • <strong>2 шт.</strong> — верхние углы рамы (TL, TR) под 90°
-                </div>
-                <div class="text-slate-200">
-                  • <strong>4 шт.</strong> — наклонный хребет 580 мм (угол 30°)
-                </div>
-                <div class="text-slate-200">
-                  • <strong>2 шт.</strong> — упорные стопоры 100 мм (угол 90° к ложу)
-                </div>
-              </div>
-            </div>
-            <button id="btnFocusHJ1Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-secondary text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
-              🔍 Показать узел HJ-1 на 3D-модели
-            </button>
-          </div>
-        </div>
-
-        <!-- Summary Table -->
-        <div class="bybit-card rounded-xl p-4 space-y-2">
-          <h4 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">Сводная таблица распределения крепежа</h4>
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="text-bybit-gray border-b border-bybit-border">
-                <th class="pb-1.5">Узел / Элемент</th>
-                <th class="pb-1.5">Тип зажима</th>
-                <th class="pb-1.5 text-center">Угол фиксации</th>
-                <th class="pb-1.5 text-right">Кол-во</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-bybit-border/60 text-slate-200 font-mono text-[11px]">
-              <tr>
-                <td class="py-1.5 font-sans">Задние углы основания (BL, BR)</td>
-                <td class="py-1.5 text-bybit-gold font-bold">HJ-2 (3D-угол)</td>
-                <td class="py-1.5 text-center">90°×90°×90°</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 font-sans">Передние углы стола (FL, FR)</td>
-                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
-                <td class="py-1.5 text-center">90°</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 font-sans">Верхняя поперечина (TL, TR)</td>
-                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
-                <td class="py-1.5 text-center">90°</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 font-sans">Наклонные балки ложа (580 мм)</td>
-                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
-                <td class="py-1.5 text-center">30° наклона</td>
-                <td class="py-1.5 text-right font-bold text-white">4 шт.</td>
-              </tr>
-              <tr>
-                <td class="py-1.5 font-sans">Передние стопоры полки (100 мм)</td>
-                <td class="py-1.5 text-emerald-400">HJ-1 (Т-стык)</td>
-                <td class="py-1.5 text-center">90° к полке (60° вперед)</td>
-                <td class="py-1.5 text-right font-bold text-white">2 шт.</td>
-              </tr>
-              <tr class="bg-bybit-surface font-bold">
-                <td class="py-2 text-white font-sans">Итого зажимов:</td>
-                <td class="py-2 text-bybit-gold" colspan="2">2 шт. HJ-2 + 10 шт. HJ-1</td>
-                <td class="py-2 text-right text-bybit-gold font-mono text-sm">12 компл.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <!-- Modal Body (Rendered dynamically by renderClampModal()) -->
+      <div id="modalClampsBody" class="p-4 sm:p-6 overflow-y-auto custom-scroll space-y-6"></div>
     </div>
   </div>
 
   <script>
-    // -------------------------------------------------------------
-    // 1. THREE.JS INITIALIZATION (BYBIT PALETTE)
+
+// 1. THREE.JS INITIALIZATION (BYBIT PALETTE)
     // -------------------------------------------------------------
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
@@ -794,7 +568,7 @@
     }
 
     // High-Resolution Billboard Text Sprites (Bybit Gold Palette)
-    function createDimensionSprite(text, sub = "") {
+    function createDimensionTexture(text, sub = "") {
       const canvas = document.createElement('canvas');
       canvas.width = 256; canvas.height = 96;
       const ctx = canvas.getContext('2d');
@@ -834,6 +608,11 @@
       }
 
       const tex = new THREE.CanvasTexture(canvas);
+      return tex;
+    }
+
+    function createDimensionSprite(text, sub = "") {
+      const tex = createDimensionTexture(text, sub);
       const spriteMat = new THREE.SpriteMaterial({ map: tex, depthTest: false, depthWrite: false });
       const sprite = new THREE.Sprite(spriteMat);
       sprite.scale.set(36, 13.5, 1);
@@ -1578,7 +1357,650 @@
     buildPhotorealisticShelf();
 
     // -------------------------------------------------------------
-    // 6. UI TAB SWITCHER (STEPPER vs BOM)
+    
+    // =============================================================
+    // 6. MULTILINGUAL DICTIONARY (RU / EN / PL)
+    // =============================================================
+    const I18N = {
+      ru: {
+        pageTitle: "Инструкция по сборке фикстуры Compute Shelf",
+        headerTitle: "Инструкция по сборке Compute Shelf",
+        headerBadge: "Ø28 мм • 14 HJ-1",
+        headerSubtitle: "Стопоры под 90° к ложу • Наклон ложа 30° • Размеры на 3D-модели",
+        modeSplit: "📱 50/50",
+        mode3D: "🧊 3D Модель",
+        modeSteps: "📝 Инструкция",
+        hudRotate: "• Вращение: <strong>ЛКМ / 1 палец</strong> | Зум: <strong>2 пальца</strong>",
+        viewsBtnLabel: "📐 Изометрия",
+        viewsDropdownTitle: "Обзор и детали",
+        views: {
+          all: "🌟 Вся фикстура",
+          bed: "🪵 Ложе (ДСП+резина)",
+          shelf: "🖥️ Полка Compute Shelf",
+          pipes: "🍷 Трубки каркаса",
+          clamps: "🔩 Зажимы HJ-1/2 (модели)",
+          clampsFrame: "🔗 Зажимы на каркасе"
+        },
+        hudStatus: {
+          all: "Фикстура в сборе",
+          bed: "Деталь: Ложе (ДСП 16 мм + резина + 6 саморезов)",
+          shelf: "Деталь: Серверное шасси Compute Shelf (685×565×120 мм)",
+          pipes: "Детали: 11 трубок каркаса Lean Pipe Ø28 мм",
+          clamps: "Детали: Зажимы HJ-1 и HJ-2 (отдельные 3D-модели)",
+          clampsFrame: "Детали: Все 12 зажимов в точках сборки каркаса"
+        },
+        layersBtnLabel: "⚙️ Слои 3D",
+        layersDropdownTitle: "Слои 3D",
+        lblDims: "📏 Размеры",
+        lblShelf: "Compute Shelf",
+        lblBed: "ДСП + резина",
+        lblFrame: "Трубы Ø28 мм",
+        lblClamps: "Зажимы (HJ-1 / HJ-2)",
+        tabStepper: "Этапы сборки (1–5)",
+        tabBOM: "📋 Список компонентов",
+        stepBadgeIntro: "Готовая модель",
+        stepBadgeGuide: "Пошаговая инструкция",
+        stepCounterAssembled: "В сборе",
+        stepCounterStep: "Шаг {n} из {total}",
+        btnOverview: "🌟 Вся модель",
+        btnPrev: "← Назад",
+        btnPrevModel: "← Вся модель",
+        btnNext: "Следующий шаг →",
+        btnFinish: "✓ Завершить (Вся модель)",
+        reqComponents: "Необходимые компоненты:",
+        step0: {
+          badge: "Фикстура в сборе",
+          shelf: "Compute Shelf",
+          title: "Рабочая станция сборки и наклейки этикеток",
+          desc: "На 3D-сцене отображена <strong>полностью собранная фикстура</strong> с серверным шасси Compute Shelf (685×565×120 мм). Полка лежит на антискользящем резиновом ложе под углом 30° и упирается в концевые стопоры под строгим углом 90°.",
+          mBed: "Угол ложа:",
+          mBedVal: "30° наклона",
+          mStop: "Стопоры:",
+          mStopVal: "90° к полке",
+          mPipes: "Трубы Ø28 мм:",
+          mPipesVal: "11 шт. (5.19 м)",
+          mClamps: "Крепления:",
+          mClampsVal: "2×HJ-2 + 10×HJ-1",
+          btnStart: "Начать сборку (Шаг 1 из 5)",
+          btnBOM: "Ведомость материалов и карта резки",
+          btnBOMSub: "11 труб →",
+          btnClamps: "Различие зажимов: HJ-1 vs HJ-2",
+          btnClampsSub: "12 шт. →"
+        },
+        steps: [
+          {
+            num: 1,
+            title: "Сборка нижнего квадрата и двух опор",
+            desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм (бордовый цвет). В передних углах (FL, FR) используйте 2 Т-зажима HJ-1 свинцового цвета. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (в каждом узле HJ-2 устанавливаются 2 болта М6, затягивающиеся поперёк трубок в выштампованные пазы). Затяните болты М6 шестигранником 5 мм.",
+            parts: ["2 шт. × 750 мм (бордо)", "2 шт. × 500 мм (бордо)", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (по 2 болта в пазы)", "2 шт. зажима HJ-1 (свинец)"]
+          },
+          {
+            num: 2,
+            title: "Сборка верхней рамки из трёх трубок",
+            desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм через 2 свинцовых зажима HJ-1 (TL, TR). Установите 2 центральные наклонные бордовые трубы 580 мм (хребет ложа под углом 30°), закрепив их с двух сторон 4 зажимами HJ-1 к передней и верхней балкам. За счет свободного вращения хомута HJ-1 вокруг круглых труб угол встает идеально!",
+            parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1 (свинец)"]
+          },
+          {
+            num: 3,
+            title: "Установка стопоров под углом 90° к ложу",
+            desc: "На концах передней балки закрепите 2 хомута HJ-1 свинцового цвета, повернув их на угол 60° вперед так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО наклонному ложу (под 90° к будущей полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
+            parts: ["2 шт. × 100 мм (стопоры)", "2 шт. зажима HJ-1 (свинец)", "2 шт. резиновые заглушки Ø28 мм"]
+          },
+          {
+            num: 4,
+            title: "Прикручивание подложки ДСП к трубкам каркаса",
+            desc: "Плита ДСП (700×550×16 мм) с наклеенным резиновым ковриком 2–3 мм укладывается СВЕРХУ на две наклонные бордовые трубы (не прорезая каркас). Основание жестко прикручивается 6 саморезами по металлу с прессшайбой напрямую к трубам Ø28 мм (по 3 самореза в каждую наклонную трубу). Каркас и ложе образуют монолитную конструкцию.",
+            parts: ["Плита ДСП 700×550×16 мм", "Резина ТМКЩ 2-3 мм", "6 шт. саморезы по металлу с прессшайбой"]
+          },
+          {
+            num: 5,
+            title: "Готовая фикстура и укладка Compute Shelf",
+            desc: "Фикстура полностью собрана и готова к работе! Серверное шасси Compute Shelf цвета серебра (685×565×120 мм) свободно укладывается на мягкое антискользящее резиновое ложе под углом 30° до упора в концевые стопоры под строгим углом 90°. Полка надежно удерживается силой тяжести для удобной работы оператора.",
+            parts: ["Серверное шасси Compute Shelf (серебро)", "Фикстура в сборе"]
+          }
+        ],
+        dimLabels: {
+          front: { text: "750 мм", sub: "Поперечина" },
+          top: { text: "750 мм", sub: "Верхняя балка" },
+          spine: { text: "580 мм", sub: "Хребет 30°" },
+          base: { text: "500 мм", sub: "Опора стола" },
+          post: { text: "290 мм", sub: "Стойка-опора" },
+          stop: { text: "100 мм", sub: "Стопор 90°" },
+          hj2: { text: "HJ-2", sub: "3D-угол (2 болта в пазы)" },
+          hj1: { text: "HJ-1", sub: "Т-стык (1 болт в паз)" }
+        },
+        bomTitle: "Ведомость заготовки материалов",
+        bomSubtitle: "Точный перечень всех комплектующих и резка труб до начала сборки фикстуры.",
+        bomSec1Title: "1. Трубы Lean Pipe Ø28 мм (нарезка)",
+        bomSec1Badge: "11 заготовок",
+        bomColPurpose: "Назначение",
+        bomColLength: "Длина",
+        bomColQty: "Кол-во",
+        bomPipes: [
+          { name: "Поперечные балки (перед/зад)", len: "750 мм", qty: "3 шт." },
+          { name: "Наклонный хребет (угол 30°)", len: "580 мм", qty: "2 шт." },
+          { name: "Продольные опоры (на столе)", len: "500 мм", qty: "2 шт." },
+          { name: "Задние стойки-опоры", len: "290 мм", qty: "2 шт." },
+          { name: "Стопоры (под углом 90° к ложу)", len: "100 мм", qty: "2 шт." }
+        ],
+        bomNetLength: "Общий чистый метраж:",
+        bomNetLengthVal: "5.19 м",
+        bomPipeOrderTip: "💡 <strong>Заказ трубы:</strong> ровно <strong>2 стандартных хлыста по 3.0 м</strong> (6.0 м). Остаток 810 мм на пропилы и запас.",
+        bomSec2Title: "2. Зажимы и крепеж",
+        bomSec2Badge: "12 комплектов",
+        bomHj2Name: "Зажим HJ-2 (3D угловой 90°×90°×90°):",
+        bomHj2Desc: "Установка в 2 задних углах стола (BL, BR). Соединяет 3 взаимно перпендикулярные трубы. Стягивается 2 болтами М6 поперёк трубок в пазы",
+        bomHj2Qty: "2 шт.",
+        bomHj1Name: "Зажим HJ-1 (Т-образный для Ø28 мм):",
+        bomHj1Desc: "Передние углы (2 шт.), верхняя перекладина (2 шт.), хребет 30° (4 шт.), стопоры 90° (2 шт.)",
+        bomHj1Qty: "10 шт.",
+        bomBoltsName: "Болты М6×25 + гайки М6:",
+        bomBoltsDesc: "Входят в заводской комплект: по 2 болта на каждый HJ-2 (4 шт.) и по 1 болту на каждый HJ-1 (10 шт.)",
+        bomBoltsQty: "14 компл.",
+        bomSec3Title: "3. Ложе, резина и защита",
+        bomSec3Badge: "Антицарапины",
+        bomDspName: "Плита ДСП/МДФ (16 мм):",
+        bomDspDesc: "Укладывается сверху на наклонные трубы (не сквозь них)",
+        bomDspQty: "700 × 550 мм (1 шт.)",
+        bomRubberName: "Резиновый коврик ТМКЩ (2–3 мм):",
+        bomRubberQty: "700 × 550 мм (1 шт.)",
+        bomScrewsName: "Саморезы по металлу с прессшайбой:",
+        bomScrewsDesc: "Со сверлом DIN 7504 (4.2×32 мм) — монтаж напрямую в трубы",
+        bomScrewsQty: "6 шт.",
+        bomCapsName: "Резиновые заглушки Ø28 мм (красные):",
+        bomCapsQty: "2 шт.",
+        bomGlueName: "Клей контактный (88-СА или Момент-1):",
+        bomGlueQty: "1 банка",
+        bomSec4Title: "4. Необходимый инструмент",
+        bomTools: [
+          "<strong>Шестигранный ключ 5 мм</strong> — затяжка всех 12 зажимов (2× HJ-2, 10× HJ-1)",
+          "<strong>Труборез для тонкостенных труб Ø28 мм</strong> (или монтажная ножовка)",
+          "<strong>Рулетка</strong> (от 3 м) и <strong>маркер по металлу</strong>",
+          "<strong>Круглый напильник / гратосниматель</strong> — снятие фаски после резки"
+        ],
+        modalTitle: "Крепления Lean Pipe Ø28 мм: Сравнение HJ-1 и HJ-2",
+        modalSubtitle: "Где и какой тип крепления используется в конструкции фикстуры",
+        modalHj2Title: "Зажим HJ-2 (3D-Угловой)",
+        modalHj2Badge: "Всего 2 шт.",
+        modalHj2Sub: "3-сторонний угловой узел (90°×90°×90°)",
+        modalHj2Desc: "Пространственный тройной угол. Соединяет три взаимно перпендикулярные трубы в одной жесткой точке без люфтов и сварки. Состоит из одного элемента H-2 и двух элементов H-4. Стягивается <strong>2 болтами М6 с гайками</strong>: болты вставляются и прикручиваются <strong>поперёк трубок в специальные выштампованные пазы</strong>.",
+        modalHj2LocTitle: "Точки установки (2 шт.):",
+        modalHj2Loc1: "Задний левый угол стола (BL)",
+        modalHj2Loc2: "Задний правый угол стола (BR)",
+        modalHj2LocNote: "Связывает заднюю балку 750 мм, боковину 500 мм и вертикальную стойку 290 мм.",
+        modalHj2Btn: "🔍 Показать узел HJ-2 на 3D-модели",
+        modalHj1Title: "Зажим HJ-1 (Т-образный)",
+        modalHj1Badge: "Всего 10 шт.",
+        modalHj1Sub: "2-сторонний Т-стык с вращением на 360°",
+        modalHj1Desc: "Классический Т-образный хомут. Охватывает сквозную трубу и удерживает торец примыкающей. До затяжки болта М6 свободно вращается вокруг круглой трубы, позволяя задать любой угол (30°, 60°, 90°).",
+        modalHj1LocTitle: "Точки установки (10 шт.):",
+        modalHj1LocPoints: [
+          "• <strong>2 шт.</strong> — передние углы стола (FL, FR) под 90°",
+          "• <strong>2 шт.</strong> — верхние углы рамы (TL, TR) под 90°",
+          "• <strong>4 шт.</strong> — наклонный хребет 580 мм (угол 30°)",
+          "• <strong>2 шт.</strong> — упорные стопоры 100 мм (угол 90° к ложу)"
+        ],
+        modalHj1Btn: "🔍 Показать узел HJ-1 на 3D-модели",
+        modalSummaryTitle: "Сводная таблица распределения крепежа",
+        modalColJoint: "Узел / Элемент",
+        modalColType: "Тип зажима",
+        modalColAngle: "Угол фиксации",
+        modalColQty: "Кол-во",
+        modalRows: [
+          { joint: "Задние углы основания (BL, BR)", type: "HJ-2 (3D-угол)", angle: "90°×90°×90°", qty: "2 шт." },
+          { joint: "Передние углы стола (FL, FR)", type: "HJ-1 (Т-стык)", angle: "90°", qty: "2 шт." },
+          { joint: "Верхняя поперечина (TL, TR)", type: "HJ-1 (Т-стык)", angle: "90°", qty: "2 шт." },
+          { joint: "Наклонные балки ложа (580 мм)", type: "HJ-1 (Т-стык)", angle: "30° наклона", qty: "4 шт." },
+          { joint: "Передние стопоры полки (100 мм)", type: "HJ-1 (Т-стык)", angle: "90° к полке (60° вперед)", qty: "2 шт." }
+        ],
+        modalTotalLabel: "Итого зажимов:",
+        modalTotalTypes: "2 шт. HJ-2 + 10 шт. HJ-1",
+        modalTotalQty: "12 компл."
+      },
+      en: {
+        pageTitle: "Compute Shelf Fixture Assembly Guide",
+        headerTitle: "Compute Shelf Assembly Guide",
+        headerBadge: "Ø28 mm • 14 HJ-1",
+        headerSubtitle: "Stoppers at 90° to bed • 30° bed incline • Dimensions on 3D model",
+        modeSplit: "📱 Split",
+        mode3D: "🧊 3D Model",
+        modeSteps: "📝 Guide",
+        hudRotate: "• Rotate: <strong>LMB / 1 finger</strong> | Zoom: <strong>2 fingers</strong>",
+        viewsBtnLabel: "📐 Views",
+        viewsDropdownTitle: "Views & Details",
+        views: {
+          all: "🌟 Full Fixture",
+          bed: "🪵 Bed (Board+Rubber)",
+          shelf: "🖥️ Compute Shelf",
+          pipes: "🍷 Frame Pipes",
+          clamps: "🔩 Clamps HJ-1/2 (Models)",
+          clampsFrame: "🔗 Clamps on Frame"
+        },
+        hudStatus: {
+          all: "Assembled Fixture",
+          bed: "Part: Bed (Chipboard 16 mm + rubber + 6 screws)",
+          shelf: "Part: Compute Shelf Chassis (685×565×120 mm)",
+          pipes: "Parts: 11 Lean Pipes Ø28 mm",
+          clamps: "Parts: HJ-1 & HJ-2 Clamps (Standalone 3D Models)",
+          clampsFrame: "Parts: All 12 Clamps at Frame Assembly Points"
+        },
+        layersBtnLabel: "⚙️ 3D Layers",
+        layersDropdownTitle: "3D Layers",
+        lblDims: "📏 Dimensions",
+        lblShelf: "Compute Shelf",
+        lblBed: "Board + Rubber",
+        lblFrame: "Pipes Ø28 mm",
+        lblClamps: "Clamps (HJ-1 / HJ-2)",
+        tabStepper: "Assembly Steps (1–5)",
+        tabBOM: "📋 Bill of Materials",
+        stepBadgeIntro: "Completed Model",
+        stepBadgeGuide: "Step-by-step Guide",
+        stepCounterAssembled: "Assembled",
+        stepCounterStep: "Step {n} of {total}",
+        btnOverview: "🌟 Full Model",
+        btnPrev: "← Back",
+        btnPrevModel: "← Full Model",
+        btnNext: "Next Step →",
+        btnFinish: "✓ Finish (Full Model)",
+        reqComponents: "Required Components:",
+        step0: {
+          badge: "Assembled Fixture",
+          shelf: "Compute Shelf",
+          title: "Compute Shelf Assembly & Labeling Workstation",
+          desc: "The 3D scene displays the <strong>fully assembled fixture</strong> with the server Compute Shelf chassis (685×565×120 mm). The shelf rests on the anti-slip rubber bed at a 30° angle, supported by end stoppers at an exact 90° angle.",
+          mBed: "Bed Angle:",
+          mBedVal: "30° incline",
+          mStop: "Stoppers:",
+          mStopVal: "90° to shelf",
+          mPipes: "Pipes Ø28 mm:",
+          mPipesVal: "11 pcs (5.19 m)",
+          mClamps: "Clamps:",
+          mClampsVal: "2×HJ-2 + 10×HJ-1",
+          btnStart: "Start Assembly (Step 1 of 5)",
+          btnBOM: "Cutting List & Bill of Materials",
+          btnBOMSub: "11 pipes →",
+          btnClamps: "Clamp Comparison: HJ-1 vs HJ-2",
+          btnClampsSub: "12 pcs →"
+        },
+        steps: [
+          {
+            num: 1,
+            title: "Assembling bottom base rectangle and rear uprights",
+            desc: "Assemble the bottom base rectangle on the bench using 2 transverse 750 mm pipes and 2 longitudinal 500 mm pipes (burgundy). At the front corners (FL, FR), use 2 lead-colored HJ-1 T-clamps. At the two rear corners (BL, BR), install HJ-2 3D spatial corner clamps (each HJ-2 joint uses 2 M6 bolts tightened across the pipes into stamped recessed slots). Tighten all M6 bolts with a 5 mm hex key.",
+            parts: ["2 pcs × 750 mm (burgundy)", "2 pcs × 500 mm (burgundy)", "2 pcs × 290 mm (uprights)", "2 pcs HJ-2 clamps (2 bolts in slots)", "2 pcs HJ-1 clamps (lead)"]
+          },
+          {
+            num: 2,
+            title: "Assembling upper frame and 30° spine pipes",
+            desc: "Fit the 750 mm upper crossbar onto the vertical uprights using 2 lead-colored HJ-1 clamps (TL, TR). Install the two central 580 mm inclined burgundy pipes (forming the 30° bed spine), securing them at both ends with 4 HJ-1 clamps to the front and top crossbars. The free rotation of the HJ-1 sleeve around round pipes ensures the 30° angle locks in perfectly!",
+            parts: ["1 pc × 750 mm (top crossbar)", "2 pcs × 580 mm (30° incline)", "6 pcs HJ-1 clamps (lead)"]
+          },
+          {
+            num: 3,
+            title: "Installing 90° stoppers with rubber caps",
+            desc: "Attach 2 lead-colored HJ-1 clamps near the ends of the front crossbar, angled 60° forward so the 100 mm stopper pipes stand STRICTLY PERPENDICULAR to the inclined bed (at 90° to the shelf). Mount soft protective red rubber end caps.",
+            parts: ["2 pcs × 100 mm (stoppers)", "2 pcs HJ-1 clamps (lead)", "2 pcs rubber end caps Ø28 mm"]
+          },
+          {
+            num: 4,
+            title: "Fastening chipboard bed to frame pipes with screws",
+            desc: "The chipboard plate (700×550×16 mm) with laminated 2–3 mm rubber mat is placed ON TOP of the two inclined burgundy pipes (without cutting through the frame). The bed is firmly screwed directly into the Ø28 mm pipes using 6 self-tapping metal screws with press washers (3 screws per inclined pipe), forming a rock-solid monolithic unit.",
+            parts: ["Chipboard plate 700×550×16 mm", "Rubber mat 2-3 mm", "6 pcs self-tapping metal screws with washers"]
+          },
+          {
+            num: 5,
+            title: "Finished fixture and placing Compute Shelf",
+            desc: "The fixture is fully assembled and operational! The silver Compute Shelf chassis (685×565×120 mm) rests freely on the soft anti-slip rubber bed at a 30° angle, resting against the 90° end stoppers. The chassis is securely held by gravity for ergonomic operator access.",
+            parts: ["Compute Shelf server chassis (silver)", "Fully assembled fixture"]
+          }
+        ],
+        dimLabels: {
+          front: { text: "750 mm", sub: "Crossbar" },
+          top: { text: "750 mm", sub: "Top Beam" },
+          spine: { text: "580 mm", sub: "30° Spine" },
+          base: { text: "500 mm", sub: "Table Base" },
+          post: { text: "290 mm", sub: "Upright Post" },
+          stop: { text: "100 mm", sub: "90° Stopper" },
+          hj2: { text: "HJ-2", sub: "3D Corner (2 bolts in slots)" },
+          hj1: { text: "HJ-1", sub: "T-Joint (1 bolt in slot)" }
+        },
+        bomTitle: "Bill of Materials & Cutting List",
+        bomSubtitle: "Precise component list and pipe cutting lengths prior to fixture assembly.",
+        bomSec1Title: "1. Lean Pipe Ø28 mm (Cutting List)",
+        bomSec1Badge: "11 cut pieces",
+        bomColPurpose: "Purpose",
+        bomColLength: "Length",
+        bomColQty: "Qty",
+        bomPipes: [
+          { name: "Crossbars (front/rear/top)", len: "750 mm", qty: "3 pcs" },
+          { name: "Inclined spine (30° angle)", len: "580 mm", qty: "2 pcs" },
+          { name: "Longitudinal supports (bench base)", len: "500 mm", qty: "2 pcs" },
+          { name: "Rear upright posts", len: "290 mm", qty: "2 pcs" },
+          { name: "Stoppers (at 90° to bed)", len: "100 mm", qty: "2 pcs" }
+        ],
+        bomNetLength: "Total net length:",
+        bomNetLengthVal: "5.19 m",
+        bomPipeOrderTip: "💡 <strong>Pipe Order:</strong> exactly <strong>2 standard 3.0 m pipes</strong> (6.0 m total). 810 mm remaining for kerf cuts and reserve.",
+        bomSec2Title: "2. Clamps & Fasteners",
+        bomSec2Badge: "12 sets",
+        bomHj2Name: "HJ-2 Clamp (3D Corner 90°×90°×90°):",
+        bomHj2Desc: "Installed at 2 rear bench corners (BL, BR). Joins 3 mutually perpendicular pipes. Clamped with 2 M6 bolts across pipes into slots.",
+        bomHj2Qty: "2 pcs",
+        bomHj1Name: "HJ-1 Clamp (T-Joint for Ø28 mm):",
+        bomHj1Desc: "Front corners (2 pcs), top crossbar (2 pcs), 30° spine (4 pcs), 90° stoppers (2 pcs).",
+        bomHj1Qty: "10 pcs",
+        bomBoltsName: "M6×25 Bolts + M6 Nuts:",
+        bomBoltsDesc: "Included in standard set: 2 bolts per HJ-2 (4 pcs) and 1 bolt per HJ-1 (10 pcs).",
+        bomBoltsQty: "14 sets",
+        bomSec3Title: "3. Bed, Rubber & Protection",
+        bomSec3Badge: "Anti-Scratch",
+        bomDspName: "Chipboard/MDF Plate (16 mm):",
+        bomDspDesc: "Rests on top of inclined pipes (not through them)",
+        bomDspQty: "700 × 550 mm (1 pc)",
+        bomRubberName: "Rubber Mat (2–3 mm):",
+        bomRubberQty: "700 × 550 mm (1 pc)",
+        bomScrewsName: "Self-tapping screws with press washer:",
+        bomScrewsDesc: "Self-drilling DIN 7504 (4.2×32 mm) — direct mounting into pipes",
+        bomScrewsQty: "6 pcs",
+        bomCapsName: "Rubber End Caps Ø28 mm (red):",
+        bomCapsQty: "2 pcs",
+        bomGlueName: "Contact Adhesive (88-CA or similar):",
+        bomGlueQty: "1 can",
+        bomSec4Title: "4. Required Tools",
+        bomTools: [
+          "<strong>5 mm Hex Key</strong> — tightening all 12 clamps (2× HJ-2, 10× HJ-1)",
+          "<strong>Pipe Cutter for Ø28 mm thin-walled pipes</strong> (or hacksaw)",
+          "<strong>Tape Measure</strong> (3 m+) and <strong>metal marker</strong>",
+          "<strong>Round file / deburring tool</strong> — chamfering pipe edges after cutting"
+        ],
+        modalTitle: "Lean Pipe Ø28 mm Clamps: HJ-1 vs HJ-2 Comparison",
+        modalSubtitle: "Where and how each clamp type is used in the fixture assembly",
+        modalHj2Title: "HJ-2 Clamp (3D Corner)",
+        modalHj2Badge: "2 pcs total",
+        modalHj2Sub: "3-way corner joint (90°×90°×90°)",
+        modalHj2Desc: "3D corner joint. Connects three mutually perpendicular pipes at a single rigid junction without welding or play. Clamped with <strong>2 M6 bolts with nuts</strong> inserted across pipes into stamped recessed slots.",
+        modalHj2LocTitle: "Installation points (2 pcs):",
+        modalHj2Loc1: "Rear left table corner (BL)",
+        modalHj2Loc2: "Rear right table corner (BR)",
+        modalHj2LocNote: "Connects 750 mm rear bar, 500 mm side support, and 290 mm vertical post.",
+        modalHj2Btn: "🔍 Focus HJ-2 joint on 3D model",
+        modalHj1Title: "HJ-1 Clamp (T-Joint)",
+        modalHj1Badge: "10 pcs total",
+        modalHj1Sub: "2-way T-joint with 360° rotation",
+        modalHj1Desc: "Classic T-clamp. Encloses through-pipe and clamps end of butting pipe. Rotates freely around round pipe before M6 bolt tightening, allowing any angle (30°, 60°, 90°).",
+        modalHj1LocTitle: "Installation points (10 pcs):",
+        modalHj1LocPoints: [
+          "• <strong>2 pcs</strong> — front table corners (FL, FR) at 90°",
+          "• <strong>2 pcs</strong> — top frame corners (TL, TR) at 90°",
+          "• <strong>4 pcs</strong> — 580 mm inclined spine (30° angle)",
+          "• <strong>2 pcs</strong> — 100 mm shelf stoppers (90° to bed)"
+        ],
+        modalHj1Btn: "🔍 Focus HJ-1 joint on 3D model",
+        modalSummaryTitle: "Fastener Distribution Summary Table",
+        modalColJoint: "Joint / Element",
+        modalColType: "Clamp Type",
+        modalColAngle: "Fixation Angle",
+        modalColQty: "Qty",
+        modalRows: [
+          { joint: "Rear base corners (BL, BR)", type: "HJ-2 (3D Corner)", angle: "90°×90°×90°", qty: "2 pcs" },
+          { joint: "Front table corners (FL, FR)", type: "HJ-1 (T-Joint)", angle: "90°", qty: "2 pcs" },
+          { joint: "Top crossbar (TL, TR)", type: "HJ-1 (T-Joint)", angle: "90°", qty: "2 pcs" },
+          { joint: "Inclined spine pipes (580 mm)", type: "HJ-1 (T-Joint)", angle: "30° incline", qty: "4 pcs" },
+          { joint: "Front shelf stoppers (100 mm)", type: "HJ-1 (T-Joint)", angle: "90° to bed (60° forward)", qty: "2 pcs" }
+        ],
+        modalTotalLabel: "Total Clamps:",
+        modalTotalTypes: "2 pcs HJ-2 + 10 pcs HJ-1",
+        modalTotalQty: "12 sets"
+      },
+      pl: {
+        pageTitle: "Instrukcja montażu stacji roboczej Compute Shelf",
+        headerTitle: "Instrukcja montażu Compute Shelf",
+        headerBadge: "Ø28 mm • 14 HJ-1",
+        headerSubtitle: "Ograniczniki 90° do łoża • Pochylenie łoża 30° • Wymiary na modelu 3D",
+        modeSplit: "📱 Podział",
+        mode3D: "🧊 Model 3D",
+        modeSteps: "📝 Instrukcja",
+        hudRotate: "• Obrót: <strong>LPM / 1 palec</strong> | Przybliżenie: <strong>2 palce</strong>",
+        viewsBtnLabel: "📐 Widoki",
+        viewsDropdownTitle: "Widoki i detale",
+        views: {
+          all: "🌟 Cała stacja",
+          bed: "🪵 Łoże (Płyta+Guma)",
+          shelf: "🖥️ Półka Compute Shelf",
+          pipes: "🍷 Rurki ramy",
+          clamps: "🔩 Zaciski HJ-1/2 (Modele)",
+          clampsFrame: "🔗 Zaciski na ramie"
+        },
+        hudStatus: {
+          all: "Kompletna stacja",
+          bed: "Część: Łoże (Płyta 16 mm + guma + 6 wkrętów)",
+          shelf: "Część: Obudowa Compute Shelf (685×565×120 mm)",
+          pipes: "Części: 11 rurek ramy Lean Pipe Ø28 mm",
+          clamps: "Części: Zaciski HJ-1 i HJ-2 (Modele 3D)",
+          clampsFrame: "Części: Wszystkie 12 zacisków na ramie"
+        },
+        layersBtnLabel: "⚙️ Warstwy 3D",
+        layersDropdownTitle: "Warstwy 3D",
+        lblDims: "📏 Wymiary",
+        lblShelf: "Compute Shelf",
+        lblBed: "Płyta + Guma",
+        lblFrame: "Rury Ø28 mm",
+        lblClamps: "Zaciski (HJ-1 / HJ-2)",
+        tabStepper: "Etapy montażu (1–5)",
+        tabBOM: "📋 Zestawienie materiałów",
+        stepBadgeIntro: "Gotowy model",
+        stepBadgeGuide: "Instrukcja krok po kroku",
+        stepCounterAssembled: "Złożony",
+        stepCounterStep: "Krok {n} z {total}",
+        btnOverview: "🌟 Cały model",
+        btnPrev: "← Wstecz",
+        btnPrevModel: "← Cały model",
+        btnNext: "Następny krok →",
+        btnFinish: "✓ Zakończ (Cały model)",
+        reqComponents: "Wymagane komponenty:",
+        step0: {
+          badge: "Kompletna stacja",
+          shelf: "Compute Shelf",
+          title: "Stanowisko montażu i etykietowania Compute Shelf",
+          desc: "Scena 3D przedstawia <strong>kompletnie zmontowaną stację</strong> z serwerową obudową Compute Shelf (685×565×120 mm). Półka spoczywa na antypoślizgowym gumowym łożu pod kątem 30° i opiera się o ograniczniki pod kątem 90°.",
+          mBed: "Kąt łoża:",
+          mBedVal: "30° pochylenia",
+          mStop: "Ograniczniki:",
+          mStopVal: "90° do półki",
+          mPipes: "Rury Ø28 mm:",
+          mPipesVal: "11 szt. (5.19 m)",
+          mClamps: "Zaciski:",
+          mClampsVal: "2×HJ-2 + 10×HJ-1",
+          btnStart: "Rozpocznij montaż (Krok 1 z 5)",
+          btnBOM: "Wykaz materiałów i karta cięcia",
+          btnBOMSub: "11 rur →",
+          btnClamps: "Porównanie zacisków: HJ-1 vs HJ-2",
+          btnClampsSub: "12 szt. →"
+        },
+        steps: [
+          {
+            num: 1,
+            title: "Montaż dolnej podstawy i tylnych słupków",
+            desc: "Złóż dolny prostokąt na stole z 2 belek poprzecznych 750 mm i 2 wzdłużnych 500 mm (kolor bordowy). W przednich narożnikach (FL, FR) użyj 2 zacisków teowych HJ-1 w kolorze ołowianym. W tylnych narożnikach (BL, BR) zamontuj przestrzenne zaciski narożne HJ-2 (w każdym węźle HJ-2 montuje się 2 śruby M6, dokręcane w poprzek rur w wytłoczone rowki). Dokręć śruby M6 kluczem imbusowym 5 mm.",
+            parts: ["2 szt. × 750 mm (bordowy)", "2 szt. × 500 mm (bordowy)", "2 szt. × 290 mm (słupki)", "2 szt. zacisków HJ-2 (po 2 śruby w rowkach)", "2 szt. zacisków HJ-1 (ołów)"]
+          },
+          {
+            num: 2,
+            title: "Montaż górnej ramy i belek pochylonych 30°",
+            desc: "Na pionowe słupki nałóż górną poprzeczkę 750 mm za pomocą 2 ołowianych zacisków HJ-1 (TL, TR). Zamontuj 2 centralne pochylone bordowe rury 580 mm (grzbiet łoża pod kątem 30°), mocując je z obu stron 4 zaciskami HJ-1 do przedniej i górnej belki. Dzięki swobodnemu obrotowi zacisku HJ-1 wokół okrągłych rur kąt 30° ustala się idealnie!",
+            parts: ["1 szt. × 750 mm (belka górna)", "2 szt. × 580 mm (pochylone 30°)", "6 szt. zacisków HJ-1 (ołów)"]
+          },
+          {
+            num: 3,
+            title: "Montaż ograniczników pod kątem 90° do łoża",
+            desc: "Na końcach przedniej belki zamocuj 2 zaciski HJ-1 w kolorze ołowianym, obracając je o kąt 60° do przodu, aby ograniczniki 100 mm były ŚCIŚLE PROSTOPADŁE do pochyłego łoża (pod kątem 90° do półki). Załóż miękkie czerwone gumowe zaślepki ochronne.",
+            parts: ["2 szt. × 100 mm (ograniczniki)", "2 szt. zacisków HJ-1 (ołów)", "2 szt. zaślepek gumowych Ø28 mm"]
+          },
+          {
+            num: 4,
+            title: "Przykręcenie płyty łoża do rur ramy wkrętami",
+            desc: "Płyta wiórowa (700×550×16 mm) z naklejoną matą gumową 2–3 mm jest układana NA WIERZCHU dwóch pochyłych bordowych rur (bez przecinania ramy). Podstawa jest sztywno przykręcana 6 wkrętami samogwintującymi z podkładką bezpośrednio do rur Ø28 mm (po 3 wkręty na każdą pochyłą rurę). Rama i łoże tworzą jednolitą, stabilną konstrukcję.",
+            parts: ["Płyta wiórowa 700×550×16 mm", "Mata gumowa 2-3 mm", "6 szt. wkrętów samogwintujących z podkładką"]
+          },
+          {
+            num: 5,
+            title: "Gotowa stacja i ułożenie Compute Shelf",
+            desc: "Stacja jest w pełni zmontowana i gotowa do pracy! Srebrna obudowa serwerowa Compute Shelf (685×565×120 mm) swobodnie spoczywa na miękkim antypoślizgowym gumowym łożu pod kątem 30° aż do oparcia o ograniczniki 90°. Półka jest stabilnie utrzymywana przez grawitację dla ergonomicznej pracy operatora.",
+            parts: ["Obudowa serwerowa Compute Shelf (srebro)", "Kompletna zmontowana stacja"]
+          }
+        ],
+        dimLabels: {
+          front: { text: "750 mm", sub: "Poprzeczka" },
+          top: { text: "750 mm", sub: "Belka górna" },
+          spine: { text: "580 mm", sub: "Grzbiet 30°" },
+          base: { text: "500 mm", sub: "Podpora stołu" },
+          post: { text: "290 mm", sub: "Słupek pionowy" },
+          stop: { text: "100 mm", sub: "Ogranicznik 90°" },
+          hj2: { text: "HJ-2", sub: "Narożnik 3D (2 śruby w rowkach)" },
+          hj1: { text: "HJ-1", sub: "Trójnik T (1 śruba w rowku)" }
+        },
+        bomTitle: "Wykaz materiałów i karta cięcia",
+        bomSubtitle: "Dokładny wykaz wszystkich komponentów i długości cięcia rur przed montażem stacji.",
+        bomSec1Title: "1. Rury Lean Pipe Ø28 mm (Wykaz cięcia)",
+        bomSec1Badge: "11 elementów",
+        bomColPurpose: "Przeznaczenie",
+        bomColLength: "Długość",
+        bomColQty: "Ilość",
+        bomPipes: [
+          { name: "Belki poprzeczne (przód/tył/góra)", len: "750 mm", qty: "3 szt." },
+          { name: "Pochylony grzbiet (kąt 30°)", len: "580 mm", qty: "2 szt." },
+          { name: "Podpory wzdłużne (podstawa)", len: "500 mm", qty: "2 szt." },
+          { name: "Tylne słupki pionowe", len: "290 mm", qty: "2 szt." },
+          { name: "Ograniczniki (pod kątem 90° do łoża)", len: "100 mm", qty: "2 szt." }
+        ],
+        bomNetLength: "Całkowita długość netto:",
+        bomNetLengthVal: "5.19 m",
+        bomPipeOrderTip: "💡 <strong>Zamówienie rur:</strong> dokładnie <strong>2 standardowe laski po 3.0 m</strong> (6.0 m łącznie). Zapas 810 mm na rzazy i naddatek.",
+        bomSec2Title: "2. Zaciski i elementy złączne",
+        bomSec2Badge: "12 kompletów",
+        bomHj2Name: "Zacisk HJ-2 (Narożny 3D 90°×90°×90°):",
+        bomHj2Desc: "Montaż w 2 tylnych narożnikach stołu (BL, BR). Łączy 3 wzajemnie prostopadłe rury. Ściskany 2 śrubami M6 w poprzek rur w rowki.",
+        bomHj2Qty: "2 szt.",
+        bomHj1Name: "Zacisk HJ-1 (Trójnik T do rur Ø28 mm):",
+        bomHj1Desc: "Przednie narożniki (2 szt.), belka górna (2 szt.), grzbiet 30° (4 szt.), ograniczniki 90° (2 szt.).",
+        bomHj1Qty: "10 szt.",
+        bomBoltsName: "Śruby M6×25 + nakrętki M6:",
+        bomBoltsDesc: "W zestawie fabrycznym: po 2 śruby na każdy HJ-2 (4 szt.) i po 1 śrubie na każdy HJ-1 (10 szt.).",
+        bomBoltsQty: "14 kpl.",
+        bomSec3Title: "3. Łoże, guma i ochrona",
+        bomSec3Badge: "Anty-zarysowania",
+        bomDspName: "Płyta wiórowa/MDF (16 mm):",
+        bomDspDesc: "Układana na wierzchu pochyłych rur (nie przez nie)",
+        bomDspQty: "700 × 550 mm (1 szt.)",
+        bomRubberName: "Mata gumowa (2–3 mm):",
+        bomRubberQty: "700 × 550 mm (1 szt.)",
+        bomScrewsName: "Wkręty samogwintujące z podkładką:",
+        bomScrewsDesc: "Samowiercące DIN 7504 (4.2×32 mm) — montaż bezpośrednio w rury",
+        bomScrewsQty: "6 szt.",
+        bomCapsName: "Zaślepki gumowe Ø28 mm (czerwone):",
+        bomCapsQty: "2 szt.",
+        bomGlueName: "Klej kontaktowy (np. Butapren / Moment):",
+        bomGlueQty: "1 puszka",
+        bomSec4Title: "4. Wymagane narzędzia",
+        bomTools: [
+          "<strong>Klucz imbusowy 5 mm</strong> — dokręcanie wszystkich 12 zacisków (2× HJ-2, 10× HJ-1)",
+          "<strong>Obcinak do rur cienkościennych Ø28 mm</strong> (lub brzeszczot)",
+          "<strong>Miara taśmowa</strong> (od 3 m) i <strong>marker do metalu</strong>",
+          "<strong>Pilnik okrągły / fazownik</strong> — usuwanie zadziorów po cięciu rur"
+        ],
+        modalTitle: "Zaciski Lean Pipe Ø28 mm: Porównanie HJ-1 i HJ-2",
+        modalSubtitle: "Gdzie i jaki typ mocowania jest stosowany w konstrukcji stacji",
+        modalHj2Title: "Zacisk HJ-2 (Narożnik 3D)",
+        modalHj2Badge: "Łącznie 2 szt.",
+        modalHj2Sub: "Węzeł narożny 3-kierunkowy (90°×90°×90°)",
+        modalHj2Desc: "Przestrzenny potrójny narożnik. Łączy trzy wzajemnie prostopadłe rury w jednym sztywnym punkcie bez luzów i spawania. Składa się z jednego elementu H-2 i dwóch H-4. Ściskany <strong>2 śrubami M6 z nakrętkami</strong> wkładanymi w poprzek rur w wytłoczone rowki.",
+        modalHj2LocTitle: "Miejsca montażu (2 szt.):",
+        modalHj2Loc1: "Tylny lewy narożnik stołu (BL)",
+        modalHj2Loc2: "Tylny prawy narożnik stołu (BR)",
+        modalHj2LocNote: "Łączy tylną belkę 750 mm, bok 500 mm i pionowy słupek 290 mm.",
+        modalHj2Btn: "🔍 Pokaż węzeł HJ-2 na modelu 3D",
+        modalHj1Title: "Zacisk HJ-1 (Trójnik teowy)",
+        modalHj1Badge: "Łącznie 10 szt.",
+        modalHj1Sub: "2-kierunkowy styk T z obrotem 360°",
+        modalHj1Desc: "Klasyczny zacisk teowy. Obejmuje rurę przelotową i trzyma czoło dochodzącej. Przed dokręceniem śruby M6 obraca się swobodnie wokół rury, pozwalając na ustawienie dowolnego kąta (30°, 60°, 90°).",
+        modalHj1LocTitle: "Miejsca montażu (10 szt.):",
+        modalHj1LocPoints: [
+          "• <strong>2 szt.</strong> — przednie narożniki stołu (FL, FR) pod kątem 90°",
+          "• <strong>2 szt.</strong> — górne narożniki ramy (TL, TR) pod kątem 90°",
+          "• <strong>4 шт.</strong> — pochyły grzbiet 580 mm (kąt 30°)",
+          "• <strong>2 шт.</strong> — ograniczniki 100 mm (kąt 90° do łoża)"
+        ],
+        modalHj1Btn: "🔍 Pokaż węzeł HJ-1 na modelu 3D",
+        modalSummaryTitle: "Tabela zestawienia elementów złącznych",
+        modalColJoint: "Węzeł / Element",
+        modalColType: "Typ zacisku",
+        modalColAngle: "Kąt mocowania",
+        modalColQty: "Ilość",
+        modalRows: [
+          { joint: "Tylne narożniki podstawy (BL, BR)", type: "HJ-2 (Narożnik 3D)", angle: "90°×90°×90°", qty: "2 szt." },
+          { joint: "Przednie narożniki stołu (FL, FR)", type: "HJ-1 (Trójnik T)", angle: "90°", qty: "2 szt." },
+          { joint: "Belka górna poprzeczna (TL, TR)", type: "HJ-1 (Trójnik T)", angle: "90°", qty: "2 szt." },
+          { joint: "Pochyłe belki łoża (580 mm)", type: "HJ-1 (Trójnik T)", angle: "30° pochylenia", qty: "4 szt." },
+          { joint: "Przednie ograniczniki półki (100 mm)", type: "HJ-1 (Trójnik T)", angle: "90° do łoża (60° w przód)", qty: "2 szt." }
+        ],
+        modalTotalLabel: "Łącznie zacisków:",
+        modalTotalTypes: "2 szt. HJ-2 + 10 szt. HJ-1",
+        modalTotalQty: "12 kpl."
+      }
+    };
+
+    let currentLang = 'ru';
+    try {
+      const savedLang = localStorage.getItem('fixture_lang');
+      if (savedLang && I18N[savedLang]) {
+        currentLang = savedLang;
+      } else {
+        const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+        if (navLang.startsWith('pl')) currentLang = 'pl';
+        else if (navLang.startsWith('en')) currentLang = 'en';
+      }
+    } catch (e) {}
+
+    // Dynamic 3D Dimension Sprite text updater
+    function updateDimensionSprites(lang) {
+      const t = I18N[lang]?.dimLabels || I18N.ru.dimLabels;
+      if (!t) return;
+      if (typeof sFront !== 'undefined' && sFront && sFront.material) {
+        sFront.material.map = createDimensionTexture(t.front.text, t.front.sub);
+        sFront.material.needsUpdate = true;
+      }
+      if (typeof sTop !== 'undefined' && sTop && sTop.material) {
+        sTop.material.map = createDimensionTexture(t.top.text, t.top.sub);
+        sTop.material.needsUpdate = true;
+      }
+      if (typeof sSpine !== 'undefined' && sSpine && sSpine.material) {
+        sSpine.material.map = createDimensionTexture(t.spine.text, t.spine.sub);
+        sSpine.material.needsUpdate = true;
+      }
+      if (typeof sBase !== 'undefined' && sBase && sBase.material) {
+        sBase.material.map = createDimensionTexture(t.base.text, t.base.sub);
+        sBase.material.needsUpdate = true;
+      }
+      if (typeof sPost !== 'undefined' && sPost && sPost.material) {
+        sPost.material.map = createDimensionTexture(t.post.text, t.post.sub);
+        sPost.material.needsUpdate = true;
+      }
+      if (typeof sStop !== 'undefined' && sStop && sStop.material) {
+        sStop.material.map = createDimensionTexture(t.stop.text, t.stop.sub);
+        sStop.material.needsUpdate = true;
+      }
+      if (typeof sLabelHJ2 !== 'undefined' && sLabelHJ2 && sLabelHJ2.material) {
+        sLabelHJ2.material.map = createDimensionTexture(t.hj2.text, t.hj2.sub);
+        sLabelHJ2.material.needsUpdate = true;
+      }
+      if (typeof sLabelHJ1 !== 'undefined' && sLabelHJ1 && sLabelHJ1.material) {
+        sLabelHJ1.material.map = createDimensionTexture(t.hj1.text, t.hj1.sub);
+        sLabelHJ1.material.needsUpdate = true;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 7. UI TAB SWITCHER (STEPPER vs BOM)
     // -------------------------------------------------------------
     const tabStepper = document.getElementById('tabStepper');
     const tabBOM = document.getElementById('tabBOM');
@@ -1586,21 +2008,21 @@
     const panelBOM = document.getElementById('panelBOM');
 
     tabStepper.addEventListener('click', () => {
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition";
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition";
+      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition active-scale touch-action-manipulation";
+      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation";
       panelStepper.classList.remove('hidden');
       panelBOM.classList.add('hidden');
     });
 
     tabBOM.addEventListener('click', () => {
-      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition";
-      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition";
+      tabBOM.className = "flex-1 py-2 px-3 rounded-lg bybit-btn-gold text-xs transition active-scale touch-action-manipulation";
+      tabStepper.className = "flex-1 py-2 px-3 rounded-lg bg-bybit-card hover:bg-slate-800 text-bybit-gray hover:text-white font-medium text-xs transition active-scale touch-action-manipulation";
       panelBOM.classList.remove('hidden');
       panelStepper.classList.add('hidden');
     });
 
     // -------------------------------------------------------------
-    // 7. DIMENSION LABELS TOGGLE
+    // 8. DIMENSION LABELS TOGGLE
     // -------------------------------------------------------------
     const chkDims = document.getElementById('chkDimensions');
 
@@ -1613,52 +2035,7 @@
       chkDims.addEventListener('change', (e) => toggleDimensions(e.target.checked));
     }
 
-    // -------------------------------------------------------------
-    // 8. EXACT 5 ASSEMBLY STAGES WITH SMOOTH ANIMATIONS
-    // -------------------------------------------------------------
-    const steps = [
-      {
-        num: 1,
-        title: "Сборка нижнего квадрата и двух опор",
-        desc: "Скрутите нижний прямоугольник на столе из 2 поперечных труб 750 мм и 2 продольных 500 мм (бордовый цвет). В передних углах (FL, FR) используйте 2 Т-зажима HJ-1 свинцового цвета. В двух задних углах (BL, BR) установите пространственные угловые зажимы HJ-2 (в каждом узле HJ-2 устанавливаются 2 болта М6, затягивающиеся поперёк трубок в выштампованные пазы). Затяните болты М6 шестигранником 5 мм.",
-        parts: ["2 шт. × 750 мм (бордо)", "2 шт. × 500 мм (бордо)", "2 шт. × 290 мм (стойки)", "2 шт. зажима HJ-2 (по 2 болта в пазы)", "2 шт. зажима HJ-1 (свинец)"],
-        cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 },
-        show: { s1: true, s2: false, s3: false, bed: false, shelf: false }
-      },
-      {
-        num: 2,
-        title: "Сборка верхней рамки из трёх трубок",
-        desc: "Сверху на вертикальные стойки наденьте верхнюю перекладину 750 мм через 2 свинцовых зажима HJ-1 (TL, TR). Установите 2 центральные наклонные бордовые трубы 580 мм (хребет ложа под углом 30°), закрепив их с двух сторон 4 зажимами HJ-1 к передней и верхней балкам. За счет свободного вращения хомута HJ-1 вокруг круглых труб угол встает идеально!",
-        parts: ["1 шт. × 750 мм (верхняя балка)", "2 шт. × 580 мм (наклонные 30°)", "6 шт. зажимов HJ-1 (свинец)"],
-        cam: { x: -220, y: 190, z: 220, tx: 0, ty: 45, tz: 0 },
-        show: { s1: true, s2: true, s3: false, bed: false, shelf: false }
-      },
-      {
-        num: 3,
-        title: "Установка стопоров под углом 90° к ложу",
-        desc: "На концах передней балки закрепите 2 хомута HJ-1 свинцового цвета, повернув их на угол 60° вперед так, чтобы стопоры 100 мм стояли СТРОГО ПЕРПЕНДИКУЛЯРНО наклонному ложу (под 90° к будущей полке). Наденьте мягкие защитные резиновые заглушки красного цвета.",
-        parts: ["2 шт. × 100 мм (стопоры)", "2 шт. зажима HJ-1 (свинец)", "2 шт. резиновые заглушки Ø28 мм"],
-        cam: { x: 190, y: 95, z: 210, tx: 60, ty: 25, tz: 55 },
-        show: { s1: true, s2: true, s3: true, bed: false, shelf: false }
-      },
-      {
-        num: 4,
-        title: "Прикручивание подложки ДСП к трубкам каркаса",
-        desc: "Плита ДСП (700×550×16 мм) с наклеенным резиновым ковриком 2–3 мм укладывается СВЕРХУ на две наклонные бордовые трубы (не прорезая каркас). Основание жестко прикручивается 6 саморезами по металлу с прессшайбой напрямую к трубам Ø28 мм (по 3 самореза в каждую наклонную трубу). Каркас и ложе образуют монолитную конструкцию.",
-        parts: ["Плита ДСП 700×550×16 мм", "Резина ТМКЩ 2-3 мм", "6 шт. саморезы по металлу с прессшайбой"],
-        cam: { x: 0, y: 165, z: 240, tx: 0, ty: 40, tz: 0 },
-        show: { s1: true, s2: true, s3: true, bed: true, shelf: false }
-      },
-      {
-        num: 5,
-        title: "Готовая фикстура и укладка Compute Shelf",
-        desc: "Фикстура полностью собрана и готова к работе! Серверное шасси Compute Shelf цвета серебра (685×565×120 мм) свободно укладывается на мягкое антискользящее резиновое ложе под углом 30° до упора в концевые стопоры под строгим углом 90°. Полка надежно удерживается силой тяжести для удобной работы оператора.",
-        parts: ["Серверное шасси Compute Shelf (серебро)", "Фикстура в сборе"],
-        cam: { x: 170, y: 185, z: 275, tx: -10, ty: 48, tz: 10 },
-        show: { s1: true, s2: true, s3: true, bed: true, shelf: true }
-      }
-    ];
-
+    // Steps definition reference
     let currentStep = 0; // Starts at 0: Fully assembled model on open!
     let cameraAnimId = null;
 
@@ -1667,7 +2044,7 @@
       return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
 
-    // Smooth Part Reveal Animation (Glide up softly from below)
+    // Smooth Part Reveal Animation
     function animateGroupReveal(group) {
       group.visible = true;
       let frame = 0;
@@ -1695,14 +2072,15 @@
 
     function resetIsolationUI(mode = 'all') {
       currentIsolateMode = mode;
+      const t = I18N[currentLang] || I18N.ru;
       const viewsBtnLabel = document.getElementById('viewsBtnLabel');
       if (viewsBtnLabel) {
-        if (mode === 'all') viewsBtnLabel.innerHTML = '📐 Изометрия';
-        else if (mode === 'bed') viewsBtnLabel.innerHTML = '🪵 Доска';
-        else if (mode === 'shelf') viewsBtnLabel.innerHTML = '🖥️ Полка';
-        else if (mode === 'pipes') viewsBtnLabel.innerHTML = '🍷 Трубки';
-        else if (mode === 'clamps') viewsBtnLabel.innerHTML = '🔩 Модели зажимов';
-        else if (mode === 'clamps-frame') viewsBtnLabel.innerHTML = '🔗 Зажимы на каркасе';
+        if (mode === 'all') viewsBtnLabel.innerHTML = t.viewsBtnLabel;
+        else if (mode === 'bed') viewsBtnLabel.innerHTML = t.views.bed;
+        else if (mode === 'shelf') viewsBtnLabel.innerHTML = t.views.shelf;
+        else if (mode === 'pipes') viewsBtnLabel.innerHTML = t.views.pipes;
+        else if (mode === 'clamps') viewsBtnLabel.innerHTML = t.views.clamps;
+        else if (mode === 'clamps-frame') viewsBtnLabel.innerHTML = t.views.clampsFrame;
       }
       document.querySelectorAll('.iso-opt').forEach(btn => {
         const isMatch = btn.getAttribute('data-isolate') === mode;
@@ -1716,7 +2094,7 @@
 
     function isolateComponent(mode) {
       resetIsolationUI(mode);
-
+      const t = I18N[currentLang] || I18N.ru;
       const hudStatus = document.getElementById('hudStatus');
       const chkDimensions = document.getElementById('chkDimensions');
       const chkShelf = document.getElementById('chkShelf');
@@ -1725,7 +2103,7 @@
       const chkClamps = document.getElementById('chkClamps');
 
       if (mode === 'all') {
-        if (hudStatus) hudStatus.textContent = 'Фикстура в сборе';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.all;
 
         step1Group.visible = true;
         step2Group.visible = true;
@@ -1744,7 +2122,7 @@
 
         animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 }, 45);
       } else if (mode === 'bed') {
-        if (hudStatus) hudStatus.textContent = 'Деталь: Ложе (ДСП 16 мм + резина + 6 саморезов)';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.bed;
 
         step1Group.visible = false;
         step2Group.visible = false;
@@ -1761,7 +2139,7 @@
 
         animateCameraSmooth({ x: 0, y: 155, z: 235, tx: 0, ty: 45, tz: 0 }, 45);
       } else if (mode === 'shelf') {
-        if (hudStatus) hudStatus.textContent = 'Деталь: Серверное шасси Compute Shelf (685×565×120 мм)';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.shelf;
 
         step1Group.visible = false;
         step2Group.visible = false;
@@ -1778,7 +2156,7 @@
 
         animateCameraSmooth({ x: 120, y: 135, z: 200, tx: 0, ty: 48, tz: 0 }, 45);
       } else if (mode === 'pipes') {
-        if (hudStatus) hudStatus.textContent = 'Детали: 11 трубок каркаса Lean Pipe Ø28 мм';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.pipes;
 
         step1Group.visible = true;
         step2Group.visible = true;
@@ -1797,7 +2175,7 @@
 
         animateCameraSmooth({ x: 230, y: 180, z: 290, tx: 0, ty: 45, tz: 0 }, 45);
       } else if (mode === 'clamps') {
-        if (hudStatus) hudStatus.textContent = 'Детали: Зажимы HJ-1 и HJ-2 (отдельные 3D-модели)';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.clamps;
 
         step1Group.visible = false;
         step2Group.visible = false;
@@ -1814,7 +2192,7 @@
 
         animateCameraSmooth({ x: 0, y: 70, z: 125, tx: 0, ty: 30, tz: 0 }, 45);
       } else if (mode === 'clamps-frame') {
-        if (hudStatus) hudStatus.textContent = 'Детали: Все 12 зажимов в точках сборки каркаса';
+        if (hudStatus) hudStatus.textContent = t.hudStatus.clampsFrame;
 
         step1Group.visible = true;
         step2Group.visible = true;
@@ -1839,24 +2217,297 @@
       }
     }
 
+    // Dynamic BOM panel renderer
+    function renderBOM() {
+      const t = I18N[currentLang] || I18N.ru;
+      const p = document.getElementById('panelBOM');
+      if (!p) return;
+
+      let pipeRows = t.bomPipes.map(r => `
+        <tr>
+          <td class="py-1.5 text-slate-300 font-sans">${r.name}</td>
+          <td class="py-1.5 text-center text-bybit-gold font-bold">${r.len}</td>
+          <td class="py-1.5 text-right font-bold text-white">${r.qty}</td>
+        </tr>
+      `).join('');
+
+      let toolsList = t.bomTools.map(tl => `
+        <li class="flex items-center gap-2">
+          <span class="text-bybit-gold">✓</span> <span>${tl}</span>
+        </li>
+      `).join('');
+
+      p.innerHTML = `
+        <div>
+          <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-bybit-gold"></span>
+            ${t.bomTitle}
+          </h2>
+          <p class="text-xs text-bybit-gray mt-1">
+            ${t.bomSubtitle}
+          </p>
+        </div>
+
+        <!-- Section 1: Pipe Cutting -->
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">${t.bomSec1Title}</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">${t.bomSec1Badge}</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-[11px] min-w-[260px]">
+              <thead>
+                <tr class="text-bybit-gray border-b border-bybit-border">
+                  <th class="pb-1.5 font-semibold">${t.bomColPurpose}</th>
+                  <th class="pb-1.5 font-semibold text-center">${t.bomColLength}</th>
+                  <th class="pb-1.5 font-semibold text-right">${t.bomColQty}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-bybit-border/60 font-mono text-slate-200">
+                ${pipeRows}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pt-2 border-t border-bybit-border flex justify-between items-center text-xs">
+            <span class="text-bybit-gray">${t.bomNetLength}</span>
+            <span class="font-bold text-bybit-green font-mono">${t.bomNetLengthVal}</span>
+          </div>
+          <div class="text-[11px] text-bybit-gray bg-bybit-surface p-2 rounded-lg border border-bybit-border leading-relaxed">
+            ${t.bomPipeOrderTip}
+          </div>
+        </div>
+
+        <!-- Section 2: Clamps & Hardware -->
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">${t.bomSec2Title}</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-gold/15 text-bybit-gold font-semibold">${t.bomSec2Badge}</span>
+          </div>
+
+          <ul class="text-xs space-y-2.5 text-slate-300">
+            <li class="flex items-start justify-between">
+              <div>
+                <strong class="text-white flex items-center gap-1"><span>🔩</span> ${t.bomHj2Name}</strong>
+                <p class="text-[11px] text-bybit-gray leading-relaxed mt-0.5">${t.bomHj2Desc}</p>
+              </div>
+              <span class="font-bold text-bybit-gold font-mono text-sm ml-2 flex-shrink-0">${t.bomHj2Qty}</span>
+            </li>
+            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
+              <div>
+                <strong class="text-white flex items-center gap-1"><span>🔧</span> ${t.bomHj1Name}</strong>
+                <p class="text-[11px] text-bybit-gray leading-relaxed mt-0.5">${t.bomHj1Desc}</p>
+              </div>
+              <span class="font-bold text-emerald-400 font-mono text-sm ml-2 flex-shrink-0">${t.bomHj1Qty}</span>
+            </li>
+            <li class="flex items-start justify-between border-t border-bybit-border/60 pt-2">
+              <div>
+                <strong class="text-white">${t.bomBoltsName}</strong>
+                <p class="text-[11px] text-bybit-gray leading-relaxed mt-0.5">${t.bomBoltsDesc}</p>
+              </div>
+              <span class="font-bold text-white font-mono text-sm ml-2 flex-shrink-0">${t.bomBoltsQty}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 3: Bed, Rubber & Protection -->
+        <div class="bybit-card rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-bybit-border pb-2">
+            <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">${t.bomSec3Title}</h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-bybit-green/15 text-bybit-green font-semibold">${t.bomSec3Badge}</span>
+          </div>
+
+          <ul class="text-xs space-y-2 text-slate-300">
+            <li class="flex justify-between items-center">
+              <div>
+                <span class="text-white font-medium">${t.bomDspName}</span>
+                <p class="text-[11px] text-bybit-gray">${t.bomDspDesc}</p>
+              </div>
+              <strong class="text-white font-mono ml-2 text-right">${t.bomDspQty}</strong>
+            </li>
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
+              <span>${t.bomRubberName}</span>
+              <strong class="text-white font-mono text-right">${t.bomRubberQty}</strong>
+            </li>
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
+              <div>
+                <span class="text-white font-medium">${t.bomScrewsName}</span>
+                <p class="text-[11px] text-bybit-gray">${t.bomScrewsDesc}</p>
+              </div>
+              <strong class="text-bybit-gold font-mono ml-2 text-right">${t.bomScrewsQty}</strong>
+            </li>
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
+              <span>${t.bomCapsName}</span>
+              <strong class="text-bybit-red font-mono text-right">${t.bomCapsQty}</strong>
+            </li>
+            <li class="flex justify-between items-center border-t border-bybit-border/60 pt-1.5">
+              <span>${t.bomGlueName}</span>
+              <strong class="text-white font-mono text-right">${t.bomGlueQty}</strong>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 4: Required Tools -->
+        <div class="bybit-card rounded-xl p-3.5 space-y-2.5">
+          <h3 class="text-xs font-bold text-bybit-gold uppercase tracking-wider border-b border-bybit-border pb-2">${t.bomSec4Title}</h3>
+          <ul class="text-xs space-y-1.5 text-slate-300">
+            ${toolsList}
+          </ul>
+        </div>
+      `;
+    }
+
+    // Dynamic Clamp Comparison Modal renderer
+    function renderClampModal() {
+      const t = I18N[currentLang] || I18N.ru;
+      const titleEl = document.getElementById('modalClampsTitle');
+      const subEl = document.getElementById('modalClampsSubtitle');
+      const bodyEl = document.getElementById('modalClampsBody');
+      if (titleEl) titleEl.textContent = t.modalTitle;
+      if (subEl) subEl.textContent = t.modalSubtitle;
+      if (!bodyEl) return;
+
+      let hj1Points = t.modalHj1LocPoints.map(p => `<div class="text-slate-200">${p}</div>`).join('');
+      let tableRows = t.modalRows.map(r => `
+        <tr>
+          <td class="py-1.5 font-sans">${r.joint}</td>
+          <td class="py-1.5 ${r.type.includes('HJ-2') ? 'text-bybit-gold font-bold' : 'text-emerald-400'}">${r.type}</td>
+          <td class="py-1.5 text-center">${r.angle}</td>
+          <td class="py-1.5 text-right font-bold text-white">${r.qty}</td>
+        </tr>
+      `).join('');
+
+      bodyEl.innerHTML = `
+        <!-- 2 Comparison Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1: HJ-2 -->
+          <div class="bybit-card rounded-xl p-4 border border-bybit-gold/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-bybit-gold/20 text-bybit-gold text-[10px] font-bold border border-bybit-gold/30">
+              ${t.modalHj2Badge}
+            </div>
+            <div>
+              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
+                <img src="clamp_hj2_corner.png" alt="Зажим HJ-2 3D Угловой" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
+              </div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
+                <span>🔩</span> ${t.modalHj2Title}
+              </h4>
+              <p class="text-xs text-bybit-gold font-semibold mb-2">${t.modalHj2Sub}</p>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                ${t.modalHj2Desc}
+              </p>
+              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
+                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">${t.modalHj2LocTitle}</div>
+                <div class="text-white flex items-center gap-1.5">
+                  <span class="text-bybit-gold font-bold">1.</span> ${t.modalHj2Loc1}
+                </div>
+                <div class="text-white flex items-center gap-1.5">
+                  <span class="text-bybit-gold font-bold">2.</span> ${t.modalHj2Loc2}
+                </div>
+                <div class="text-[11px] text-slate-400 mt-1">
+                  ${t.modalHj2LocNote}
+                </div>
+              </div>
+            </div>
+            <button id="btnFocusHJ2Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-gold text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
+              ${t.modalHj2Btn}
+            </button>
+          </div>
+
+          <!-- Card 2: HJ-1 -->
+          <div class="bybit-card rounded-xl p-4 border border-bybit-border flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
+              ${t.modalHj1Badge}
+            </div>
+            <div>
+              <div class="w-full h-44 rounded-lg bg-black/40 mb-3 flex items-center justify-center overflow-hidden border border-bybit-border/60">
+                <img src="clamp_hj1_tee.png" alt="Зажим HJ-1 Т-образный" class="max-h-full max-w-full object-contain hover:scale-105 transition-transform duration-300">
+              </div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-1.5 mb-1">
+                <span>🔧</span> ${t.modalHj1Title}
+              </h4>
+              <p class="text-xs text-emerald-400 font-semibold mb-2">${t.modalHj1Sub}</p>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                ${t.modalHj1Desc}
+              </p>
+              <div class="bg-bybit-surface p-2.5 rounded-lg border border-bybit-border/80 text-xs space-y-1 mb-3">
+                <div class="text-bybit-gray font-semibold text-[11px] uppercase tracking-wider">${t.modalHj1LocTitle}</div>
+                ${hj1Points}
+              </div>
+            </div>
+            <button id="btnFocusHJ1Modal" class="w-full py-2 px-3 rounded-lg bybit-btn-secondary text-xs font-bold transition flex items-center justify-center gap-1.5 active-scale">
+              ${t.modalHj1Btn}
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="bybit-card rounded-xl p-4 space-y-2">
+          <h4 class="text-xs font-bold text-bybit-gold uppercase tracking-wider">${t.modalSummaryTitle}</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs min-w-[320px]">
+              <thead>
+                <tr class="text-bybit-gray border-b border-bybit-border">
+                  <th class="pb-1.5">${t.modalColJoint}</th>
+                  <th class="pb-1.5">${t.modalColType}</th>
+                  <th class="pb-1.5 text-center">${t.modalColAngle}</th>
+                  <th class="pb-1.5 text-right">${t.modalColQty}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-bybit-border/60 text-slate-200 font-mono text-[11px]">
+                ${tableRows}
+                <tr class="bg-bybit-surface font-bold">
+                  <td class="py-2 text-white font-sans">${t.modalTotalLabel}</td>
+                  <td class="py-2 text-bybit-gold" colspan="2">${t.modalTotalTypes}</td>
+                  <td class="py-2 text-right text-bybit-gold font-mono text-sm">${t.modalTotalQty}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      // Re-attach modal focus event handlers
+      const btnFocusHJ2 = document.getElementById('btnFocusHJ2Modal');
+      const btnFocusHJ1 = document.getElementById('btnFocusHJ1Modal');
+      const modalClamps = document.getElementById('modalClamps');
+      if (btnFocusHJ2 && modalClamps) {
+        btnFocusHJ2.addEventListener('click', () => {
+          modalClamps.classList.add('hidden');
+          isolateComponent('clamps');
+          animateCameraSmooth({ x: -38, y: 55, z: 75, tx: -38, ty: 30, tz: 0 }, 45);
+        });
+      }
+      if (btnFocusHJ1 && modalClamps) {
+        btnFocusHJ1.addEventListener('click', () => {
+          modalClamps.classList.add('hidden');
+          isolateComponent('clamps');
+          animateCameraSmooth({ x: 38, y: 55, z: 75, tx: 38, ty: 30, tz: 0 }, 45);
+        });
+      }
+    }
+
     function renderStep() {
       resetIsolationUI('all');
+      const t = I18N[currentLang] || I18N.ru;
       const stepBadge = document.getElementById('stepBadge');
       const stepCounter = document.getElementById('stepCounter');
+      const stepCard = document.getElementById('stepCard');
       const btnOverviewMode = document.getElementById('btnOverviewMode');
       const stepperNavRow = document.getElementById('stepperNavRow');
-      const stepCard = document.getElementById('stepCard');
+      const modalClamps = document.getElementById('modalClamps');
 
       // -------------------------------------------------------------
       // STATE 0: ПОЛНОСТЬЮ СОБРАННАЯ МОДЕЛЬ (ПРИ ОТКРЫТИИ СТРАНИЦЫ)
       // -------------------------------------------------------------
       if (currentStep === 0) {
-        if (stepBadge) stepBadge.textContent = 'Готовая модель';
-        if (stepCounter) stepCounter.textContent = 'В сборе';
+        if (stepBadge) stepBadge.textContent = t.stepBadgeIntro;
+        if (stepCounter) stepCounter.textContent = t.stepCounterAssembled;
         if (btnOverviewMode) btnOverviewMode.classList.add('hidden');
         if (stepperNavRow) stepperNavRow.classList.add('hidden');
 
-        // Все 5 полосок прогресса золотые (100% готовность)
+        // Все 5 полосок прогресса золотые
         for (let i = 1; i <= 5; i++) {
           const bar = document.getElementById(`bar${i}`);
           if (bar) bar.className = `h-1.5 flex-1 rounded-full bg-bybit-gold transition-all duration-500 shadow-sm shadow-bybit-gold/40`;
@@ -1869,37 +2520,37 @@
               <div class="flex items-center justify-between">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-xs">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Фикстура в сборе
+                  ${t.step0.badge}
                 </span>
-                <span class="text-[11px] font-mono text-bybit-gray">Compute Shelf</span>
+                <span class="text-[11px] font-mono text-bybit-gray">${t.step0.shelf}</span>
               </div>
 
               <div>
                 <h3 class="font-bold text-white text-base leading-snug">
-                  Рабочая станция сборки и наклейки этикеток
+                  ${t.step0.title}
                 </h3>
                 <p class="text-xs text-bybit-gray mt-1.5 leading-relaxed">
-                  На 3D-сцене отображена <strong>полностью собранная фикстура</strong> с серверным шасси Compute Shelf (685×565×120 мм). Полка лежит на антискользящем резиновом ложе под углом 30° и упирается в концевые стопоры под строгим углом 90°.
+                  ${t.step0.desc}
                 </p>
               </div>
 
               <!-- Quick Metrics Grid -->
               <div class="grid grid-cols-2 gap-2 text-[11px] pt-1 font-mono">
                 <div class="bg-bybit-surface p-2 rounded-lg border border-bybit-border">
-                  <div class="text-bybit-gray font-sans text-[10px] uppercase">Угол ложа:</div>
-                  <div class="text-bybit-gold font-bold">30° наклона</div>
+                  <div class="text-bybit-gray font-sans text-[10px] uppercase">${t.step0.mBed}</div>
+                  <div class="text-bybit-gold font-bold">${t.step0.mBedVal}</div>
                 </div>
                 <div class="bg-bybit-surface p-2 rounded-lg border border-bybit-border">
-                  <div class="text-bybit-gray font-sans text-[10px] uppercase">Стопоры:</div>
-                  <div class="text-emerald-400 font-bold">90° к полке</div>
+                  <div class="text-bybit-gray font-sans text-[10px] uppercase">${t.step0.mStop}</div>
+                  <div class="text-emerald-400 font-bold">${t.step0.mStopVal}</div>
                 </div>
                 <div class="bg-bybit-surface p-2 rounded-lg border border-bybit-border">
-                  <div class="text-bybit-gray font-sans text-[10px] uppercase">Трубы Ø28 мм:</div>
-                  <div class="text-white font-bold">11 шт. (5.19 м)</div>
+                  <div class="text-bybit-gray font-sans text-[10px] uppercase">${t.step0.mPipes}</div>
+                  <div class="text-white font-bold">${t.step0.mPipesVal}</div>
                 </div>
                 <div class="bg-bybit-surface p-2 rounded-lg border border-bybit-border">
-                  <div class="text-bybit-gray font-sans text-[10px] uppercase">Крепления:</div>
-                  <div class="text-white font-bold">2×HJ-2 + 10×HJ-1</div>
+                  <div class="text-bybit-gray font-sans text-[10px] uppercase">${t.step0.mClamps}</div>
+                  <div class="text-white font-bold">${t.step0.mClampsVal}</div>
                 </div>
               </div>
             </div>
@@ -1907,19 +2558,19 @@
             <!-- Big Action Button: Начать сборку -->
             <button id="btnStartAssembly" class="w-full py-3.5 px-4 rounded-xl bybit-btn-gold text-sm font-bold shadow-xl shadow-bybit-gold/25 transition flex items-center justify-center gap-2 active-scale touch-action-manipulation">
               <span class="text-base">🚀</span>
-              <span>Начать сборку (Шаг 1 из 5)</span>
+              <span>${t.step0.btnStart}</span>
               <span>→</span>
             </button>
 
             <!-- Secondary Navigation Links -->
             <div class="space-y-2 pt-1">
               <button id="btnIntroToBOM" class="w-full py-2.5 px-3 rounded-lg bybit-card hover:bg-slate-800 text-slate-200 border border-bybit-border text-xs font-semibold transition flex items-center justify-between active-scale">
-                <span class="flex items-center gap-2"><span>📋</span> Ведомость материалов и карта резки</span>
-                <span class="text-bybit-gold font-mono">11 труб →</span>
+                <span class="flex items-center gap-2"><span>📋</span> ${t.step0.btnBOM}</span>
+                <span class="text-bybit-gold font-mono">${t.step0.btnBOMSub}</span>
               </button>
               <button id="btnIntroToClamps" class="w-full py-2.5 px-3 rounded-lg bybit-card hover:bg-slate-800 text-slate-200 border border-bybit-border text-xs font-semibold transition flex items-center justify-between active-scale">
-                <span class="flex items-center gap-2"><span>🔩</span> Различие зажимов: HJ-1 vs HJ-2</span>
-                <span class="text-bybit-gold font-mono">12 шт. →</span>
+                <span class="flex items-center gap-2"><span>🔩</span> ${t.step0.btnClamps}</span>
+                <span class="text-bybit-gold font-mono">${t.step0.btnClampsSub}</span>
               </button>
             </div>
           </div>
@@ -1963,13 +2614,22 @@
       // -------------------------------------------------------------
       // STATE 1–5: ПОШАГОВАЯ ИНСТРУКЦИЯ
       // -------------------------------------------------------------
-      const s = steps[currentStep - 1];
-      if (stepBadge) stepBadge.textContent = 'Пошаговая инструкция';
-      if (stepCounter) stepCounter.textContent = `Шаг ${s.num} из ${steps.length}`;
+      const s = t.steps[currentStep - 1];
+      const showConfigs = [
+        { s1: true, s2: false, s3: false, bed: false, shelf: false, cam: { x: 0, y: 240, z: 320, tx: 0, ty: 20, tz: 0 } },
+        { s1: true, s2: true, s3: false, bed: false, shelf: false, cam: { x: -220, y: 190, z: 220, tx: 0, ty: 45, tz: 0 } },
+        { s1: true, s2: true, s3: true, bed: false, shelf: false, cam: { x: 190, y: 95, z: 210, tx: 60, ty: 25, tz: 55 } },
+        { s1: true, s2: true, s3: true, bed: true, shelf: false, cam: { x: 0, y: 165, z: 240, tx: 0, ty: 40, tz: 0 } },
+        { s1: true, s2: true, s3: true, bed: true, shelf: true, cam: { x: 170, y: 185, z: 275, tx: -10, ty: 48, tz: 10 } }
+      ];
+      const cfg = showConfigs[currentStep - 1];
+
+      if (stepBadge) stepBadge.textContent = t.stepBadgeGuide;
+      if (stepCounter) stepCounter.textContent = t.stepCounterStep.replace('{n}', s.num).replace('{total}', 5);
       if (btnOverviewMode) btnOverviewMode.classList.remove('hidden');
       if (stepperNavRow) stepperNavRow.classList.remove('hidden');
 
-      // Update Bybit Gold Progress Bars (1 to 5)
+      // Update Progress Bars (1 to 5)
       for (let i = 1; i <= 5; i++) {
         const bar = document.getElementById(`bar${i}`);
         if (bar) {
@@ -1984,12 +2644,11 @@
       const btnPrev = document.getElementById('btnPrev');
       const btnNext = document.getElementById('btnNext');
       btnPrev.disabled = false;
-      btnPrev.textContent = (currentStep === 1) ? '← Вся модель' : '← Назад';
-      btnNext.textContent = (currentStep === steps.length) ? '✓ Завершить (Вся модель)' : 'Следующий шаг →';
+      btnPrev.textContent = (currentStep === 1) ? t.btnPrevModel : t.btnPrev;
+      btnNext.textContent = (currentStep === 5) ? t.btnFinish : t.btnNext;
 
       let partsHtml = s.parts.map(p => `<span class="inline-block bg-bybit-black text-bybit-gold px-2.5 py-1 rounded text-[11px] border border-bybit-border font-mono">${p}</span>`).join(' ');
 
-      // Apply bybit smooth transition animation
       stepCard.className = "p-4 space-y-4 flex-1 animate-step-transition";
       stepCard.innerHTML = `
         <div class="space-y-3">
@@ -1999,7 +2658,7 @@
           </div>
           <p class="text-xs text-bybit-gray leading-relaxed">${s.desc}</p>
           <div class="pt-3 border-t border-bybit-border">
-            <div class="text-[11px] font-semibold text-bybit-lightGray mb-2 uppercase tracking-wider">Необходимые компоненты:</div>
+            <div class="text-[11px] font-semibold text-bybit-lightGray mb-2 uppercase tracking-wider">${t.reqComponents}</div>
             <div class="flex flex-wrap gap-1.5">${partsHtml}</div>
           </div>
         </div>
@@ -2011,43 +2670,42 @@
       const prevBed = bedGroup.visible;
       const prevShelf = shelfGroup.visible;
 
-      step1Group.visible = s.show.s1;
+      step1Group.visible = cfg.s1;
 
-      if (s.show.s2 && !prevS2) {
+      if (cfg.s2 && !prevS2) {
         animateGroupReveal(step2Group);
       } else {
-        step2Group.visible = s.show.s2;
+        step2Group.visible = cfg.s2;
       }
 
-      if (s.show.s3 && !prevS3) {
+      if (cfg.s3 && !prevS3) {
         animateGroupReveal(step3Group);
       } else {
-        step3Group.visible = s.show.s3;
+        step3Group.visible = cfg.s3;
       }
 
-      if (s.show.bed && !prevBed) {
+      if (cfg.bed && !prevBed) {
         animateGroupReveal(bedGroup);
       } else {
-        bedGroup.visible = s.show.bed;
+        bedGroup.visible = cfg.bed;
       }
 
-      if (s.show.shelf && !prevShelf) {
+      if (cfg.shelf && !prevShelf) {
         animateGroupReveal(shelfGroup);
       } else {
-        shelfGroup.visible = s.show.shelf;
+        shelfGroup.visible = cfg.shelf;
       }
 
       standaloneClampsGroup.visible = false;
       allPipes.forEach(p => p.visible = true);
       allClamps.forEach(c => c.visible = true);
 
-      document.getElementById('chkFrame').checked = s.show.s1 || s.show.s2 || s.show.s3;
-      document.getElementById('chkClamps').checked = s.show.s1 || s.show.s2 || s.show.s3;
-      document.getElementById('chkBed').checked = s.show.bed;
-      document.getElementById('chkShelf').checked = s.show.shelf;
+      document.getElementById('chkFrame').checked = cfg.s1 || cfg.s2 || cfg.s3;
+      document.getElementById('chkClamps').checked = cfg.s1 || cfg.s2 || cfg.s3;
+      document.getElementById('chkBed').checked = cfg.bed;
+      document.getElementById('chkShelf').checked = cfg.shelf;
 
-      // Smooth Camera Flight (easeInOutCubic)
-      animateCameraSmooth(s.cam, 48);
+      animateCameraSmooth(cfg.cam, 48);
     }
 
     function animateCameraSmooth(target, duration = 45) {
@@ -2078,10 +2736,20 @@
       cameraAnimId = requestAnimationFrame(step);
     }
 
+    // Camera zoom touch/button helper
+    function zoomCamera(delta) {
+      const dir = new THREE.Vector3().subVectors(camera.position, controls.target);
+      const dist = dir.length();
+      const newDist = Math.max(70, Math.min(850, dist + delta));
+      dir.setLength(newDist);
+      camera.position.copy(controls.target).add(dir);
+      controls.update();
+    }
+
     document.getElementById('btnNext').addEventListener('click', () => {
       if (currentStep === 0) {
         currentStep = 1;
-      } else if (currentStep < steps.length) {
+      } else if (currentStep < 5) {
         currentStep++;
       } else {
         currentStep = 0;
@@ -2119,23 +2787,9 @@
     }
     if (modalClamps) {
       modalClamps.addEventListener('click', (e) => {
-        if (e.target === modalClamps) modalClamps.classList.add('hidden');
-      });
-    }
-    const btnFocusHJ2Modal = document.getElementById('btnFocusHJ2Modal');
-    if (btnFocusHJ2Modal && modalClamps) {
-      btnFocusHJ2Modal.addEventListener('click', () => {
-        modalClamps.classList.add('hidden');
-        isolateComponent('clamps');
-        animateCameraSmooth({ x: -38, y: 55, z: 75, tx: -38, ty: 30, tz: 0 }, 45);
-      });
-    }
-    const btnFocusHJ1Modal = document.getElementById('btnFocusHJ1Modal');
-    if (btnFocusHJ1Modal && modalClamps) {
-      btnFocusHJ1Modal.addEventListener('click', () => {
-        modalClamps.classList.add('hidden');
-        isolateComponent('clamps');
-        animateCameraSmooth({ x: 38, y: 55, z: 75, tx: 38, ty: 30, tz: 0 }, 45);
+        if (e.target === modalClamps) {
+          modalClamps.classList.add('hidden');
+        }
       });
     }
 
@@ -2169,10 +2823,17 @@
         step2Group.visible = anyOn;
         step3Group.visible = anyOn;
       } else {
-        const s = steps[currentStep - 1];
-        step1Group.visible = anyOn && (s ? s.show.s1 : true);
-        step2Group.visible = anyOn && (s ? s.show.s2 : false);
-        step3Group.visible = anyOn && (s ? s.show.s3 : false);
+        const showConfigs = [
+          { s1: true, s2: false, s3: false },
+          { s1: true, s2: true, s3: false },
+          { s1: true, s2: true, s3: true },
+          { s1: true, s2: true, s3: true },
+          { s1: true, s2: true, s3: true }
+        ];
+        const s = showConfigs[currentStep - 1];
+        step1Group.visible = anyOn && (s ? s.s1 : true);
+        step2Group.visible = anyOn && (s ? s.s2 : false);
+        step3Group.visible = anyOn && (s ? s.s3 : false);
       }
     }
 
@@ -2181,8 +2842,6 @@
     document.getElementById('chkBed').addEventListener('change', (e) => bedGroup.visible = e.target.checked);
     document.getElementById('chkFrame').addEventListener('change', syncFrameVisibility);
     document.getElementById('chkClamps').addEventListener('change', syncFrameVisibility);
-
-    renderStep();
 
     // -------------------------------------------------------------
     // 10. ANIMATION LOOP & RESPONSIVE RESIZE
@@ -2211,10 +2870,17 @@
       }
     }
 
-    window.addEventListener('resize', updateRendererSize);
+    window.addEventListener('resize', () => {
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      updateRendererSize();
+    });
     window.addEventListener('orientationchange', () => {
-      setTimeout(updateRendererSize, 80);
-      setTimeout(updateRendererSize, 250);
+      setTimeout(() => {
+        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+        updateRendererSize();
+        if (window.innerWidth < 1024) setMobileMode(currentMobileMode);
+      }, 100);
+      setTimeout(updateRendererSize, 300);
     });
 
     // -------------------------------------------------------------
@@ -2245,21 +2911,21 @@
       if (mode === 'split') {
         btnModeSplit.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.remove('hidden');
-        viewport3D.style.height = '42vh';
+        viewport3D.style.height = '42dvh';
         sidebarPanel.classList.remove('hidden');
-        sidebarPanel.style.height = 'calc(58vh - 42px)';
+        sidebarPanel.style.height = 'calc(58dvh - 42px)';
         if (expand3dIcon) expand3dIcon.textContent = '⛶';
       } else if (mode === '3d') {
         btnMode3D.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.remove('hidden');
-        viewport3D.style.height = 'calc(100vh - 95px)';
+        viewport3D.style.height = 'calc(100dvh - 95px)';
         sidebarPanel.classList.add('hidden');
         if (expand3dIcon) expand3dIcon.textContent = '⤢';
       } else if (mode === 'steps') {
         btnModeSteps.className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 bybit-btn-gold active-scale touch-action-manipulation";
         viewport3D.classList.add('hidden');
         sidebarPanel.classList.remove('hidden');
-        sidebarPanel.style.height = 'calc(100vh - 95px)';
+        sidebarPanel.style.height = 'calc(100dvh - 95px)';
       }
 
       setTimeout(updateRendererSize, 40);
@@ -2278,6 +2944,22 @@
           setMobileMode('3d');
         }
       });
+    }
+
+    // Floating 3D Navigation Controls
+    const btnResetCam = document.getElementById('btnResetCam');
+    if (btnResetCam) {
+      btnResetCam.addEventListener('click', () => {
+        animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 }, 40);
+      });
+    }
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    if (btnZoomIn) {
+      btnZoomIn.addEventListener('click', () => zoomCamera(-55));
+    }
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    if (btnZoomOut) {
+      btnZoomOut.addEventListener('click', () => zoomCamera(55));
     }
 
     const btnToggleViews = document.getElementById('btnToggleViews');
@@ -2362,10 +3044,114 @@
       }
     });
 
+    // -------------------------------------------------------------
+    // 12. LANGUAGE SWITCHER IMPLEMENTATION
+    // -------------------------------------------------------------
+    function setLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      currentLang = lang;
+      try { localStorage.setItem('fixture_lang', lang); } catch (e) {}
+      if (document.documentElement) document.documentElement.lang = lang;
+
+      // Update switcher buttons UI
+      document.querySelectorAll('#langSelector .lang-btn').forEach(btn => {
+        if (btn.getAttribute('data-lang') === lang) {
+          btn.className = "lang-btn px-2 py-1 rounded transition text-bybit-gold bg-bybit-gold/20 font-bold active-scale";
+        } else {
+          btn.className = "lang-btn px-2 py-1 rounded transition text-bybit-gray hover:text-white font-medium active-scale";
+        }
+      });
+
+      const t = I18N[lang];
+      document.title = t.pageTitle;
+      const htmlTitle = document.getElementById('htmlTitle');
+      if (htmlTitle) htmlTitle.textContent = t.pageTitle;
+
+      // Header
+      const headerTitle = document.getElementById('headerTitle');
+      if (headerTitle) headerTitle.textContent = t.headerTitle;
+      const headerBadge = document.getElementById('headerBadge');
+      if (headerBadge) headerBadge.textContent = t.headerBadge;
+      const headerSubtitle = document.getElementById('headerSubtitle');
+      if (headerSubtitle) headerSubtitle.textContent = t.headerSubtitle;
+
+      // Mobile Mode Bar
+      const lblModeSplit = document.getElementById('lblModeSplit');
+      if (lblModeSplit) lblModeSplit.textContent = t.modeSplit;
+      const lblMode3D = document.getElementById('lblMode3D');
+      if (lblMode3D) lblMode3D.textContent = t.mode3D;
+      const lblModeSteps = document.getElementById('lblModeSteps');
+      if (lblModeSteps) lblModeSteps.textContent = t.modeSteps;
+
+      // HUD
+      const hudRotate = document.getElementById('hudRotate');
+      if (hudRotate) hudRotate.innerHTML = t.hudRotate;
+
+      // Views Dropdown
+      const viewsDropdownTitle = document.getElementById('viewsDropdownTitle');
+      if (viewsDropdownTitle) viewsDropdownTitle.textContent = t.viewsDropdownTitle;
+      const isoLabelAll = document.getElementById('isoLabelAll');
+      if (isoLabelAll) isoLabelAll.textContent = t.views.all;
+      const isoLabelBed = document.getElementById('isoLabelBed');
+      if (isoLabelBed) isoLabelBed.textContent = t.views.bed;
+      const isoLabelShelf = document.getElementById('isoLabelShelf');
+      if (isoLabelShelf) isoLabelShelf.textContent = t.views.shelf;
+      const isoLabelPipes = document.getElementById('isoLabelPipes');
+      if (isoLabelPipes) isoLabelPipes.textContent = t.views.pipes;
+      const isoLabelClamps = document.getElementById('isoLabelClamps');
+      if (isoLabelClamps) isoLabelClamps.textContent = t.views.clamps;
+      const isoLabelClampsFrame = document.getElementById('isoLabelClampsFrame');
+      if (isoLabelClampsFrame) isoLabelClampsFrame.textContent = t.views.clampsFrame;
+
+      // Layers Dropdown
+      const layersBtnLabel = document.getElementById('layersBtnLabel');
+      if (layersBtnLabel) layersBtnLabel.textContent = t.layersBtnLabel;
+      const layersDropdownTitle = document.getElementById('layersDropdownTitle');
+      if (layersDropdownTitle) layersDropdownTitle.textContent = t.layersDropdownTitle;
+      const lblDims = document.getElementById('lblDims');
+      if (lblDims) lblDims.textContent = t.lblDims;
+      const lblShelf = document.getElementById('lblShelf');
+      if (lblShelf) lblShelf.textContent = t.lblShelf;
+      const lblBed = document.getElementById('lblBed');
+      if (lblBed) lblBed.textContent = t.lblBed;
+      const lblFrame = document.getElementById('lblFrame');
+      if (lblFrame) lblFrame.textContent = t.lblFrame;
+      const lblClamps = document.getElementById('lblClamps');
+      if (lblClamps) lblClamps.textContent = t.lblClamps;
+
+      // Tabs
+      if (tabStepper) tabStepper.textContent = t.tabStepper;
+      if (tabBOM) tabBOM.textContent = t.tabBOM;
+
+      // Stepper Controls
+      const btnOverviewMode = document.getElementById('btnOverviewMode');
+      if (btnOverviewMode) btnOverviewMode.textContent = t.btnOverview;
+
+      // Update sub-views and 3D labels
+      resetIsolationUI(currentIsolateMode);
+      renderStep();
+      renderBOM();
+      renderClampModal();
+      updateDimensionSprites(lang);
+    }
+
+    document.querySelectorAll('#langSelector .lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.getAttribute('data-lang');
+        setLanguage(lang);
+      });
+    });
+
+    // Initial render
+    setLanguage(currentLang);
+
     if (window.innerWidth < 1024) {
       setMobileMode('split');
     }
 
   </script>
+</body>
+</html>
+
 </body>
 </html>
