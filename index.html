@@ -170,12 +170,49 @@
         </div>
       </div>
 
-      <!-- Top Right: Mobile Expand & Layers Toggle -->
+      <!-- Top Right: Mobile Expand, Views/Isolation Dropdown & Layers Toggle -->
       <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
         <!-- Expand to full 3D toggle (mobile only) -->
         <button id="btnExpand3D" class="lg:hidden bybit-panel px-2.5 py-1.5 rounded-lg text-xs font-bold text-bybit-gold hover:text-white flex items-center gap-1 shadow-lg active-scale touch-action-manipulation" title="Развернуть на весь экран">
           <span id="expand3dIcon">⛶</span>
         </button>
+
+        <!-- Views / Isolation Dropdown (Left of Layers) -->
+        <div class="relative">
+          <button id="btnToggleViews" class="bybit-panel px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 shadow-lg active-scale touch-action-manipulation" title="Выбор режима обзора и изоляция компонентов">
+            <span id="viewsBtnLabel">📐 Изометрия</span>
+            <span id="viewsChevron" class="text-[10px] text-bybit-gold transition-transform duration-200">▾</span>
+          </button>
+
+          <!-- Views & Isolation Dropdown Menu -->
+          <div id="viewsDropdown" class="hidden absolute right-0 top-10 w-56 bybit-panel p-2.5 rounded-xl text-xs space-y-1 shadow-2xl z-30 border border-bybit-border animate-scale-up">
+            <div class="font-semibold text-bybit-lightGray text-[11px] uppercase tracking-wider flex items-center justify-between pb-1.5 mb-1 border-b border-bybit-border/60">
+              <span class="text-bybit-gold font-bold">Обзор и детали</span>
+              <button id="btnCloseViews" class="text-bybit-gray hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-bybit-card transition">✕</button>
+            </div>
+            
+            <button data-isolate="all" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg bg-bybit-gold/15 text-bybit-gold font-semibold flex items-center justify-between transition hover:bg-bybit-gold/25">
+              <span class="flex items-center gap-2"><span>🌟</span> <span>Вся фикстура</span></span>
+              <span class="text-[10px] opacity-75 font-mono">3D</span>
+            </button>
+            <button data-isolate="bed" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🪵</span> <span>Доска (ДСП+резина)</span></span>
+              <span class="text-[10px] text-bybit-gray font-mono">16 мм</span>
+            </button>
+            <button data-isolate="shelf" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🖥️</span> <span>Полка (Compute Shelf)</span></span>
+              <span class="text-[10px] text-bybit-gray font-mono">CAD</span>
+            </button>
+            <button data-isolate="pipes" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>⚪</span> <span>Трубки каркаса</span></span>
+              <span class="text-[10px] text-bybit-gray font-mono">Ø28 мм</span>
+            </button>
+            <button data-isolate="clamps" class="iso-opt w-full text-left px-2.5 py-2 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🔩</span> <span>Зажимы (HJ-1 / HJ-2)</span></span>
+              <span class="text-[10px] text-bybit-gray font-mono">12 шт.</span>
+            </button>
+          </div>
+        </div>
 
         <!-- Layers Toggle Button -->
         <div class="relative">
@@ -217,7 +254,7 @@
       <!-- Bottom Floating Controls: View Presets in Single Horizontal Scroll Row -->
       <div class="absolute bottom-3 left-2 right-2 sm:left-4 sm:right-4 flex items-center justify-between gap-2 pointer-events-none z-10">
         <!-- Horizontal Scrollable Buttons -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto w-full sm:w-auto">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto w-full">
           <button id="viewIso" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bybit-panel hover:bg-bybit-card text-xs font-medium text-slate-200 transition shadow touch-action-manipulation">
             Изометрия
           </button>
@@ -242,12 +279,6 @@
           <button id="btnToggleDims" class="flex-shrink-0 px-2.5 py-1.5 rounded-lg bg-bybit-gold text-bybit-black hover:bg-bybit-goldHover text-xs font-bold shadow-lg shadow-bybit-gold/20 transition flex items-center gap-1 touch-action-manipulation">
             📏 Размеры
           </button>
-        </div>
-
-        <!-- Desktop Only: Shelf Status Badge -->
-        <div class="hidden md:flex items-center gap-2 bybit-panel px-3 py-1.5 rounded-xl pointer-events-auto shadow-xl text-xs text-slate-300 flex-shrink-0">
-          <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
-          <span class="font-medium">Compute Shelf</span>
         </div>
       </div>
 
@@ -637,39 +668,56 @@
     controls.maxPolarAngle = Math.PI / 2 - 0.01;
     controls.target.set(0, 45, 0);
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+    // Multi-Point Studio Lighting for Vivid Contrast & Crisp Depth
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 0.85); // High sky fill + dark ground bounce
+    scene.add(hemiLight);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
     scene.add(ambientLight);
 
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.95);
-    mainLight.position.set(220, 400, 260);
+    // Main Key Light (Crisp high-intensity direct illumination)
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.25);
+    mainLight.position.set(240, 420, 280);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = 2048;
     mainLight.shadow.mapSize.height = 2048;
     mainLight.shadow.camera.near = 10;
-    mainLight.shadow.camera.far = 1000;
-    mainLight.shadow.camera.left = -250;
-    mainLight.shadow.camera.right = 250;
-    mainLight.shadow.camera.top = 250;
-    mainLight.shadow.camera.bottom = -250;
+    mainLight.shadow.camera.far = 1100;
+    mainLight.shadow.camera.left = -260;
+    mainLight.shadow.camera.right = 260;
+    mainLight.shadow.camera.top = 260;
+    mainLight.shadow.camera.bottom = -260;
+    mainLight.shadow.bias = -0.0005;
     scene.add(mainLight);
 
-    const fillLight = new THREE.DirectionalLight(0xF7A600, 0.22); // Subtle Bybit Gold rim light
-    fillLight.position.set(-250, 200, -200);
-    scene.add(fillLight);
+    // Rim Light 1: Cool Silver/Ice Rim (Back-Left) for sharp edge silhouette separation
+    const rimLight1 = new THREE.DirectionalLight(0xc7d2fe, 0.95);
+    rimLight1.position.set(-320, 260, -280);
+    scene.add(rimLight1);
 
-    const floorLight = new THREE.DirectionalLight(0x181C26, 0.4);
-    floorLight.position.set(0, -200, 0);
-    scene.add(floorLight);
+    // Rim Light 2: Warm Bybit Gold Rim (Front-Left) for dynamic metallic highlights
+    const rimLight2 = new THREE.DirectionalLight(0xF7A600, 0.55);
+    rimLight2.position.set(-260, 180, 260);
+    scene.add(rimLight2);
+
+    // Frontal Fill Light: guarantees front-facing surfaces and labels never fall into shadow
+    const frontFill = new THREE.DirectionalLight(0xffffff, 0.65);
+    frontFill.position.set(20, 140, 420);
+    scene.add(frontFill);
+
+    // Soft Upward Floor Bounce
+    const floorBounce = new THREE.DirectionalLight(0x475569, 0.40);
+    floorBounce.position.set(0, -300, 0);
+    scene.add(floorBounce);
 
     // Bybit Floor Grid & Shadow receiver
-    const grid = new THREE.GridHelper(1000, 40, 0x262C3A, 0x12161F);
+    const grid = new THREE.GridHelper(1000, 40, 0x334155, 0x161B26);
     grid.position.y = -0.5;
     scene.add(grid);
 
     const floorPlane = new THREE.Mesh(
       new THREE.PlaneGeometry(1200, 1200),
-      new THREE.ShadowMaterial({ opacity: 0.45 })
+      new THREE.ShadowMaterial({ opacity: 0.50 })
     );
     floorPlane.rotation.x = -Math.PI / 2;
     floorPlane.receiveShadow = true;
@@ -819,73 +867,72 @@
     }
 
     // -------------------------------------------------------------
-    // 3. PBR MATERIALS
+    // 3. PBR MATERIALS (HIGH-CONTRAST & EXPRESSIVE)
     // -------------------------------------------------------------
     const chromePipeMat = new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0,
-      metalness: 0.92,
-      roughness: 0.15
-    });
-
-    const centralPipeMat = new THREE.MeshStandardMaterial({
-      color: 0xF7A600, // Bybit Gold Accent for central spine
-      metalness: 0.85,
+      color: 0xF8FAFC, // Crisp bright silver/white
+      metalness: 0.55,  // Balanced metalness so pipes reflect strong diffuse and specular sheen
       roughness: 0.22
     });
 
+    const centralPipeMat = new THREE.MeshStandardMaterial({
+      color: 0xFBAF17, // Vibrant Bybit Gold Accent for central spine
+      metalness: 0.45,
+      roughness: 0.20
+    });
+
     const clampMetalMat = new THREE.MeshStandardMaterial({
-      color: 0xD8DFE8, // Bright Nickel-Chrome Stamped Steel
-      metalness: 0.88,
-      roughness: 0.22,
-      envMapIntensity: 1.2
+      color: 0xE2E8F0, // Bright Stamped Nickel-Chrome Steel
+      metalness: 0.48,
+      roughness: 0.26
     });
 
     const clampBoltMat = new THREE.MeshStandardMaterial({
-      color: 0xEEF2F6, // Fastener Bolt & Nut M6
-      metalness: 0.94,
-      roughness: 0.16
+      color: 0xFFFFFF, // Fastener Bolt & Nut M6
+      metalness: 0.70,
+      roughness: 0.15
     });
 
     const allClamps = [];
 
     const woodMat = new THREE.MeshStandardMaterial({
-      color: 0x92400e,
+      color: 0xC47B35, // Warm laminated birch/DSP wood
+      roughness: 0.60,
+      metalness: 0.02
+    });
+
+    const rubberPadMat = new THREE.MeshStandardMaterial({
+      color: 0x242B38, // Technical dark slate rubber (clear contrast vs background & wood)
       roughness: 0.75,
       metalness: 0.05
     });
 
-    const rubberPadMat = new THREE.MeshStandardMaterial({
-      color: 0x12161F, // Bybit Dark Matte
-      roughness: 0.94,
-      metalness: 0.02
-    });
-
     const rubberCapMat = new THREE.MeshStandardMaterial({
-      color: 0xF6465D, // Bybit Vibrant Red
+      color: 0xEF4444, // Bright Signal Red Caps
       roughness: 0.35,
       metalness: 0.1
     });
 
     const shelfMetalMat = new THREE.MeshStandardMaterial({
-      color: 0xcfd8dc,
-      metalness: 0.65,
-      roughness: 0.32,
+      color: 0xDCE3EA, // Crisp anodized aluminum / chassis steel
+      metalness: 0.45,
+      roughness: 0.28,
       side: THREE.DoubleSide
     });
 
     const shelfMetalPerforated = new THREE.MeshStandardMaterial({
-      color: 0xb0bec5,
+      color: 0xCBD5E1,
       map: createPerforatedTexture(),
-      metalness: 0.6,
-      roughness: 0.35,
+      metalness: 0.40,
+      roughness: 0.30,
       side: THREE.DoubleSide
     });
 
     const honeycombMat = new THREE.MeshStandardMaterial({
-      color: 0x90a4ae,
+      color: 0x94A3B8,
       map: createHoneycombTexture(),
-      metalness: 0.55,
-      roughness: 0.4,
+      metalness: 0.45,
+      roughness: 0.32,
       side: THREE.DoubleSide
     });
 
@@ -1271,9 +1318,9 @@
 
     // 6 металлических саморезов с прессшайбой, прикручивающих ДСП к двум центральным трубам
     const screwMat = new THREE.MeshStandardMaterial({
-      color: 0xEEF2F6,
-      metalness: 0.92,
-      roughness: 0.18
+      color: 0xFFFFFF,
+      metalness: 0.70,
+      roughness: 0.16
     });
     const screwSlotMat = new THREE.MeshBasicMaterial({ color: 0x1E293B });
 
@@ -1538,7 +1585,135 @@
       glide();
     }
 
+    // -------------------------------------------------------------
+    // ISOLATED COMPONENT VIEW LOGIC
+    // -------------------------------------------------------------
+    let currentIsolateMode = 'all';
+
+    function resetIsolationUI(mode = 'all') {
+      currentIsolateMode = mode;
+      const viewsBtnLabel = document.getElementById('viewsBtnLabel');
+      if (viewsBtnLabel) {
+        if (mode === 'all') viewsBtnLabel.innerHTML = '📐 Изометрия';
+        else if (mode === 'bed') viewsBtnLabel.innerHTML = '🪵 Доска';
+        else if (mode === 'shelf') viewsBtnLabel.innerHTML = '🖥️ Полка';
+        else if (mode === 'pipes') viewsBtnLabel.innerHTML = '⚪ Трубки';
+        else if (mode === 'clamps') viewsBtnLabel.innerHTML = '🔩 Зажимы';
+      }
+      document.querySelectorAll('.iso-opt').forEach(btn => {
+        const isMatch = btn.getAttribute('data-isolate') === mode;
+        if (isMatch) {
+          btn.className = "iso-opt w-full text-left px-2.5 py-1.5 rounded-lg bg-bybit-gold/15 text-bybit-gold font-semibold flex items-center justify-between transition";
+        } else {
+          btn.className = "iso-opt w-full text-left px-2.5 py-1.5 rounded-lg text-slate-300 hover:bg-bybit-card hover:text-white flex items-center justify-between transition";
+        }
+      });
+    }
+
+    function isolateComponent(mode) {
+      resetIsolationUI(mode);
+
+      const hudStatus = document.getElementById('hudStatus');
+      const chkDimensions = document.getElementById('chkDimensions');
+      const chkShelf = document.getElementById('chkShelf');
+      const chkBed = document.getElementById('chkBed');
+      const chkFrame = document.getElementById('chkFrame');
+      const chkClamps = document.getElementById('chkClamps');
+
+      if (mode === 'all') {
+        if (hudStatus) hudStatus.textContent = 'Фикстура в сборе';
+
+        step1Group.visible = true;
+        step2Group.visible = true;
+        step3Group.visible = true;
+        bedGroup.visible   = true;
+        shelfGroup.visible = true;
+        allClamps.forEach(c => c.visible = true);
+        dimensionsGroup.visible = chkDimensions ? chkDimensions.checked : true;
+
+        if (chkFrame) chkFrame.checked = true;
+        if (chkClamps) chkClamps.checked = true;
+        if (chkBed) chkBed.checked = true;
+        if (chkShelf) chkShelf.checked = true;
+
+        animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 }, 45);
+      } else if (mode === 'bed') {
+        if (hudStatus) hudStatus.textContent = 'Деталь: Ложе (ДСП 16 мм + резина + 6 саморезов)';
+
+        step1Group.visible = false;
+        step2Group.visible = false;
+        step3Group.visible = false;
+        shelfGroup.visible = false;
+        bedGroup.visible   = true;
+        allClamps.forEach(c => c.visible = false);
+        dimensionsGroup.visible = false;
+
+        if (chkFrame) chkFrame.checked = false;
+        if (chkClamps) chkClamps.checked = false;
+        if (chkBed) chkBed.checked = true;
+        if (chkShelf) chkShelf.checked = false;
+
+        animateCameraSmooth({ x: 0, y: 155, z: 235, tx: 0, ty: 45, tz: 0 }, 45);
+      } else if (mode === 'shelf') {
+        if (hudStatus) hudStatus.textContent = 'Деталь: Серверное шасси Compute Shelf (685×565×120 мм)';
+
+        step1Group.visible = false;
+        step2Group.visible = false;
+        step3Group.visible = false;
+        bedGroup.visible   = false;
+        shelfGroup.visible = true;
+        allClamps.forEach(c => c.visible = false);
+        dimensionsGroup.visible = false;
+
+        if (chkFrame) chkFrame.checked = false;
+        if (chkClamps) chkClamps.checked = false;
+        if (chkBed) chkBed.checked = false;
+        if (chkShelf) chkShelf.checked = true;
+
+        animateCameraSmooth({ x: 120, y: 135, z: 200, tx: 0, ty: 48, tz: 0 }, 45);
+      } else if (mode === 'pipes') {
+        if (hudStatus) hudStatus.textContent = 'Детали: 11 трубок каркаса Lean Pipe Ø28 мм';
+
+        step1Group.visible = true;
+        step2Group.visible = true;
+        step3Group.visible = true;
+        bedGroup.visible   = false;
+        shelfGroup.visible = false;
+        allClamps.forEach(c => c.visible = false);
+        dimensionsGroup.visible = chkDimensions ? chkDimensions.checked : true;
+
+        if (chkFrame) chkFrame.checked = true;
+        if (chkClamps) chkClamps.checked = false;
+        if (chkBed) chkBed.checked = false;
+        if (chkShelf) chkShelf.checked = false;
+
+        animateCameraSmooth({ x: 230, y: 180, z: 290, tx: 0, ty: 45, tz: 0 }, 45);
+      } else if (mode === 'clamps') {
+        if (hudStatus) hudStatus.textContent = 'Детали: Зажимы 2×HJ-2 (угловые 3D) + 10×HJ-1 (Т-стыки)';
+
+        step1Group.visible = false;
+        step2Group.visible = false;
+        step3Group.visible = false;
+        bedGroup.visible   = false;
+        shelfGroup.visible = false;
+        allClamps.forEach(c => c.visible = true);
+        dimensionsGroup.visible = false;
+
+        if (chkFrame) chkFrame.checked = false;
+        if (chkClamps) chkClamps.checked = true;
+        if (chkBed) chkBed.checked = false;
+        if (chkShelf) chkShelf.checked = false;
+
+        animateCameraSmooth({ x: -160, y: 55, z: -110, tx: -W_frame/2, ty: R_pipe + 5, tz: -D_base/2 }, 45);
+      }
+
+      if (typeof toggleViewsMenu === 'function') {
+        toggleViewsMenu(false);
+      }
+    }
+
     function renderStep() {
+      resetIsolationUI('all');
       const stepBadge = document.getElementById('stepBadge');
       const stepCounter = document.getElementById('stepCounter');
       const btnOverviewMode = document.getElementById('btnOverviewMode');
@@ -1795,10 +1970,10 @@
     }
 
     // -------------------------------------------------------------
-    // 9. VIEW PRESETS
+    // 9. VIEW PRESETS & LAYER CONTROLS
     // -------------------------------------------------------------
     document.getElementById('viewIso').addEventListener('click', () => {
-      animateCameraSmooth({ x: 240, y: 200, z: 320, tx: 0, ty: 45, tz: 0 });
+      isolateComponent('all');
     });
 
     document.getElementById('viewHJ2').addEventListener('click', () => {
@@ -1852,6 +2027,19 @@
     document.getElementById('chkClamps').addEventListener('change', (e) => {
       allClamps.forEach(c => c.visible = e.target.checked);
     });
+    const chkDimensions = document.getElementById('chkDimensions');
+    const btnToggleDims = document.getElementById('btnToggleDims');
+    if (chkDimensions) {
+      chkDimensions.addEventListener('change', (e) => {
+        dimensionsGroup.visible = e.target.checked;
+      });
+    }
+    if (btnToggleDims) {
+      btnToggleDims.addEventListener('click', () => {
+        dimensionsGroup.visible = !dimensionsGroup.visible;
+        if (chkDimensions) chkDimensions.checked = dimensionsGroup.visible;
+      });
+    }
 
     renderStep();
 
@@ -1951,6 +2139,46 @@
       });
     }
 
+    const btnToggleViews = document.getElementById('btnToggleViews');
+    const btnCloseViews = document.getElementById('btnCloseViews');
+    const viewsDropdown = document.getElementById('viewsDropdown');
+    const viewsChevron = document.getElementById('viewsChevron');
+
+    function toggleViewsMenu(show) {
+      if (!viewsDropdown) return;
+      const isHidden = viewsDropdown.classList.contains('hidden');
+      const shouldShow = (typeof show === 'boolean') ? show : isHidden;
+      if (shouldShow) {
+        viewsDropdown.classList.remove('hidden');
+        if (viewsChevron) viewsChevron.style.transform = 'rotate(180deg)';
+        toggleLayersMenu(false);
+      } else {
+        viewsDropdown.classList.add('hidden');
+        if (viewsChevron) viewsChevron.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    if (btnToggleViews) {
+      btnToggleViews.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleViewsMenu();
+      });
+    }
+
+    if (btnCloseViews) {
+      btnCloseViews.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleViewsMenu(false);
+      });
+    }
+
+    document.querySelectorAll('.iso-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-isolate');
+        isolateComponent(mode);
+      });
+    });
+
     function toggleLayersMenu(show) {
       if (!layersDropdown) return;
       const isHidden = layersDropdown.classList.contains('hidden');
@@ -1958,6 +2186,7 @@
       if (shouldShow) {
         layersDropdown.classList.remove('hidden');
         if (layersChevron) layersChevron.style.transform = 'rotate(180deg)';
+        toggleViewsMenu(false);
       } else {
         layersDropdown.classList.add('hidden');
         if (layersChevron) layersChevron.style.transform = 'rotate(0deg)';
@@ -1978,8 +2207,13 @@
       });
     }
 
-    // Hide dropdown when clicking anywhere outside
+    // Hide dropdowns when clicking anywhere outside
     document.addEventListener('click', (e) => {
+      if (viewsDropdown && !viewsDropdown.classList.contains('hidden')) {
+        if (!viewsDropdown.contains(e.target) && e.target !== btnToggleViews && !btnToggleViews?.contains(e.target)) {
+          toggleViewsMenu(false);
+        }
+      }
       if (layersDropdown && !layersDropdown.classList.contains('hidden')) {
         if (!layersDropdown.contains(e.target) && e.target !== btnToggleLayers && !btnToggleLayers?.contains(e.target)) {
           toggleLayersMenu(false);
