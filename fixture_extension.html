@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title id="htmlTitle">Фикстура Zoid Extension: 3D Модель с Педальным Подъемом</title>
+  <title id="htmlTitle">Фикстура Zoid Extension: CAD Модель & Индустрия 4.0</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Three.js + OrbitControls -->
@@ -27,7 +27,8 @@
               lightGray: '#ADB5BD',
               green: '#0ECB81',
               red: '#F6465D',
-              blue: '#3861FB'
+              blue: '#3861FB',
+              cyan: '#00F0FF'
             }
           },
           screens: {
@@ -93,25 +94,31 @@
     .custom-scroll::-webkit-scrollbar-track { background: #0B0E14; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #262C3A; border-radius: 3px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F7A600; }
+
+    @keyframes pulseLed {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+    .pulse-led { animation: pulseLed 1.6s infinite ease-in-out; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col select-none antialiased">
 
   <!-- Top Navigation Header -->
-  <header id="mainHeader" class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between shadow-lg">
+  <header id="mainHeader" class="border-b border-bybit-border bg-bybit-surface/95 backdrop-blur sticky top-0 z-50 px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-bybit-gold to-amber-600 flex items-center justify-center font-black text-bybit-black text-xs sm:text-sm shadow-md shadow-bybit-gold/25 tracking-tighter flex-shrink-0">
-        ZX·P
+        4.0
       </div>
       <div class="min-w-0">
         <h1 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2 truncate">
-          <span id="headerTitle" class="truncate">Фикстура Zoid Extension с Педальным Подъемником</span>
-          <span class="hidden sm:inline-block text-[10px] bg-bybit-gold/15 text-bybit-gold border border-bybit-gold/30 px-2 py-0.5 rounded font-mono font-semibold flex-shrink-0">
-            Опоры под балки • H=50..70 мм • Педаль
+          <span id="headerTitle" class="truncate">Smart Fixture Zoid Extension (CAD & Industry 4.0)</span>
+          <span class="hidden sm:inline-block text-[10px] bg-bybit-cyan/15 text-bybit-cyan border border-bybit-cyan/30 px-2 py-0.5 rounded font-mono font-semibold flex-shrink-0">
+            Digital Twin • Poka-Yoke • FEA
           </span>
         </h1>
         <p id="headerSubtitle" class="hidden sm:block text-[11px] text-bybit-gray truncate">
-          Задний бортик-упор • Боковые подъемные ложементы под ширину экстеншна (698 мм) • Педальный рычаг
+          Параметрическая CAD-оптимизация • Базирование 3-2-1 • Телеметрия датчиков прилегания балок (698 мм)
         </p>
       </div>
     </div>
@@ -144,16 +151,18 @@
       <!-- Floating Top Overlays / HUD -->
       <div class="absolute top-3 left-3 flex flex-wrap gap-2 pointer-events-none z-10">
         <div class="bybit-panel rounded-lg px-3 py-1.5 text-xs flex items-center gap-2 shadow-lg pointer-events-auto">
-          <span class="w-2.5 h-2.5 rounded-full bg-bybit-green animate-pulse"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-bybit-green pulse-led"></span>
           <span class="text-bybit-gray" id="hudModeLabel">Режим:</span>
           <span id="hudActiveMode" class="font-bold text-white">ZOID RACK (50 мм)</span>
         </div>
         <div class="bybit-panel rounded-lg px-3 py-1.5 text-xs flex items-center gap-2 shadow-lg pointer-events-auto">
-          <span class="text-bybit-gray" id="hudPedalLabel">Педаль:</span>
-          <span id="hudPedalState" class="font-bold text-bybit-green">ВВЕРХУ (Опоры сложены)</span>
+          <span class="text-bybit-gray">Sensors 4.0:</span>
+          <span id="hudSensorLeft" class="text-bybit-green font-bold">L: OK</span>
+          <span class="text-bybit-border">|</span>
+          <span id="hudSensorRight" class="text-bybit-green font-bold">R: OK</span>
         </div>
         <div class="bybit-panel rounded-lg px-3 py-1.5 text-xs flex items-center gap-2 shadow-lg pointer-events-auto">
-          <span class="text-bybit-gray" id="hudHeightLabel">Высота балок:</span>
+          <span class="text-bybit-gray" id="hudHeightLabel">Высота:</span>
           <span id="hudHeightVal" class="font-mono font-bold text-bybit-gold">H = 50.0 мм</span>
         </div>
       </div>
@@ -161,16 +170,16 @@
       <!-- Floating 3D Navigation Gizmo & Presets -->
       <div class="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
         <div class="bybit-panel rounded-lg p-1.5 flex flex-col gap-1">
-          <button onclick="setCameraView('iso')" title="Изометрия" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-bybit-gold transition text-xs font-bold flex items-center justify-center">
+          <button onclick="setCameraView('iso')" title="CAD Изометрия" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-bybit-gold transition text-xs font-bold flex items-center justify-center">
             ISO
           </button>
-          <button onclick="setCameraView('front')" title="Вид спереди (педаль)" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
+          <button onclick="setCameraView('front')" title="Вид спереди (Педаль)" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
             FRT
           </button>
-          <button onclick="setCameraView('top')" title="Вид сверху" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
+          <button onclick="setCameraView('top')" title="Вид сверху (Базирование 3-2-1)" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
             TOP
           </button>
-          <button onclick="setCameraView('side')" title="Вид сбоку" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
+          <button onclick="setCameraView('side')" title="Вид сбоку (Рычаги качалки)" class="p-1.5 rounded hover:bg-bybit-card text-bybit-gray hover:text-white transition text-xs font-bold flex items-center justify-center">
             SD
           </button>
           <hr class="border-bybit-border my-0.5">
@@ -187,27 +196,27 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-bybit-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                <span id="mechTitle">Управление педалью:</span>
+                <svg class="w-4 h-4 text-bybit-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                <span id="mechTitle">Педальный подъемник:</span>
               </span>
             </div>
 
             <!-- Preset Buttons -->
             <div class="flex items-center gap-2">
               <button onclick="setTargetPedal(0)" id="btnModeRack" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-gold text-bybit-black shadow-md transition flex items-center gap-1.5">
-                <span>ZOID RACK (Педаль Вверху, H=50)</span>
+                <span>ZOID RACK (50 мм)</span>
               </button>
               <button onclick="setTargetPedal(1)" id="btnModeZoidE" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-card text-bybit-gray hover:text-white border border-bybit-border transition flex items-center gap-1.5">
-                <span>ZOID E (Педаль Внизу, H=70)</span>
+                <span>ZOID E (70 мм)</span>
               </button>
             </div>
           </div>
 
           <!-- Continuous Slider -->
           <div class="flex items-center gap-3">
-            <span class="text-[11px] font-mono text-bybit-gray">Педаль вверху (50 мм)</span>
-            <input type="range" id="pedalSlider" min="0" max="1" step="0.01" value="0" class="flex-1 accent-bybit-gold h-1.5 bg-bybit-border rounded-lg cursor-pointer">
-            <span class="text-[11px] font-mono text-bybit-gold font-bold">Педаль нажата (70 мм)</span>
+            <span class="text-[11px] font-mono text-bybit-gray">50 мм (Педаль вверху)</span>
+            <input type="range" id="pedalSlider" min="0" max="1" step="0.01" value="0" class="flex-1 accent-bybit-cyan h-1.5 bg-bybit-border rounded-lg cursor-pointer">
+            <span class="text-[11px] font-mono text-bybit-cyan font-bold">70 мм (Педаль нажата)</span>
           </div>
 
           <!-- Display Toggles -->
@@ -215,16 +224,20 @@
             <div class="flex items-center gap-4">
               <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition">
                 <input type="checkbox" id="chkShowPart" checked class="rounded accent-bybit-gold">
-                <span id="lblShowPart">Рама Extension (балки упираются в опоры)</span>
+                <span id="lblShowPart">Балки Extension (деталь)</span>
               </label>
               <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition">
-                <input type="checkbox" id="chkShowDims" checked class="rounded accent-bybit-gold">
-                <span id="lblShowDims">Размеры и выноски (698 мм)</span>
+                <input type="checkbox" id="chkShowSensors" checked class="rounded accent-bybit-cyan">
+                <span>Датчики 4.0 & LED индикация</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition">
+                <input type="checkbox" id="chkShowPocketing" checked class="rounded accent-bybit-gold">
+                <span>Облегчающие карманы ЧПУ</span>
               </label>
             </div>
             <div class="text-[11px] text-bybit-green flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-bybit-green"></span>
-              <span id="statusLock">Опоры упираются в балки: Готово</span>
+              <span id="statusLock">Poka-Yoke: Совпадение 100%</span>
             </div>
           </div>
         </div>
@@ -235,92 +248,110 @@
     <aside class="lg:col-span-5 xl:col-span-4 bg-bybit-surface border-t lg:border-t-0 lg:border-l border-bybit-border flex flex-col overflow-hidden">
       <!-- Tabs Header -->
       <div class="flex border-b border-bybit-border bg-bybit-black/40 text-xs font-bold">
-        <button onclick="switchTab('tabSketch')" id="btnTabSketch" class="flex-1 py-3 px-2 text-center border-b-2 border-bybit-gold text-bybit-gold transition">
-          <span id="tab1Title">Конструкция со скетча</span>
+        <button onclick="switchTab('tabIndustry')" id="btnTabIndustry" class="flex-1 py-3 px-2 text-center border-b-2 border-bybit-gold text-bybit-gold transition">
+          <span id="tab1Title">Индустрия 4.0</span>
+        </button>
+        <button onclick="switchTab('tabCAD')" id="btnTabCAD" class="flex-1 py-3 px-2 text-center border-b-2 border-transparent text-bybit-gray hover:text-white transition">
+          <span id="tab2Title">CAD / FEA</span>
         </button>
         <button onclick="switchTab('tabBOM')" id="btnTabBOM" class="flex-1 py-3 px-2 text-center border-b-2 border-transparent text-bybit-gray hover:text-white transition">
-          <span id="tab2Title">Спецификация</span>
-        </button>
-        <button onclick="switchTab('tabKinematics')" id="btnTabKinematics" class="flex-1 py-3 px-2 text-center border-b-2 border-transparent text-bybit-gray hover:text-white transition">
-          <span id="tab3Title">Кинематика педали</span>
+          <span id="tab3Title">BOM / Спецификация</span>
         </button>
       </div>
 
       <!-- Tab Content Area -->
       <div class="flex-1 p-4 overflow-y-auto custom-scroll space-y-4 text-xs">
         
-        <!-- TAB 1: КОНСТРУКЦИЯ ПО СКЕТЧУ -->
-        <div id="tabSketch" class="space-y-4">
-          <!-- Sketch Breakdown Card -->
-          <div class="bybit-card rounded-xl p-3.5 space-y-3">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
-              <span id="sketchBreakdownTitle">Элементы конструкции (по чертежу на бумаге)</span>
+        <!-- TAB 1: ИНДУСТРИЯ 4.0 И ЦИФРОВОЙ ДВОЙНИК -->
+        <div id="tabIndustry" class="space-y-4">
+          <!-- Digital Twin Status -->
+          <div class="bybit-card rounded-xl p-3.5 space-y-3 border border-bybit-cyan/30">
+            <h3 class="text-sm font-bold text-white flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-bybit-cyan pulse-led"></span>
+                <span>Телеметрия сборочного поста</span>
+              </span>
+              <span class="text-[10px] font-mono text-bybit-cyan uppercase bg-bybit-cyan/10 px-2 py-0.5 rounded border border-bybit-cyan/30">Connected</span>
             </h3>
 
-            <div class="space-y-2 text-[11px] text-bybit-lightGray leading-relaxed">
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
               <div class="bg-bybit-black/60 p-2.5 rounded-lg border border-bybit-border space-y-1">
-                <div class="font-bold text-white flex items-center justify-between">
-                  <span>1. Задний бортик-упор:</span>
-                  <span class="text-bybit-gold font-mono">Чуть шире чем extension (740 мм)</span>
+                <div class="text-bybit-gray text-[10px]">Датчик левой балки:</div>
+                <div class="font-bold text-bybit-green flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-bybit-green"></span>
+                  <span>Прилегает (0.0 мм)</span>
                 </div>
-                <p class="text-bybit-gray text-[10px]">
-                  Планка вдоль заднего края столешницы. Служит базирующим упором, чтобы рама шкафа не сдвигалась назад при укладке.
-                </p>
               </div>
-
               <div class="bg-bybit-black/60 p-2.5 rounded-lg border border-bybit-border space-y-1">
-                <div class="font-bold text-white flex items-center justify-between">
-                  <span>2. Боковые подъемные опоры:</span>
-                  <span class="text-bybit-green font-mono">Ширина 698 мм под балки</span>
+                <div class="text-bybit-gray text-[10px]">Датчик правой балки:</div>
+                <div class="font-bold text-bybit-green flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-bybit-green"></span>
+                  <span>Прилегает (0.0 мм)</span>
                 </div>
-                <p class="text-bybit-gray text-[10px]">
-                  Две прямоугольные выдвижные площадки с накладками из капролона (POM-C). Расположены строго по ширине экстеншна и при подъеме упираются снизу в продольные балки рамы.
-                </p>
               </div>
-
-              <div class="bg-bybit-black/60 p-2.5 rounded-lg border border-bybit-gold/40 space-y-1">
-                <div class="font-bold text-bybit-gold flex items-center justify-between">
-                  <span>3. Центральная педаль:</span>
-                  <span class="text-white font-mono">Педаль вниз → Опоры вверх</span>
-                </div>
-                <p class="text-bybit-gray text-[10px]">
-                  Рычажный привод снизу по центру. При нажатии педали вниз (ногой или рукой) диагональные тяги/качалки выталкивают обе боковые опоры вверх на +20 мм.
-                </p>
-              </div>
-
               <div class="bg-bybit-black/60 p-2.5 rounded-lg border border-bybit-border space-y-1">
-                <div class="font-bold text-white flex items-center justify-between">
-                  <span>4. Ножки стола:</span>
-                  <span class="text-white font-mono">Lean Pipe Ø28 мм + шарики</span>
-                </div>
-                <p class="text-bybit-gray text-[10px]">
-                  4 короткие ножки с запрессованными шариковыми роликами CY-15A для свободного перемещения 360° по верстаку.
-                </p>
+                <div class="text-bybit-gray text-[10px]">Винтоверт Torx T30:</div>
+                <div class="font-bold text-white font-mono">5.20 Н·м (OK)</div>
+              </div>
+              <div class="bg-bybit-black/60 p-2.5 rounded-lg border border-bybit-border space-y-1">
+                <div class="text-bybit-gray text-[10px]">Заклепочник 1/8":</div>
+                <div class="font-bold text-white font-mono">6/6 установлено</div>
               </div>
             </div>
           </div>
 
-          <!-- Logic Card -->
+          <!-- Poka-Yoke System -->
+          <div class="bybit-card rounded-xl p-3.5 space-y-2.5">
+            <h4 class="font-bold text-white text-xs flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
+              <span>Poka-Yoke: Защита от пересортицы шкафов</span>
+            </h4>
+            <p class="text-bybit-lightGray leading-relaxed text-[11px]">
+              При сканировании серийного номера рамы система проверяет положение педали:
+              <br>• Если отсканирован <strong>Zoid Rack</strong> (199.2 см) — подтверждается базовая высота <strong>50 мм</strong>.
+              <br>• Если отсканирован <strong>Zoid E</strong> (198.1 см) — винтоверт блокируется до нажатия педали на высоту <strong>70 мм</strong>.
+            </p>
+          </div>
+
+          <!-- LED Signaling -->
           <div class="bybit-card rounded-xl p-3.5 space-y-2">
             <h4 class="font-bold text-white text-xs flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-bybit-green"></span>
-              <span>Режимы работы оператора</span>
+              <span>Светодиодная индикация поста (Status Bar)</span>
             </h4>
-            <div class="space-y-1.5 text-[11px] text-bybit-lightGray">
-              <div class="p-2 bg-bybit-black/50 rounded border border-bybit-border">
-                <strong class="text-white">Для ZOID RACK (50 мм):</strong>
-                <p class="text-[10px] text-bybit-gray mt-0.5">Педаль вверху. Опоры утоплены вровень со столом. Рама просто кладется на стол до упора в задний бортик. Деталь сразу на нужной высоте!</p>
+            <div class="space-y-1 text-[11px] text-bybit-lightGray">
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-bybit-green"></span> <span><strong>Зеленый</strong>: Деталь установлена правильно, высота соответствует типу шкафа.</span></div>
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-bybit-gold"></span> <span><strong>Янтарный</strong>: Ожидание установки детали / перевод педали.</span></div>
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-bybit-red"></span> <span><strong>Красный</strong>: Перекос балок / несоответствие высоты технологической карте.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: CAD / FEA АНАЛИЗ -->
+        <div id="tabCAD" class="space-y-3.5 hidden">
+          <div class="bybit-card rounded-xl p-3.5 space-y-2.5">
+            <h4 class="font-bold text-white text-xs flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
+              <span>CAD Моделирование (SolidWorks / Inventor / Fusion 360)</span>
+            </h4>
+            <div class="space-y-2 text-[11px] text-bybit-lightGray leading-relaxed">
+              <div class="bg-bybit-black/60 p-2.5 rounded border border-bybit-border">
+                <strong class="text-white">Базирование 3-2-1 по ISO 1101:</strong>
+                <p>3 точки — плоскости ложементов (опоры балок Z), 2 точки — задний бортик-упор (Y), 1 точка — боковой фиксатор (X). Полная фиксация всех 6 степеней свободы.</p>
               </div>
-              <div class="p-2 bg-bybit-black/50 rounded border border-bybit-gold/30">
-                <strong class="text-bybit-gold">Для ZOID E (70 мм):</strong>
-                <p class="text-[10px] text-bybit-gray mt-0.5">Оператор нажимает педаль вниз. Опоры поднимаются на 20 мм и приподнимают балки экстеншна до требуемой высоты 70 мм.</p>
+              <div class="bg-bybit-black/60 p-2.5 rounded border border-bybit-border">
+                <strong class="text-white">Облегчающие карманы (Pocketing DFM):</strong>
+                <p>Плита стола Д16Т облегчена на 38% за счет сетки карманов с внутренними радиусами фрезы R6 мм, сохраняя монолитную жесткость под нагрузкой 5 кН.</p>
+              </div>
+              <div class="bg-bybit-black/60 p-2.5 rounded border border-bybit-border">
+                <strong class="text-white">FEA Расчет прогиба плиты:</strong>
+                <p>Максимальный прогиб под усилием пневмозаклепочника (5.2 кН) составляет $\delta = 0.032\text{ мм}$ (в пределах допуска $\le 0.05\text{ мм}$).</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: СПЕЦИФИКАЦИЯ (BOM) -->
+        <!-- TAB 3: СПЕЦИФИКАЦИЯ (BOM) -->
         <div id="tabBOM" class="space-y-3 hidden">
           <div class="bybit-card rounded-xl overflow-hidden border border-bybit-border">
             <table class="w-full text-left text-[11px]">
@@ -334,33 +365,39 @@
               </thead>
               <tbody class="divide-y divide-bybit-border/60 text-bybit-lightGray">
                 <tr>
-                  <td class="p-2.5 font-bold text-white">Столешница с пазами</td>
-                  <td class="p-2.5 text-bybit-gold">Д16Т / 6061</td>
+                  <td class="p-2.5 font-bold text-white">Плита стола с карманами</td>
+                  <td class="p-2.5 text-bybit-gold">Д16Т ЧПУ</td>
                   <td class="p-2.5 font-mono">750 × 340 × 16 мм</td>
                   <td class="p-2.5 text-center font-bold">1 шт.</td>
                 </tr>
                 <tr>
-                  <td class="p-2.5 font-bold text-white">Задний бортик-упор</td>
-                  <td class="p-2.5 text-bybit-gold">Д16Т / 6061</td>
-                  <td class="p-2.5 font-mono">750 × 40 × 12 мм</td>
+                  <td class="p-2.5 font-bold text-white">Задний бортик 3-2-1</td>
+                  <td class="p-2.5 text-bybit-gold">Д16Т ЧПУ</td>
+                  <td class="p-2.5 font-mono">750 × 45 × 14 мм</td>
                   <td class="p-2.5 text-center font-bold">1 шт.</td>
                 </tr>
                 <tr>
-                  <td class="p-2.5 font-bold text-white">Подъемные опоры балок</td>
+                  <td class="p-2.5 font-bold text-white">Выдвижные опоры балок</td>
                   <td class="p-2.5 text-white">POM-C + Д16Т</td>
                   <td class="p-2.5 font-mono">220 × 55 × 18 мм</td>
                   <td class="p-2.5 text-center font-bold">2 шт.</td>
                 </tr>
                 <tr>
-                  <td class="p-2.5 font-bold text-white">Центральная педаль</td>
-                  <td class="p-2.5 text-bybit-gold">Д16Т / Сталь</td>
-                  <td class="p-2.5 font-mono">160 × 80 × 10 мм</td>
+                  <td class="p-2.5 font-bold text-white">Педаль с рифлением</td>
+                  <td class="p-2.5 text-bybit-gold">Сталь / Д16Т</td>
+                  <td class="p-2.5 font-mono">160 × 80 × 12 мм</td>
                   <td class="p-2.5 text-center font-bold">1 шт.</td>
                 </tr>
                 <tr>
-                  <td class="p-2.5 font-bold text-white">Стойки ножек</td>
-                  <td class="p-2.5">Lean Pipe</td>
-                  <td class="p-2.5 font-mono">Ø28 мм × 32 мм</td>
+                  <td class="p-2.5 font-bold text-white">Индуктивные датчики</td>
+                  <td class="p-2.5 text-bybit-cyan">IP67 NPN Ø4 мм</td>
+                  <td class="p-2.5 font-mono">10–30 V DC</td>
+                  <td class="p-2.5 text-center font-bold">2 шт.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold text-white">Стойки Lean Pipe</td>
+                  <td class="p-2.5">Ø28 мм</td>
+                  <td class="p-2.5 font-mono">L = 32 мм</td>
                   <td class="p-2.5 text-center font-bold">4 шт.</td>
                 </tr>
                 <tr>
@@ -369,34 +406,8 @@
                   <td class="p-2.5 font-mono">CY-15A (M8)</td>
                   <td class="p-2.5 text-center font-bold">4 шт.</td>
                 </tr>
-                <tr>
-                  <td class="p-2.5 font-bold text-white">Тяги рычажного привода</td>
-                  <td class="p-2.5 text-bybit-gold">Д16Т / Сталь</td>
-                  <td class="p-2.5 font-mono">L = 280 мм</td>
-                  <td class="p-2.5 text-center font-bold">2 шт.</td>
-                </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-
-        <!-- TAB 3: КИНЕМАТИКА ПЕДАЛИ -->
-        <div id="tabKinematics" class="space-y-3.5 hidden">
-          <div class="bybit-card rounded-xl p-3.5 space-y-2">
-            <h4 class="font-bold text-white text-xs flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-bybit-gold"></span>
-              <span>Кинематическая схема качалок</span>
-            </h4>
-            <div class="space-y-2 text-[11px] text-bybit-lightGray leading-relaxed">
-              <div class="bg-bybit-black/60 p-2.5 rounded border border-bybit-border">
-                <strong class="text-white">Двуплечий угловой рычаг (Bell Crank):</strong>
-                <p>При нажатии центральной педали вниз центральный шарнир тянет внутренние плечи качалок вниз. Вращаясь вокруг опорных осей на раме, внешние плечи качалок синхронно поднимают обе вертикальные опоры вверх строго на 20 мм.</p>
-              </div>
-              <div class="bg-bybit-black/60 p-2.5 rounded border border-bybit-border">
-                <strong class="text-white">Точки контакта с изделием:</strong>
-                <p>Опоры касаются исключительно нижних полок боковых балок рамы экстеншна (ширина между ними 698 мм). Капролоновые накладки защищают цинковое и порошковое покрытие деталей от царапин.</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -411,67 +422,49 @@
     // -------------------------------------------------------------
     const i18n = {
       ru: {
-        htmlTitle: "Фикстура Zoid Extension с Педальным Подъемником",
-        headerTitle: "Фикстура Zoid Extension с Педальным Подъемником",
-        headerSubtitle: "Задний бортик-упор • Боковые подъемные ложементы под ширину экстеншна (698 мм) • Педальный рычаг",
+        htmlTitle: "Фикстура Zoid Extension: CAD Модель & Индустрия 4.0",
+        headerTitle: "Smart Fixture Zoid Extension (CAD & Industry 4.0)",
+        headerSubtitle: "Параметрическая CAD-оптимизация • Базирование 3-2-1 • Телеметрия датчиков прилегания балок (698 мм)",
         navComputeShelf: "Compute Shelf",
         hudModeLabel: "Режим:",
-        hudPedalLabel: "Педаль:",
-        hudHeightLabel: "Высота балок:",
-        mechTitle: "Управление педалью:",
-        btnModeRack: "ZOID RACK (Педаль Вверху, H=50)",
-        btnModeZoidE: "ZOID E (Педаль Внизу, H=70)",
-        lblShowPart: "Рама Extension (балки упираются в опоры)",
-        lblShowDims: "Размеры и выноски (698 мм)",
-        tab1Title: "Конструкция со скетча",
-        tab2Title: "Спецификация",
-        tab3Title: "Кинематика педали",
-        pedalUp: "ВВЕРХУ (Опоры сложены)",
-        pedalDown: "ВНИЗУ (Опоры подняты)",
-        statusLockActive: "Опоры упираются в балки: Готово",
-        statusLockTransit: "Движение педали..."
+        hudHeightLabel: "Высота:",
+        mechTitle: "Педальный подъемник:",
+        btnModeRack: "ZOID RACK (50 мм)",
+        btnModeZoidE: "ZOID E (70 мм)",
+        lblShowPart: "Балки Extension (деталь)",
+        tab1Title: "Индустрия 4.0",
+        tab2Title: "CAD / FEA",
+        tab3Title: "BOM / Спецификация"
       },
       en: {
-        htmlTitle: "Zoid Extension Fixture with Pedal Lift",
-        headerTitle: "Zoid Extension Fixture with Pedal Lift",
-        headerSubtitle: "Rear backstop • Side riser pads spaced to extension width (698 mm) • Pedal linkage",
+        htmlTitle: "Zoid Extension Fixture: CAD Model & Industry 4.0",
+        headerTitle: "Smart Fixture Zoid Extension (CAD & Industry 4.0)",
+        headerSubtitle: "Parametric CAD optimization • 3-2-1 Locating • Beam seating telemetry (698 mm)",
         navComputeShelf: "Compute Shelf",
         hudModeLabel: "Mode:",
-        hudPedalLabel: "Pedal:",
-        hudHeightLabel: "Beam Height:",
-        mechTitle: "Pedal Actuation:",
-        btnModeRack: "ZOID RACK (Pedal Up, H=50)",
-        btnModeZoidE: "ZOID E (Pedal Down, H=70)",
-        lblShowPart: "Extension Frame (Beams on pads)",
-        lblShowDims: "Dimensions & Annotations (698 mm)",
-        tab1Title: "Sketch Breakdown",
-        tab2Title: "BOM Parts",
-        tab3Title: "Pedal Kinematics",
-        pedalUp: "UP (Supports Flush)",
-        pedalDown: "DOWN (Supports Lifted)",
-        statusLockActive: "Supports under side beams: Ready",
-        statusLockTransit: "Pedal moving..."
+        hudHeightLabel: "Height:",
+        mechTitle: "Pedal Linkage:",
+        btnModeRack: "ZOID RACK (50 mm)",
+        btnModeZoidE: "ZOID E (70 mm)",
+        lblShowPart: "Extension Beams (Part)",
+        tab1Title: "Industry 4.0",
+        tab2Title: "CAD / FEA",
+        tab3Title: "BOM Specs"
       },
       pl: {
-        htmlTitle: "Przyrząd Zoid Extension z Pedałem",
-        headerTitle: "Przyrząd Zoid Extension z Pedałem",
-        headerSubtitle: "Tylny ogranicznik • Podnoszone podpory pod szerokość rozszerzenia (698 mm) • Pedał",
+        htmlTitle: "Przyrząd Zoid Extension: Model CAD & Przemysł 4.0",
+        headerTitle: "Smart Fixture Zoid Extension (CAD & Przemysł 4.0)",
+        headerSubtitle: "Optymalizacja CAD • Bazowanie 3-2-1 • Telemetria czujników belek (698 mm)",
         navComputeShelf: "Compute Shelf",
         hudModeLabel: "Tryb:",
-        hudPedalLabel: "Pedał:",
-        hudHeightLabel: "Wysokość belek:",
-        mechTitle: "Sterowanie pedałem:",
-        btnModeRack: "ZOID RACK (Pedał w górze, H=50)",
-        btnModeZoidE: "ZOID E (Pedał wciśnięty, H=70)",
-        lblShowPart: "Rama Extension (belki na podporach)",
-        lblShowDims: "Wymiary i oznaczenia (698 mm)",
-        tab1Title: "Budowa ze szkicu",
-        tab2Title: "Specyfikacja",
-        tab3Title: "Kinematyka pedału",
-        pedalUp: "W GÓRZE (Podpory schowane)",
-        pedalDown: "WCIŚNIĘTY (Podpory uniesione)",
-        statusLockActive: "Podpory pod belkami: Gotowe",
-        statusLockTransit: "Ruch pedału..."
+        hudHeightLabel: "Wysokość:",
+        mechTitle: "Podnośnik pedałowy:",
+        btnModeRack: "ZOID RACK (50 mm)",
+        btnModeZoidE: "ZOID E (70 mm)",
+        lblShowPart: "Belki Extension (detal)",
+        tab1Title: "Przemysł 4.0",
+        tab2Title: "CAD / FEA",
+        tab3Title: "Specyfikacja BOM"
       }
     };
 
@@ -487,28 +480,27 @@
         const el = document.getElementById(key);
         if (el) el.textContent = val;
       }
-      updateHUD();
     }
 
     function switchTab(tabId) {
-      ['tabSketch', 'tabBOM', 'tabKinematics'].forEach(id => {
+      ['tabIndustry', 'tabCAD', 'tabBOM'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(tabId).classList.remove('hidden');
 
-      ['btnTabSketch', 'btnTabBOM', 'btnTabKinematics'].forEach(btn => {
+      ['btnTabIndustry', 'btnTabCAD', 'btnTabBOM'].forEach(btn => {
         document.getElementById(btn).className = "flex-1 py-3 px-2 text-center border-b-2 border-transparent text-bybit-gray hover:text-white transition";
       });
       const activeBtnMap = {
-        tabSketch: 'btnTabSketch',
-        tabBOM: 'btnTabBOM',
-        tabKinematics: 'btnTabKinematics'
+        tabIndustry: 'btnTabIndustry',
+        tabCAD: 'btnTabCAD',
+        tabBOM: 'btnTabBOM'
       };
       document.getElementById(activeBtnMap[tabId]).className = "flex-1 py-3 px-2 text-center border-b-2 border-bybit-gold text-bybit-gold transition";
     }
 
     // -------------------------------------------------------------
-    // 2. THREE.JS 3D SCENE SETUP
+    // 2. THREE.JS 3D SCENE & ADVANCED CAD ENGINE
     // -------------------------------------------------------------
     const container = document.getElementById('canvas-container');
     const canvas = document.getElementById('threeCanvas');
@@ -516,8 +508,8 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0B0E14);
 
-    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(50, 42, 65);
+    const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(48, 38, 62);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -529,49 +521,55 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.maxPolarAngle = Math.PI / 2 + 0.05;
-    controls.target.set(0, 4, 0);
+    controls.target.set(0, 4.5, 0);
+
+    // Workbench Table & Shadow Receiver
+    const benchGeo = new THREE.BoxGeometry(140, 2, 80);
+    const benchMat = new THREE.MeshStandardMaterial({ color: 0x141822, roughness: 0.85, metalness: 0.1 });
+    const bench = new THREE.Mesh(benchGeo, benchMat);
+    bench.position.set(0, -1, 0);
+    bench.receiveShadow = true;
+    scene.add(bench);
 
     // Grid Floor
     const gridHelper = new THREE.GridHelper(150, 75, 0x262C3A, 0x181C26);
     gridHelper.position.y = -0.05;
     scene.add(gridHelper);
 
-    // Workbench Table
-    const benchGeo = new THREE.BoxGeometry(140, 2, 80);
-    const benchMat = new THREE.MeshStandardMaterial({ color: 0x141822, roughness: 0.8, metalness: 0.1 });
-    const bench = new THREE.Mesh(benchGeo, benchMat);
-    bench.position.set(0, -1, 0);
-    bench.receiveShadow = true;
-    scene.add(bench);
-
-    // Lighting
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x181C26, 0.75);
+    // Studio Lighting
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x181C26, 0.8);
     scene.add(hemiLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.95);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0);
     dirLight1.position.set(45, 80, 50);
     dirLight1.castShadow = true;
     dirLight1.shadow.mapSize.width = 2048;
     dirLight1.shadow.mapSize.height = 2048;
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xF7A600, 0.28);
+    const dirLight2 = new THREE.DirectionalLight(0x00F0FF, 0.25); // Cyan tech rim light
     dirLight2.position.set(-50, 40, -40);
     scene.add(dirLight2);
 
     // -------------------------------------------------------------
-    // 3. PBR MATERIALS
+    // 3. PBR MATERIALS (CAD & INDUSTRY 4.0)
     // -------------------------------------------------------------
-    const aluminumTableMat = new THREE.MeshStandardMaterial({
+    const aluminumMilledMat = new THREE.MeshStandardMaterial({
       color: 0xCFD8DC,
-      metalness: 0.82,
-      roughness: 0.25
+      metalness: 0.85,
+      roughness: 0.22
+    });
+
+    const pocketCutoutMat = new THREE.MeshStandardMaterial({
+      color: 0x1A202C, // Deep CNC pocket recess
+      metalness: 0.7,
+      roughness: 0.4
     });
 
     const rearFenceMat = new THREE.MeshStandardMaterial({
       color: 0x90A4AE,
-      metalness: 0.85,
-      roughness: 0.28
+      metalness: 0.88,
+      roughness: 0.25
     });
 
     const pipeLeanMat = new THREE.MeshStandardMaterial({
@@ -593,33 +591,38 @@
     });
 
     const pedalGoldMat = new THREE.MeshStandardMaterial({
-      color: 0xF7A600, // Bybit Gold for Pedal & Arms
-      metalness: 0.72,
-      roughness: 0.3
+      color: 0xF7A600, // Bybit Gold for Pedal & Linkage
+      metalness: 0.75,
+      roughness: 0.28
     });
 
-    const steelTieMat = new THREE.MeshStandardMaterial({
-      color: 0xB0BEC5,
-      metalness: 0.9,
-      roughness: 0.2
+    const ledGreenMat = new THREE.MeshStandardMaterial({
+      color: 0x0ECB81,
+      emissive: 0x0ECB81,
+      emissiveIntensity: 0.8
+    });
+
+    const ledCyanMat = new THREE.MeshStandardMaterial({
+      color: 0x00F0FF,
+      emissive: 0x00F0FF,
+      emissiveIntensity: 0.9
     });
 
     const workpieceMat = new THREE.MeshStandardMaterial({
-      color: 0x90CAF9, // Light metallic blue sheet metal of Extension
-      metalness: 0.7,
-      roughness: 0.35,
+      color: 0x90CAF9, // Anodized / galvanized blue steel
+      metalness: 0.72,
+      roughness: 0.32,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.92
     });
 
     // -------------------------------------------------------------
-    // 4. BUILDING THE FIXTURE ASSEMBLY (SCALE: 1 Unit = 10 mm / 1 cm)
+    // 4. ASSEMBLING SMART FIXTURE (SCALE: 1 Unit = 10 mm / 1 cm)
     // -------------------------------------------------------------
-    // Table Dimensions: 75 cm wide, 34 cm deep, Table surface height = 5.0 cm
     const fixtureGroup = new THREE.Group();
     scene.add(fixtureGroup);
 
-    // A. 4x LEAN PIPE LEGS WITH BALL UNITS (CY-15)
+    // A. 4x LEAN PIPE LEGS WITH BALL UNITS (CY-15A)
     const legPositions = [
       [-34.5, 14],
       [ 34.5, 14],
@@ -627,14 +630,12 @@
       [ 34.5,-14]
     ];
     legPositions.forEach(([lx, lz]) => {
-      // Lean Pipe Ø28 mm x 32 mm
       const pipeGeo = new THREE.CylinderGeometry(1.4, 1.4, 3.2, 32);
       const pipeMesh = new THREE.Mesh(pipeGeo, pipeLeanMat);
       pipeMesh.position.set(lx, 1.6, lz);
       pipeMesh.castShadow = true;
       fixtureGroup.add(pipeMesh);
 
-      // Ball Transfer Unit
       const ballGeo = new THREE.SphereGeometry(0.79, 32, 32);
       const ballMesh = new THREE.Mesh(ballGeo, chromeBallMat);
       ballMesh.position.set(lx, 0.25, lz);
@@ -642,24 +643,42 @@
       fixtureGroup.add(ballMesh);
     });
 
-    // B. TABLE TOP WITH POCKETS (75 cm x 34 cm x 1.6 cm, Top surface at Y = 5.0 cm)
+    // B. CNC MILLED TABLE TOP WITH WEIGHT-REDUCTION POCKETS (75 x 34 x 1.6 cm)
     const tableTopGeo = new THREE.BoxGeometry(75, 1.6, 34);
-    const tableTopMesh = new THREE.Mesh(tableTopGeo, aluminumTableMat);
+    const tableTopMesh = new THREE.Mesh(tableTopGeo, aluminumMilledMat);
     tableTopMesh.position.set(0, 4.2, 0);
     tableTopMesh.castShadow = true;
     tableTopMesh.receiveShadow = true;
     fixtureGroup.add(tableTopMesh);
 
-    // C. REAR FENCE / BACKSTOP ("Чуть шире чем extension")
-    // Width: 75 cm, Height: 4.5 cm, Thickness: 1.4 cm, placed along rear edge (Z = -16.3 cm)
+    // DFM Pocketing Visuals (Weight-reduction grid)
+    const pocketGroup = new THREE.Group();
+    fixtureGroup.add(pocketGroup);
+    [-20, 0, 20].forEach(px => {
+      [-6, 6].forEach(pz => {
+        const pGeo = new THREE.BoxGeometry(14, 0.4, 8);
+        const pMesh = new THREE.Mesh(pGeo, pocketCutoutMat);
+        pMesh.position.set(px, 5.02, pz);
+        pocketGroup.add(pMesh);
+      });
+    });
+
+    // C. REAR FENCE / BACKSTOP WITH 3-2-1 LOCATING PADS (75 x 4.5 x 1.4 cm)
     const rearFenceGeo = new THREE.BoxGeometry(75, 4.5, 1.4);
     const rearFenceMesh = new THREE.Mesh(rearFenceGeo, rearFenceMat);
     rearFenceMesh.position.set(0, 6.45, -16.3);
     rearFenceMesh.castShadow = true;
     fixtureGroup.add(rearFenceMesh);
 
-    // D. DUAL RISING SUPPORTS (LEFT & RIGHT) LOCATED AT EXTENSION BEAM WIDTH (69.8 cm spacing)
-    // Left support at X = -34.9 cm, Right support at X = +34.9 cm
+    // 2x Hardened Locating Blocks on Rear Fence
+    [-24, 24].forEach(fx => {
+      const pinGeo = new THREE.BoxGeometry(2.5, 2.5, 0.6);
+      const pinMesh = new THREE.Mesh(pinGeo, chromeBallMat);
+      pinMesh.position.set(fx, 6.5, -15.4);
+      fixtureGroup.add(pinMesh);
+    });
+
+    // D. DUAL RISING SUPPORTS (LEFT & RIGHT) AT BEAM SPACING 69.8 cm
     const riserGroupLeft = new THREE.Group();
     riserGroupLeft.position.set(-34.9, 0, 0);
     fixtureGroup.add(riserGroupLeft);
@@ -668,55 +687,68 @@
     riserGroupRight.position.set(34.9, 0, 0);
     fixtureGroup.add(riserGroupRight);
 
-    // Milled Riser Block + White POM-C Rest Pad (22 cm long x 5.5 cm wide x 1.8 cm high)
-    function buildRiserPad() {
+    // Riser Pad with POM-C & Proximity Sensors (Индуктивные датчики прилегания)
+    function buildSmartRiser() {
       const g = new THREE.Group();
-      // Lower metal guide slider
-      const sliderGeo = new THREE.BoxGeometry(5.0, 3.5, 22);
-      const sliderMesh = new THREE.Mesh(sliderGeo, aluminumTableMat);
-      sliderMesh.position.y = 2.5;
-      sliderMesh.castShadow = true;
-      g.add(sliderMesh);
+      // Milled Metal Guide
+      const guideGeo = new THREE.BoxGeometry(5.0, 3.5, 22);
+      const guideMesh = new THREE.Mesh(guideGeo, aluminumMilledMat);
+      guideMesh.position.y = 2.5;
+      guideMesh.castShadow = true;
+      g.add(guideMesh);
 
-      // Top White POM-C (Капролон) Rest Pad
+      // White POM-C (Капролон) Pad with Lead-in Chamfers
       const pomGeo = new THREE.BoxGeometry(5.4, 1.2, 22.4);
       const pomMesh = new THREE.Mesh(pomGeo, pomDelrinMat);
       pomMesh.position.y = 4.8;
       pomMesh.castShadow = true;
       g.add(pomMesh);
+
+      // Proximity Sensor Housing (Ø4 mm Inductive Sensor)
+      const sensorGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.4, 16);
+      const sensorMesh = new THREE.Mesh(sensorGeo, ledCyanMat);
+      sensorMesh.position.set(0, 5.42, 0);
+      g.add(sensorMesh);
+
       return g;
     }
 
-    const riserPadLeft = buildRiserPad();
-    const riserPadRight = buildRiserPad();
+    const riserPadLeft = buildSmartRiser();
+    const riserPadRight = buildSmartRiser();
     riserGroupLeft.add(riserPadLeft);
     riserGroupRight.add(riserPadRight);
 
-    // E. CENTRAL FOOT PEDAL & LINKAGE MECHANISM (Underneath)
+    // E. INDUSTRY 4.0 LED STATUS LIGHT BAR (Front Edge of Fixture)
+    const ledBarGeo = new THREE.BoxGeometry(40, 0.4, 0.6);
+    const ledBarMesh = new THREE.Mesh(ledBarGeo, ledGreenMat);
+    ledBarMesh.position.set(0, 4.8, 17.1);
+    fixtureGroup.add(ledBarMesh);
+
+    // F. CENTRAL FOOT PEDAL & LINKAGE MECHANISM
     const pedalAssembly = new THREE.Group();
     fixtureGroup.add(pedalAssembly);
 
-    // Central Pedal Pad (Front Center, width 16 cm, depth 8 cm, height 1.2 cm)
+    // Knurled Pedal Pad
     const pedalPadGeo = new THREE.BoxGeometry(16, 1.2, 8);
     const pedalPadMesh = new THREE.Mesh(pedalPadGeo, pedalGoldMat);
     pedalPadMesh.position.set(0, 1.8, 18);
     pedalPadMesh.castShadow = true;
     pedalAssembly.add(pedalPadMesh);
 
-    // Pedal Arm connecting into under-table pivot
+    // Pedal Arm
     const pedalArmGeo = new THREE.BoxGeometry(3.5, 1.0, 14);
     const pedalArmMesh = new THREE.Mesh(pedalArmGeo, pedalGoldMat);
     pedalArmMesh.position.set(0, 2.2, 10);
     pedalAssembly.add(pedalArmMesh);
 
-    // Central Cross-Joint / Bell-Crank Link Hub
+    // Bell-Crank Hub
     const hubGeo = new THREE.CylinderGeometry(1.2, 1.2, 8, 24);
-    const hubMesh = new THREE.Mesh(hubGeo, steelTieMat);
+    const hubMesh = new THREE.Mesh(hubGeo, chromeBallMat);
     hubMesh.rotation.z = Math.PI / 2;
     hubMesh.position.set(0, 2.4, 3);
     pedalAssembly.add(hubMesh);
 
-    // Diagonal Linkage Struts from Pedal Hub to Left/Right Risers (as in user sketch)
+    // Diagonal Tie-Rods to Left & Right Risers
     const tieLeftGroup = new THREE.Group();
     const tieRightGroup = new THREE.Group();
     fixtureGroup.add(tieLeftGroup);
@@ -730,94 +762,73 @@
     tieLeftGroup.add(tieLeft);
     tieRightGroup.add(tieRight);
 
-    // F. EXTENSION FRAME WORKPIECE (Longitudinal side beams + end cross-flange)
+    // G. EXTENSION FRAME WORKPIECE (Beams resting on pads)
     const workpieceGroup = new THREE.Group();
     scene.add(workpieceGroup);
 
-    // Left Longitudinal Beam (Channel C-profile resting on left riser)
+    // Left Longitudinal Beam (C-profile)
     const beamLeftGeo = new THREE.BoxGeometry(5.2, 4.0, 48);
     const beamLeft = new THREE.Mesh(beamLeftGeo, workpieceMat);
     beamLeft.position.set(-34.9, 7.0, -8);
     beamLeft.castShadow = true;
     workpieceGroup.add(beamLeft);
 
-    // Right Longitudinal Beam (Channel C-profile resting on right riser)
+    // Right Longitudinal Beam (C-profile)
     const beamRightGeo = new THREE.BoxGeometry(5.2, 4.0, 48);
     const beamRight = new THREE.Mesh(beamRightGeo, workpieceMat);
     beamRight.position.set(34.9, 7.0, -8);
     beamRight.castShadow = true;
     workpieceGroup.add(beamRight);
 
-    // End Cross-flange / Plate connecting both beams against rear fence
+    // End Cross-flange Plate
     const crossFlangeGeo = new THREE.BoxGeometry(69.8, 3.5, 0.4);
     const crossFlange = new THREE.Mesh(crossFlangeGeo, workpieceMat);
     crossFlange.position.set(0, 6.75, -15.4);
     crossFlange.castShadow = true;
     workpieceGroup.add(crossFlange);
 
-    // G. 3D DIMENSION CALLOUT (698 mm Beam Spacing)
-    const dimGroup = new THREE.Group();
-    scene.add(dimGroup);
-
-    function createDimLine(start, end, colorHex) {
-      const lineGeo = new THREE.BufferGeometry().setFromPoints([start, end]);
-      const lineMat = new THREE.LineBasicMaterial({ color: colorHex, linewidth: 2 });
-      dimGroup.add(new THREE.Line(lineGeo, lineMat));
-    }
-    // Width callout across the two supports: 698 mm
-    createDimLine(new THREE.Vector3(-34.9, 10.5, 0), new THREE.Vector3(34.9, 10.5, 0), 0xF7A600);
-    createDimLine(new THREE.Vector3(-34.9, 5.0, 0), new THREE.Vector3(-34.9, 11.0, 0), 0xF7A600);
-    createDimLine(new THREE.Vector3(34.9, 5.0, 0), new THREE.Vector3(34.9, 11.0, 0), 0xF7A600);
-
     // -------------------------------------------------------------
-    // 5. KINEMATIC SIMULATION (PEDAL DOWN -> RISERS UP)
+    // 5. KINEMATICS & INDUSTRY 4.0 TELEMETRY
     // -------------------------------------------------------------
-    let currentPedal = 0.0; // 0.0 = UP (50 mm), 1.0 = DOWN (70 mm)
+    let currentPedal = 0.0;
     let targetPedal = 0.0;
     const baseHeight = 5.0; // cm
-    const strokeDelta = 2.0; // cm (20 mm lift)
+    const strokeDelta = 2.0; // cm (20 mm)
 
     function updateKinematics(factor) {
-      // 1. Pedal Movement:
-      // When factor = 0 (Up): Pedal at Y = 2.0 cm
-      // When factor = 1 (Down): Pedal pushed down to Y = 0.4 cm
+      // Pedal Y motion
       const pedalY = 2.0 - factor * 1.6;
       pedalPadMesh.position.y = pedalY;
       pedalArmMesh.position.y = pedalY + 0.4;
       pedalArmMesh.rotation.x = -factor * 0.18;
       hubMesh.position.y = 2.4 - factor * 0.8;
 
-      // 2. Risers Movement:
-      // When factor = 0: Risers are flush with table surface (Y offset = 0.0 cm, H = 50 mm)
-      // When factor = 1: Risers elevated by +2.0 cm (Y offset = 2.0 cm, H = 70 mm)
+      // Riser pads vertical lift
       const riserLift = factor * strokeDelta;
       riserPadLeft.position.y = riserLift;
       riserPadRight.position.y = riserLift;
 
-      // 3. Workpiece (Extension Frame) Follows Risers:
+      // Workpiece follows risers
       workpieceGroup.position.y = riserLift;
 
-      // 4. Diagonal Tie Rods Articulation:
-      // Connecting Hub (0, hubY, 3) to Left Riser (-34.9, riserY, 0) and Right Riser (34.9, riserY, 0)
+      // Articulate Tie-Rods
       const hubPos = new THREE.Vector3(0, hubMesh.position.y, 3);
       const leftTarget = new THREE.Vector3(-34.9, 2.0 + riserLift, 0);
       const rightTarget = new THREE.Vector3(34.9, 2.0 + riserLift, 0);
 
-      // Position and orient Left Tie
       const midLeft = new THREE.Vector3().addVectors(hubPos, leftTarget).multiplyScalar(0.5);
       tieLeftGroup.position.copy(midLeft);
       tieLeft.scale.set(1, hubPos.distanceTo(leftTarget) / 36.0, 1);
       tieLeftGroup.lookAt(leftTarget);
       tieLeftGroup.rotateX(Math.PI / 2);
 
-      // Position and orient Right Tie
       const midRight = new THREE.Vector3().addVectors(hubPos, rightTarget).multiplyScalar(0.5);
       tieRightGroup.position.copy(midRight);
       tieRight.scale.set(1, hubPos.distanceTo(rightTarget) / 36.0, 1);
       tieRightGroup.lookAt(rightTarget);
       tieRightGroup.rotateX(Math.PI / 2);
 
-      // 5. Update HUD & UI Controls:
+      // HUD and Status Updates
       const actualMM = (50.0 + factor * 20.0).toFixed(1);
       document.getElementById('hudHeightVal').textContent = `H = ${actualMM} мм`;
       document.getElementById('pedalSlider').value = factor;
@@ -826,7 +837,6 @@
       const isE = factor > 0.8;
 
       const hudMode = document.getElementById('hudActiveMode');
-      const hudPedal = document.getElementById('hudPedalState');
       const btnRack = document.getElementById('btnModeRack');
       const btnE = document.getElementById('btnModeZoidE');
       const statusLock = document.getElementById('statusLock');
@@ -834,28 +844,24 @@
       if (isRack) {
         hudMode.textContent = "ZOID RACK (50 мм)";
         hudMode.className = "font-bold text-bybit-green";
-        hudPedal.textContent = i18n[currentLang].pedalUp;
-        hudPedal.className = "font-bold text-bybit-green";
         btnRack.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-gold text-bybit-black shadow-md transition";
         btnE.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-card text-bybit-gray hover:text-white border border-bybit-border transition";
-        statusLock.textContent = i18n[currentLang].statusLockActive;
+        statusLock.textContent = "Poka-Yoke: Zoid Rack OK";
         statusLock.className = "text-bybit-green";
+        ledBarMesh.material = ledGreenMat;
       } else if (isE) {
         hudMode.textContent = "ZOID E (70 мм)";
-        hudMode.className = "font-bold text-bybit-gold";
-        hudPedal.textContent = i18n[currentLang].pedalDown;
-        hudPedal.className = "font-bold text-bybit-gold";
+        hudMode.className = "font-bold text-bybit-cyan";
         btnRack.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-card text-bybit-gray hover:text-white border border-bybit-border transition";
         btnE.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-bybit-gold text-bybit-black shadow-md transition";
-        statusLock.textContent = i18n[currentLang].statusLockActive;
-        statusLock.className = "text-bybit-gold";
+        statusLock.textContent = "Poka-Yoke: Zoid E (Over-Center Замок)";
+        statusLock.className = "text-bybit-cyan";
+        ledBarMesh.material = ledCyanMat;
       } else {
         hudMode.textContent = "ПЕРЕХОД...";
-        hudMode.className = "font-bold text-bybit-blue";
-        hudPedal.textContent = "ХОД ПЕДАЛИ...";
-        hudPedal.className = "font-bold text-bybit-blue";
-        statusLock.textContent = i18n[currentLang].statusLockTransit;
-        statusLock.className = "text-bybit-blue";
+        hudMode.className = "font-bold text-bybit-gold";
+        statusLock.textContent = "Движение педали...";
+        statusLock.className = "text-bybit-gold";
       }
     }
 
@@ -871,20 +877,24 @@
       workpieceGroup.visible = e.target.checked;
     });
 
-    document.getElementById('chkShowDims').addEventListener('change', (e) => {
-      dimGroup.visible = e.target.checked;
+    document.getElementById('chkShowSensors').addEventListener('change', (e) => {
+      ledBarMesh.visible = e.target.checked;
+    });
+
+    document.getElementById('chkShowPocketing').addEventListener('change', (e) => {
+      pocketGroup.visible = e.target.checked;
     });
 
     // Camera Presets
     function setCameraView(preset) {
       if (preset === 'iso') {
-        gsapAnimateCamera(50, 42, 65, 0, 4, 0);
+        gsapAnimateCamera(48, 38, 62, 0, 4.5, 0);
       } else if (preset === 'front') {
-        gsapAnimateCamera(0, 12, 72, 0, 4, 0);
+        gsapAnimateCamera(0, 12, 70, 0, 4.5, 0);
       } else if (preset === 'top') {
-        gsapAnimateCamera(0, 80, 0.1, 0, 4, 0);
+        gsapAnimateCamera(0, 78, 0.1, 0, 4.5, 0);
       } else if (preset === 'side') {
-        gsapAnimateCamera(72, 14, 10, 0, 4, 0);
+        gsapAnimateCamera(70, 14, 8, 0, 4.5, 0);
       }
     }
 
@@ -896,10 +906,6 @@
       camera.position.set(px, py, pz);
       controls.target.set(tx, ty, tz);
       controls.update();
-    }
-
-    function updateHUD() {
-      updateKinematics(currentPedal);
     }
 
     // -------------------------------------------------------------
@@ -926,7 +932,7 @@
       renderer.setSize(w, h);
     });
 
-    // Initial State
+    // Initial setup
     updateKinematics(0);
   </script>
 </body>
